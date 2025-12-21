@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Gita Seva</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Specific styles for the Home Page menu cards */
+        .content-wrapper {
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .logo-area {
+            margin-bottom: 50px;
+        }
+
+        .logo-area h1 {
+            font-size: 34px;
+            font-weight: 700;
+            margin: 5px 0;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 500;
+        }
+
+        .menu-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid var(--nav-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.2s, border-color 0.3s;
+            text-align: left;
+        }
+
+        .menu-item:active {
+            transform: scale(0.98);
+        }
+
+        .icon-box {
+            font-size: 30px;
+            margin-right: 20px;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .text-box h2 {
+            font-size: 18px;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .text-box p {
+            font-size: 13px;
+            margin: 4px 0 0;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .footer {
+            margin-top: 60px;
+            font-size: 13px;
+            color: var(--muted);
+            opacity: 0.7;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="nav-bar">
+        <div></div> <div class="theme-toggle" id="themeToggle">🌙</div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="logo-area">
+            <div class="subtitle">Shrimad Bhagavad Gita</div>
+            <h1>श्रीमद्भगवद्गीता</h1>
+        </div>
+
+        <div class="menu-stack">
+            <a href="Shlokank.html" class="menu-item">
+                <div class="icon-box">🚩</div>
+                <div class="text-box">
+                    <h2>Shlokank</h2>
+                    <p>Master shlokas through active recall and memorization.</p>
+                </div>
+            </a>
+
+            <a href="#" class="menu-item" style="opacity: 0.7;">
+                <div class="icon-box">🔍</div>
+                <div class="text-box">
+                    <h2>Charan-Bodha</h2>
+                    <p>Identify the full verse from its opening phrase.</p>
+                </div>
+            </a>
+
+            <a href="#" class="menu-item" style="opacity: 0.7;">
+                <div class="icon-box">📖</div>
+                <div class="text-box">
+                    <h2>Adhyay-Path</h2>
+                    <p>Read and revise the Gita verse by verse.</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="footer">
+            "Yoga is the journey of the self, through the self, to the self."
+        </div>
+    </div>
+
+    <script src="theme.js"></script>
+
+</body>
+</html>

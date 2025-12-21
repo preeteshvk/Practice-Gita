@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Gita Shloka Practice</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="nav-bar">
+        <div class="nav-left-group">
+            <a href="index.html" class="nav-btn" id="go-home">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                Home
+            </a>
+            <button class="nav-btn" id="go-select">
+                <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+                Adhyay
+            </button>
+        </div>
+        <div class="theme-toggle" id="themeToggle">🌙</div>
+    </div>
+
+    <div class="adhyay-selection" id="selection-screen">
+        <h2>Select Adhyay</h2>
+        <div class="select-all">
+            <span>Select All</span>
+            <div id="toggle" class="toggle active"></div>
+        </div>
+        <div class="adhyay-grid" id="grid"></div>
+        <button class="start-btn" id="start">Start</button>
+    </div>
+
+    <div class="practice-screen" id="practice-screen">
+        <div class="card" id="card">
+            <div class="card-header">
+                <div class="timer-container" id="timer-box">
+                    <svg viewBox="0 0 24 24"><path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+                    <span id="timer">0.0s</span>
+                </div>
+                
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <div id="counter" class="counter-text"></div>
+                    <div id="header-text" class="header-text"></div>
+                </div>
+
+                <button class="icon" id="flip" style="text-align: right;">
+                    <svg class="icon-svg" viewBox="0 0 24 24">
+                        <path d="M12 6V3L8 7l4 4V8c2.76 0 5 2.24 5 5 0 .34-.03.67-.1 1h2.02c.05-.33.08-.66.08-1 0-3.87-3.13-7-7-7zm-5 5c0-.34.03-.67.1-1H5.08c-.05.33-.08.66-.08 1 0 3.87 3.13 7 7 7v3l4-4-4-4v3c-2.76 0-5-2.24-5-5z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="card-body">
+                <div id="center-text" class="center-number"></div>
+                <div id="shloka-text" class="shloka-text"></div>
+            </div>
+
+            <div class="card-footer">
+                <button class="hint-btn" id="hint-btn">Hint</button>
+                <div class="hint-banner" id="hint"></div>
+            </div>
+        </div>
+
+        <div class="next-container">
+            <button class="icon" id="prev">
+                <svg class="icon-svg" viewBox="0 0 24 24" style="transform: scaleX(-1);">
+                    <path d="M12 4l-1.41 1.41L15.17 10H4v2h11.17l-4.58 4.59L12 18l8-8z"/>
+                </svg>
+            </button>
+            
+            <button class="icon" id="next">
+                <svg class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M12 4l-1.41 1.41L15.17 10H4v2h11.17l-4.58 4.59L12 18l8-8z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="completion-screen" id="completion-screen">
+        <h1 style="font-size: 48px; margin-bottom: 10px;">🙏</h1>
+        <h2>Shlokas Finished!</h2>
+        <p style="color: var(--muted); margin-bottom: 30px;">You have completed all selected shlokas.</p>
+        <button class="action-btn" id="btn-restart">Continue Practicing</button>
+        <button class="action-btn secondary" id="btn-home-complete">Back to Selection</button>
+    </div>
+
+    <script src="theme.js"></script>
+    
+    <script src="practice.js"></script>
+
+</body>
+</html>
