@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Gita Adhyay Path</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="nav-bar">
+        <div class="nav-left-group">
+            <a href="index.html" class="nav-btn" id="go-home">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> Home
+            </a>
+            <button class="nav-btn" id="go-select">
+                <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg> Adhyay
+            </button>
+        </div>
+        <div class="theme-toggle" id="themeToggle">🌙</div>
+    </div>
+
+    <div class="adhyay-selection" id="selection-screen">
+        <div class="logo-area" style="margin-top: 40px;">
+            <div class="subtitle">Select Chapter</div>
+            <h1>अध्याय चयन</h1>
+        </div>
+        <div class="adhyay-grid" id="grid"></div>
+        <button id="start" class="start-btn" disabled>Start Reading</button>
+    </div>
+
+    <div class="practice-screen" id="reading-screen">
+        <div class="card" id="card" style="height: 70vh;"> <div class="card-header">
+                <div></div>
+                <div id="header-text" class="header-text" style="color: var(--accent);"></div>
+                <div id="counter" class="counter-text"></div>
+            </div>
+
+            <div class="card-body">
+                <div id="shloka-text" class="shloka-text" style="display: block;"></div>
+            </div>
+
+            <div class="card-footer">
+                <button class="shloka-nav-btn" id="prev-btn">
+                    <svg class="shloka-nav-svg" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                </button>
+                <div style="grid-column: 2;"></div> <button class="shloka-nav-btn" id="next-btn">
+                    <svg class="shloka-nav-svg" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="completion-screen" id="completion-screen">
+        <h1>Chapter Complete! 📖✨</h1>
+        <p id="completion-msg"></p>
+        <button class="action-btn" id="btn-restart">Reread Chapter</button>
+        <button class="action-btn" id="btn-next-adhyay">Next Chapter</button>
+        <button class="action-btn secondary" onclick="location.reload()">Select Adhyay</button>
+    </div>
+
+    <script src="theme.js"></script>
+    <script src="path.js"></script>
+</body>
+</html>
