@@ -153,17 +153,36 @@ document.getElementById("btn-next-adhyay").onclick = () => {
 
 // 6. GESTURES
 let sx = 0;
-card.addEventListener("touchstart", e => { sx = e.touches[0].clientX; }, { passive: true });
+
+// 1. Change passive to false to allow us to "lock" the screen
+card.addEventListener("touchstart", e => { 
+    sx = e.touches[0].clientX; 
+}, { passive: false });
+
+// 2. Add touchmove to stop the browser from dragging the text/card
+card.addEventListener("touchmove", e => { 
+    if (e.cancelable) e.preventDefault(); 
+}, { passive: false });
+
 card.addEventListener("touchend", e => {
     const dx = e.changedTouches[0].clientX - sx;
-    if (dx < -70) goNext(); 
-    if (dx > 70) goPrev();  
-}, { passive: true });
+    if (dx < -70) {
+        goNext();
+    } else if (dx > 70) {
+        goPrev();
+    }
+}, { passive: false });
 
+// Mouse logic remains mostly same but added safety
 let mx = 0, down = false;
-card.addEventListener("mousedown", e => { down = true; mx = e.clientX; });
+card.addEventListener("mousedown", e => { 
+    down = true; 
+    mx = e.clientX; 
+});
+
 card.addEventListener("mouseup", e => {
-    if (!down) return; down = false;
+    if (!down) return; 
+    down = false;
     const dx = e.clientX - mx;
     if (dx < -100) goNext();
     if (dx > 100) goPrev();
