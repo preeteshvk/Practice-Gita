@@ -39,17 +39,6 @@ function shuffle(a) {
     }
 }
 
-function formatShloka(rawText) {
-    if (rawText.includes("उवाच")) {
-        const parts = rawText.split("उवाच");
-        const speaker = parts[0] + "उवाच";
-        const shlokaBody = parts.slice(1).join("").trim();
-        const lines = shlokaBody.split("\n");
-        return `${speaker}\n${lines[0] || ""}\n${lines[1] || ""}`.trim();
-    }
-    return rawText.trim();
-}
-
 // 2. SELECTION SCREEN LOGIC
 for (let i = 1; i <= 18; i++) {
     const d = document.createElement("div");
@@ -78,11 +67,12 @@ function updateStartState() {
 
 // 3. CORE PRACTICE LOGIC
 fetch("verse.json").then(r => r.json()).then(d => {
-    allShlokas = d.map(v => ({ c: v.chapter_number, v: v.verse_number, t: v.text.trim() }));
+    allShlokas = d.map(v => ({ c: v.chapter, v: v.verse, t: v.full_text, charans: v.charans }));
 });
 
 function startTimer() {
     clearInterval(timerInterval);
+    timerDisplay.textContent = "0.0s"; 
     startTime = Date.now();
     if (timerBox) timerBox.style.color = currentAccentColor;
     if (timerSvg) timerSvg.style.fill = currentAccentColor;
@@ -100,7 +90,6 @@ function load() {
     svgs.forEach(s => s.style.fill = currentAccentColor);
     hintBtn.style.color = currentAccentColor;
 
-    // Sync top buttons with dynamic card color
     if (globalHomeBtn) globalHomeBtn.style.color = currentAccentColor;
     if (goSelectBtn) goSelectBtn.style.color = currentAccentColor;
 
@@ -108,7 +97,31 @@ function load() {
     header.textContent = "";
     counterDisplay.textContent = `${index + 1} / ${shlokas.length}`;
     center.textContent = `Adhyay ${s.c} · Shloka ${s.v}`;
-    text.innerText = formatShloka(s.t);
+
+    // BUILD SHLOKA HTML
+    text.innerHTML = "";
+    s.charans.forEach(line => {
+        const div = document.createElement("div");
+        
+        // REFINED LOGIC: Only classify as speaker if the line ENDS with उवाच (uvaca)
+        // This prevents verse lines like 1.25 from being misclassified
+        const isSpeaker = line.trim().endsWith("उवाच");
+        div.className = isSpeaker ? "shloka-line speaker" : "shloka-line";
+        
+        // Clean up double bars and handle breaks
+        let formatted = line.replace(/।।/g, "॥");
+
+        if (isSpeaker) {
+            // Add break for standalone speaker headings
+            formatted = formatted.replace(/उवाच/g, "उवाच<br>");
+        } else {
+            // Standard verse line break after single bar |
+            formatted = formatted.replace(/।(?![॥।0-9])/g, "।<br>"); 
+        }
+            
+        div.innerHTML = formatted;
+        text.appendChild(div);
+    });
 
     center.style.display = "block";
     text.style.display = "none";
@@ -123,12 +136,15 @@ function toggleFlip() {
     if (!flipped) {
         stopTimer();
         header.textContent = center.textContent;
-        center.style.display = "none"; text.style.display = "block";
-        hintBtn.style.display = "none"; hint.style.display = "none";
+        center.style.display = "none"; 
+        text.style.display = "block";
+        hintBtn.style.display = "none"; 
+        hint.style.display = "none";
     } else {
         startTimer();
         header.textContent = "";
-        center.style.display = "block"; text.style.display = "none";
+        center.style.display = "block"; 
+        text.style.display = "none";
         hintBtn.style.display = "inline";
     }
     flipped = !flipped;
@@ -159,10 +175,18 @@ if (startBtn) {
 }
 
 if (flipBtn) flipBtn.onclick = toggleFlip;
+
 if (hintBtn) {
     hintBtn.onclick = () => {
-        hint.textContent = text.innerText.split("\n").filter(l => !l.includes("उवाच"))[0].split(" ")[0];
-        hint.style.display = "block";
+        // Skip speaker headings to find the actual verse text
+        const lines = [...text.querySelectorAll(".shloka-line")];
+        const verseLine = lines.find(l => !l.classList.contains("speaker"));
+        if (verseLine) {
+            // Get the first word from the innerHTML split by <br> tags
+            const firstLineText = verseLine.innerHTML.split("<br>")[0].trim();
+            hint.textContent = firstLineText.split(" ")[0];
+            hint.style.display = "block";
+        }
     };
 }
 
@@ -213,9 +237,7 @@ card.addEventListener("mouseup", e => {
     else if (dx > 80) prevBtn.click();
 });
 
-// LISTEN FOR THEME CHANGES (From theme.js)
 window.addEventListener('themeChanged', () => {
-    // If we are NOT in active practice mode, clear button colors to use CSS defaults
     if (document.getElementById("practice-screen").style.display !== "block") {
         if (globalHomeBtn) globalHomeBtn.style.color = "";
         if (goSelectBtn) goSelectBtn.style.color = "";
