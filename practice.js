@@ -148,7 +148,7 @@ function renderShlokaContent(s) {
     text.innerHTML = "";
     s.charans.forEach(line => {
         const div = document.createElement("div");
-        const isSpeaker = line.trim().endsWith("उवाच");
+        const isSpeaker = line.trim().endsWith("उवाच") || line.includes("श्रीभगवानुवाच");
         div.className = isSpeaker ? "shloka-line speaker" : "shloka-line";
         
         let formatted = line.replace(/।।/g, "॥");
