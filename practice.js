@@ -5,6 +5,7 @@
 
 let allShlokas = [], shlokas = [];
 let index = 0, flipped = false;
+let sessionShloka = null; // Add this to track neighboring shlokas
 let timerInterval, startTime;
 let currentAccentColor = "";
 const borderColors = ["#d32f2f", "#6398BB", "#F54927", "#ad1457", "#6a1b9a", "#00695c"];
@@ -85,9 +86,97 @@ function startTimer() {
 
 function stopTimer() { clearInterval(timerInterval); }
 
+
+function navigateAdjacent(step) {
+    const target = allShlokas.find(v => v.c === sessionShloka.c && v.v === (sessionShloka.v + step));
+    if (target) {
+        sessionShloka = target; // Update temporary view
+        renderShlokaContent(sessionShloka); // Update UI
+        
+        // Ensure we are on the text side
+        if (!flipped) toggleFlip(); 
+        else {
+            // If already flipped, make sure text is visible (since renderShlokaContent resets to center display)
+            center.style.display = "none";
+            text.style.display = "block";
+            hintBtn.style.display = "none";
+        }
+        updateShlokaNavVisibility();
+    }
+}
+
+
+function load(keepColor = false) {
+    flipped = false;
+    
+    if (!keepColor) {
+        currentAccentColor = borderColors[colorIndex++ % borderColors.length];
+        card.style.borderColor = currentAccentColor;
+        svgs.forEach(s => s.style.fill = currentAccentColor);
+    }
+
+    hintBtn.style.color = currentAccentColor;
+
+    // Set the session shloka to the current item in the shuffled list
+    sessionShloka = shlokas[index]; 
+    renderShlokaContent(sessionShloka); // We'll move the rendering to a helper
+
+    prevBtn.style.visibility = (index === 0) ? "hidden" : "visible";
+    startTimer();
+    updateShlokaNavVisibility();
+}
+
+function renderShlokaContent(s) {
+    const shlokaInfo = `Adhyay ${s.c} · Shloka ${s.v}`;
+    center.textContent = shlokaInfo;
+    
+    if (flipped) {
+        header.textContent = shlokaInfo;
+    } else {
+        header.textContent = "";
+    }
+
+    // NEW: Timer Visibility Logic
+    // Hide timer if we are viewing a neighboring shloka
+    const isOriginalQuestion = (s.c === shlokas[index].c && s.v === shlokas[index].v);
+    if (timerBox) {
+        timerBox.style.visibility = isOriginalQuestion ? "visible" : "hidden";
+    }
+
+    counterDisplay.textContent = `${index + 1} / ${shlokas.length}`;
+
+    text.innerHTML = "";
+    s.charans.forEach(line => {
+        const div = document.createElement("div");
+        const isSpeaker = line.trim().endsWith("उवाच");
+        div.className = isSpeaker ? "shloka-line speaker" : "shloka-line";
+        
+        let formatted = line.replace(/।।/g, "॥");
+        if (isSpeaker) {
+            formatted = formatted.replace(/उवाच/g, "उवाच<br>");
+        } else {
+            formatted = formatted.replace(/।(?![॥।0-9])/g, "।<br>"); 
+        }
+        div.innerHTML = formatted;
+        text.appendChild(div);
+    });
+
+    if (!flipped) {
+        center.style.display = "block";
+        text.style.display = "none";
+        hintBtn.style.display = "inline";
+    } else {
+        center.style.display = "none";
+        text.style.display = "block";
+        hintBtn.style.display = "none";
+    }
+    
+    hint.style.display = "none";
+    hintBtn.classList.remove("active");
+}
+
 function updateShlokaNavVisibility() {
-    const s = shlokas[index];
-    // Only visible if on Answer page (flipped)
+    const s = sessionShloka; // Check against the shloka currently being viewed
     if (!flipped || !s) {
         prevShlokaBtn.style.visibility = "hidden";
         nextShlokaBtn.style.visibility = "hidden";
@@ -102,88 +191,18 @@ function updateShlokaNavVisibility() {
     nextShlokaBtn.style.visibility = (s.v < maxV) ? "visible" : "hidden";
 }
 
-function navigateAdjacent(step) {
-    const current = shlokas[index];
-    const target = allShlokas.find(v => v.c === current.c && v.v === (current.v + step));
-    if (target) {
-        shlokas[index] = target;
-        // Pass 'true' to keep the theme/border color constant
-        load(true); 
-        if (!flipped) toggleFlip();
-    }
-}
-
-
-function load(keepColor = false) {
-    flipped = false;
-    
-    // Only the CARD BORDER and the main NEXT/PREV buttons at the bottom 
-    // will change colors. Everything else stays constant.
-    if (!keepColor) {
-        currentAccentColor = borderColors[colorIndex++ % borderColors.length];
-        card.style.borderColor = currentAccentColor;
-        
-        // These are the large bottom-row navigation icons
-        svgs.forEach(s => s.style.fill = currentAccentColor);
-    }
-
-    // Hint button keeps the dynamic accent to show it's "part of the challenge"
-    hintBtn.style.color = currentAccentColor;
-
-    const s = shlokas[index];
-    header.textContent = "";
-    counterDisplay.textContent = `${index + 1} / ${shlokas.length}`;
-    center.textContent = `Adhyay ${s.c} · Shloka ${s.v}`;
-
-    // BUILD SHLOKA HTML
-    text.innerHTML = "";
-    s.charans.forEach(line => {
-        const div = document.createElement("div");
-        const isSpeaker = line.trim().endsWith("उवाच");
-        div.className = isSpeaker ? "shloka-line speaker" : "shloka-line";
-        
-        // Removed: div.style.color = currentAccentColor; 
-        // (Now handled by .speaker class in CSS using var(--accent))
-
-        let formatted = line.replace(/।।/g, "॥");
-        if (isSpeaker) {
-            formatted = formatted.replace(/उवाच/g, "उवाच<br>");
-        } else {
-            formatted = formatted.replace(/।(?![॥।0-9])/g, "।<br>"); 
-        }
-        div.innerHTML = formatted;
-        text.appendChild(div);
-    });
-
-    // UI State Resets
-    center.style.display = "block";
-    text.style.display = "none";
-    hint.style.display = "none";
-    hintBtn.style.display = "inline";
-    hintBtn.classList.remove("active");
-
-    prevBtn.style.visibility = (index === 0) ? "hidden" : "visible";
-
-    startTimer();
-    updateShlokaNavVisibility();
-}
-
 function toggleFlip() {
     if (!flipped) {
         stopTimer();
-        header.textContent = center.textContent;
-        center.style.display = "none"; 
-        text.style.display = "block";
-        hintBtn.style.display = "none"; 
-        hint.style.display = "none";
+        flipped = true;
     } else {
         startTimer();
-        header.textContent = "";
-        center.style.display = "block"; 
-        text.style.display = "none";
-        hintBtn.style.display = "inline";
+        flipped = false;
+        // Reset to original question (Timer will become visible in renderShlokaContent)
+        sessionShloka = shlokas[index]; 
     }
-    flipped = !flipped;
+    
+    renderShlokaContent(sessionShloka);
     updateShlokaNavVisibility();
 }
 
