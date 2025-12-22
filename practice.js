@@ -24,6 +24,8 @@ const hintBtn = document.getElementById("hint-btn");
 const flipBtn = document.getElementById("flip");
 const nextBtn = document.getElementById("next");
 const prevBtn = document.getElementById("prev");
+const prevShlokaBtn = document.getElementById("prev-shloka");
+const nextShlokaBtn = document.getElementById("next-shloka");
 const timerDisplay = document.getElementById("timer");
 const timerBox = document.getElementById("timer-box");
 const timerSvg = timerBox ? timerBox.querySelector('svg') : null;
@@ -83,15 +85,50 @@ function startTimer() {
 
 function stopTimer() { clearInterval(timerInterval); }
 
-function load() {
-    flipped = false;
-    currentAccentColor = borderColors[colorIndex++ % borderColors.length];
-    card.style.borderColor = currentAccentColor;
-    svgs.forEach(s => s.style.fill = currentAccentColor);
-    hintBtn.style.color = currentAccentColor;
+function updateShlokaNavVisibility() {
+    const s = shlokas[index];
+    // Only visible if on Answer page (flipped)
+    if (!flipped || !s) {
+        prevShlokaBtn.style.visibility = "hidden";
+        nextShlokaBtn.style.visibility = "hidden";
+        return;
+    }
 
-    if (globalHomeBtn) globalHomeBtn.style.color = currentAccentColor;
-    if (goSelectBtn) goSelectBtn.style.color = currentAccentColor;
+    const chapterVerses = allShlokas.filter(v => v.c === s.c);
+    const minV = Math.min(...chapterVerses.map(v => v.v));
+    const maxV = Math.max(...chapterVerses.map(v => v.v));
+
+    prevShlokaBtn.style.visibility = (s.v > minV) ? "visible" : "hidden";
+    nextShlokaBtn.style.visibility = (s.v < maxV) ? "visible" : "hidden";
+}
+
+function navigateAdjacent(step) {
+    const current = shlokas[index];
+    const target = allShlokas.find(v => v.c === current.c && v.v === (current.v + step));
+    if (target) {
+        shlokas[index] = target;
+        // Pass 'true' to keep the theme/border color constant
+        load(true); 
+        if (!flipped) toggleFlip();
+    }
+}
+
+
+function load(keepColor = false) {
+    flipped = false;
+    
+    // Only the CARD BORDER and the main NEXT/PREV buttons at the bottom 
+    // will change colors. Everything else stays constant.
+    if (!keepColor) {
+        currentAccentColor = borderColors[colorIndex++ % borderColors.length];
+        card.style.borderColor = currentAccentColor;
+        
+        // These are the large bottom-row navigation icons
+        svgs.forEach(s => s.style.fill = currentAccentColor);
+    }
+
+    // Hint button keeps the dynamic accent to show it's "part of the challenge"
+    hintBtn.style.color = currentAccentColor;
 
     const s = shlokas[index];
     header.textContent = "";
@@ -102,34 +139,33 @@ function load() {
     text.innerHTML = "";
     s.charans.forEach(line => {
         const div = document.createElement("div");
-        
-        // REFINED LOGIC: Only classify as speaker if the line ENDS with उवाच (uvaca)
-        // This prevents verse lines like 1.25 from being misclassified
         const isSpeaker = line.trim().endsWith("उवाच");
         div.className = isSpeaker ? "shloka-line speaker" : "shloka-line";
         
-        // Clean up double bars and handle breaks
-        let formatted = line.replace(/।।/g, "॥");
+        // Removed: div.style.color = currentAccentColor; 
+        // (Now handled by .speaker class in CSS using var(--accent))
 
+        let formatted = line.replace(/।।/g, "॥");
         if (isSpeaker) {
-            // Add break for standalone speaker headings
             formatted = formatted.replace(/उवाच/g, "उवाच<br>");
         } else {
-            // Standard verse line break after single bar |
             formatted = formatted.replace(/।(?![॥।0-9])/g, "।<br>"); 
         }
-            
         div.innerHTML = formatted;
         text.appendChild(div);
     });
 
+    // UI State Resets
     center.style.display = "block";
     text.style.display = "none";
     hint.style.display = "none";
     hintBtn.style.display = "inline";
+    hintBtn.classList.remove("active");
+
     prevBtn.style.visibility = (index === 0) ? "hidden" : "visible";
 
     startTimer();
+    updateShlokaNavVisibility();
 }
 
 function toggleFlip() {
@@ -148,6 +184,7 @@ function toggleFlip() {
         hintBtn.style.display = "inline";
     }
     flipped = !flipped;
+    updateShlokaNavVisibility();
 }
 
 // Navigation Functions
@@ -178,14 +215,20 @@ if (flipBtn) flipBtn.onclick = toggleFlip;
 
 if (hintBtn) {
     hintBtn.onclick = () => {
-        // Skip speaker headings to find the actual verse text
         const lines = [...text.querySelectorAll(".shloka-line")];
         const verseLine = lines.find(l => !l.classList.contains("speaker"));
         if (verseLine) {
-            // Get the first word from the innerHTML split by <br> tags
             const firstLineText = verseLine.innerHTML.split("<br>")[0].trim();
             hint.textContent = firstLineText.split(" ")[0];
+            
             hint.style.display = "block";
+            
+            // CHANGE: Match the main question text color instead of accent color
+            hint.style.color = "var(--text)"; 
+            
+            // Keep the box border matching the card theme
+            hint.style.borderColor = currentAccentColor; 
+            hintBtn.classList.add("active");
         }
     };
 }
@@ -245,3 +288,6 @@ window.addEventListener('themeChanged', () => {
 });
 
 updateStartState();
+
+if (prevShlokaBtn) prevShlokaBtn.onclick = (e) => { e.stopPropagation(); navigateAdjacent(-1); };
+if (nextShlokaBtn) nextShlokaBtn.onclick = (e) => { e.stopPropagation(); navigateAdjacent(1); };
