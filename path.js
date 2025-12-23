@@ -35,30 +35,40 @@ for (let i = 1; i <= 18; i++) {
     if (grid) grid.appendChild(d);
 }
 
-// 2. DATA FETCHING
+
+    // 2. DATA FETCHING
 fetch("verse.json")
     .then(r => r.json())
     .then(d => {
         allShlokas = d.map(v => ({ 
             chapter: v.chapter, 
             verse: v.verse, 
-            charans: v.charans 
+            charans: v.charans,
+            type: v.type || "shloka" // <--- ADD THIS: Default to "shloka" if type is missing
         }));
     });
-
 // 3. CORE RENDERING FUNCTION
 function loadShloka() {
     const s = currentAdhyayShlokas[index];
     
-    // Update Header & Counter
-    headerText.textContent = `Adhyay ${s.chapter} · Shloka ${s.verse}`;
+    // Update Header based on type
+    if (s.type === "pushpika") {
+        headerText.textContent = `Adhyay ${s.chapter} Pushpika`;
+    } else {
+        headerText.textContent = `Adhyay ${s.chapter} · Shloka ${s.verse}`;
+    }
+    
     counterDisplay.textContent = `${index + 1} / ${currentAdhyayShlokas.length}`;
     
     // Build Shloka Text
     textContainer.innerHTML = "";
-    s.charans.forEach(line => {
+    s.charans.forEach((line, i) => {
         const div = document.createElement("div");
-        const isSpeaker = line.trim().endsWith("उवाच") || line.includes("श्रीभगवानुवाच");
+        
+        // Only apply speaker logic if it's NOT a pushpika
+        const isSpeaker = s.type !== "pushpika" && 
+                         (line.trim().endsWith("उवाच") || line.includes("श्रीभगवानुवाच"));
+        
         div.className = isSpeaker ? "shloka-line speaker" : "shloka-line";
         
         let formatted = line.replace(/।।/g, "॥");
@@ -69,13 +79,24 @@ function loadShloka() {
         }
         div.innerHTML = formatted;
         textContainer.appendChild(div);
+
+        if (s.type === "pushpika" && i === s.charans.length - 1) {
+        const namasteDiv = document.createElement("div");
+        namasteDiv.textContent = "🙏";
+        namasteDiv.style.textAlign = "center";
+        namasteDiv.style.marginTop = "10px";   // Space above emoji
+        namasteDiv.style.marginBottom = "10px"; // Space below emoji
+        namasteDiv.style.fontSize = "2.5rem";  // INCREASED SIZE
+        namasteDiv.style.lineHeight = "1";     // Prevents extra vertical padding
+        namasteDiv.style.width = "100%";
+        textContainer.appendChild(namasteDiv);
+    }
     });
 
     // Handle Button Visibility & Color
     prevBtn.style.visibility = (index === 0) ? "hidden" : "visible";
-    nextBtn.style.visibility = "visible"; // Ensure right arrow is always visible
+    nextBtn.style.visibility = "visible"; 
 
-    // Apply color to the SVGs explicitly
     [prevBtn, nextBtn].forEach(btn => {
         const svg = btn.querySelector('svg');
         if (svg) svg.style.fill = accentColor;
