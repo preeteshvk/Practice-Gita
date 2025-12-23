@@ -1,5 +1,5 @@
 /**
- * practice.js
+ * bodha.js
  * Handles Shlokank practice logic: shuffling, timers, hints, and navigation.
  */
 
@@ -68,9 +68,15 @@ function updateStartState() {
     if (startBtn) startBtn.disabled = document.querySelectorAll(".adhyay-card.selected").length === 0;
 }
 
-// 3. CORE PRACTICE LOGIC
+// Section 3: Fetching
 fetch("verse.json").then(r => r.json()).then(d => {
-    allShlokas = d.map(v => ({ c: v.chapter, v: v.verse, t: v.full_text, charans: v.charans }));
+    allShlokas = d.map(v => ({ 
+        c: v.chapter, 
+        v: v.verse, 
+        t: v.full_text, 
+        charans: v.charans,
+        type: v.type || "shloka" // Capture the type
+    }));
 });
 
 function startTimer() {
@@ -88,15 +94,24 @@ function stopTimer() { clearInterval(timerInterval); }
 
 
 function navigateAdjacent(step) {
-    const target = allShlokas.find(v => v.c === sessionShloka.c && v.v === (sessionShloka.v + step));
+    // 1. Get all verses for the current chapter and sort them by verse number
+    const chapterVerses = allShlokas
+        .filter(v => v.c === sessionShloka.c)
+        .sort((a, b) => a.v - b.v);
+    
+    // 2. Find where we are currently in that sorted list
+    const currentIndex = chapterVerses.findIndex(v => v.v === sessionShloka.v);
+    
+    // 3. Pick the neighbor based on index
+    const target = chapterVerses[currentIndex + step];
+
     if (target) {
-        sessionShloka = target; // Update temporary view
-        renderShlokaContent(sessionShloka); // Update UI
+        sessionShloka = target; 
+        renderShlokaContent(sessionShloka); 
         
-        // Ensure we are on the text side
-        if (!flipped) toggleFlip(); 
-        else {
-            // If already flipped, make sure text is visible (since renderShlokaContent resets to center display)
+        if (!flipped) {
+            toggleFlip(); 
+        } else {
             center.style.display = "none";
             text.style.display = "block";
             hintBtn.style.display = "none";
@@ -127,35 +142,40 @@ function load(keepColor = false) {
 }
 
 function renderShlokaContent(s) {
-    // 1. Logic to extract Charans, ignoring "Uvacha" lines
-    const actualVerseLines = s.charans.filter(line => 
-        !line.trim().endsWith("उवाच") && !line.includes("श्रीभगवानुवाच")
-    );
-    
-    // Split the first verse line by comma to get the 1st and 2nd charans
-    const firstLineParts = actualVerseLines[0].split(',');
-    const firstCharan = firstLineParts[0].trim();
-    const secondCharan = firstLineParts[1] ? firstLineParts[1].replace(/[॥।\d.]/g, "").trim() : "";
+    const isPushpika = s.type === "pushpika" || s.v === 999;
 
-    // 2. Set the Question (1st Charan)
-    center.innerHTML = `<div style="font-size: 1.2em; font-weight: 500;">${firstCharan}...</div>`;
-    
-    // 3. Set Header and Counter
-    header.textContent = flipped ? `Adhyay ${s.c} · Shloka ${s.v}` : "Identify the Verse";
-    counterDisplay.textContent = `${index + 1} / ${shlokas.length}`;
+    if (isPushpika) {
+        // Pushpika specific display
+        center.innerHTML = `<div style="font-size: 1.1em; font-style: italic; opacity: 0.8;">Chapter Conclusion...</div>`;
+        header.textContent = flipped ? `Adhyay ${s.c} Pushpika` : "Pushpika";
+    } else {
+        // Normal Shloka Logic
+        const actualVerseLines = s.charans.filter(line => 
+            !line.trim().endsWith("उवाच") && !line.includes("श्रीभगवानुवाच")
+        );
+        
+        const firstLineParts = actualVerseLines[0].split(',');
+        const firstCharan = firstLineParts[0].trim();
+        const secondCharan = firstLineParts[1] ? firstLineParts[1].replace(/[॥।\d.]/g, "").trim() : "";
 
-    // --- ADDED: TIMER VISIBILITY LOGIC ---
-    // Hide timer if we are viewing a neighboring shloka
-    const isOriginalQuestion = (s.c === shlokas[index].c && s.v === shlokas[index].v);
-    if (timerBox) {
-        timerBox.style.visibility = isOriginalQuestion ? "visible" : "hidden";
+        center.innerHTML = `<div style="font-size: 1.2em; font-weight: 500;">${firstCharan}...</div>`;
+        header.textContent = flipped ? `Adhyay ${s.c} · Shloka ${s.v}` : "Identify the Verse";
+        hint.textContent = secondCharan;
     }
 
-    // 4. Render the Full Shloka (The Answer)
+    counterDisplay.textContent = `${index + 1} / ${shlokas.length}`;
+
+    // Timer logic
+    const isOriginalQuestion = (s.c === shlokas[index].c && s.v === shlokas[index].v);
+    if (timerBox) {
+        timerBox.style.visibility = (isOriginalQuestion && !isPushpika) ? "visible" : "hidden";
+    }
+
+    // Render Full Text
     text.innerHTML = "";
-    s.charans.forEach(line => {
+    s.charans.forEach((line, i) => {
         const div = document.createElement("div");
-        const isSpeaker = line.trim().endsWith("उवाच") || line.includes("श्रीभगवानुवाच");
+        const isSpeaker = !isPushpika && (line.trim().endsWith("उवाच") || line.includes("श्रीभगवानुवाच"));
         div.className = isSpeaker ? "shloka-line speaker" : "shloka-line";
         
         let formatted = line.replace(/।।/g, "॥");
@@ -166,22 +186,29 @@ function renderShlokaContent(s) {
         }
         div.innerHTML = formatted;
         text.appendChild(div);
+
+        // Add the Large Emoji for Pushpika
+        if (isPushpika && i === s.charans.length - 1) {
+            const namasteDiv = document.createElement("div");
+            namasteDiv.textContent = "🙏";
+            namasteDiv.style.textAlign = "center";
+            namasteDiv.style.marginTop = "10px";
+            namasteDiv.style.fontSize = "2.5rem"; // Large size
+            namasteDiv.style.width = "100%";
+            text.appendChild(namasteDiv);
+        }
     });
 
-    // 5. Update Hint Content (2nd Charan)
-    hint.textContent = secondCharan;
-
-    // Visibility toggles
+    // Final visibility checks
     if (!flipped) {
         center.style.display = "block";
         text.style.display = "none";
-        hintBtn.style.display = "inline";
+        hintBtn.style.display = isPushpika ? "none" : "inline"; // Hide hint for pushpika
     } else {
         center.style.display = "none";
         text.style.display = "block";
         hintBtn.style.display = "none";
     }
-    
     hint.style.display = "none";
     hintBtn.classList.remove("active");
 }
@@ -197,19 +224,25 @@ if (hintBtn) {
 }
 
 function updateShlokaNavVisibility() {
-    const s = sessionShloka; // Check against the shloka currently being viewed
+    const s = sessionShloka; 
     if (!flipped || !s) {
         prevShlokaBtn.style.visibility = "hidden";
         nextShlokaBtn.style.visibility = "hidden";
         return;
     }
 
-    const chapterVerses = allShlokas.filter(v => v.c === s.c);
-    const minV = Math.min(...chapterVerses.map(v => v.v));
-    const maxV = Math.max(...chapterVerses.map(v => v.v));
+    // Sort the verses to identify the true beginning and end
+    const chapterVerses = allShlokas
+        .filter(v => v.c === s.c)
+        .sort((a, b) => a.v - b.v);
+    
+    const currentIndex = chapterVerses.findIndex(v => v.v === s.v);
 
-    prevShlokaBtn.style.visibility = (s.v > minV) ? "visible" : "hidden";
-    nextShlokaBtn.style.visibility = (s.v < maxV) ? "visible" : "hidden";
+    // Show Prev if we aren't at the first shloka
+    prevShlokaBtn.style.visibility = (currentIndex > 0) ? "visible" : "hidden";
+    
+    // Show Next if we aren't at the last item (the Pushpika)
+    nextShlokaBtn.style.visibility = (currentIndex < chapterVerses.length - 1) ? "visible" : "hidden";
 }
 
 function toggleFlip() {
@@ -241,7 +274,7 @@ function goSelectScreen() {
 if (startBtn) {
     startBtn.onclick = () => {
         const sel = [...document.querySelectorAll(".adhyay-card.selected")].map(e => +e.textContent);
-        shlokas = allShlokas.filter(s => sel.includes(s.c));
+        shlokas = allShlokas.filter(s => sel.includes(s.c) && s.type !== "pushpika");
         if (shlokas.length === 0) return;
         shuffle(shlokas);
         index = 0;
