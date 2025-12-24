@@ -459,3 +459,23 @@ body {
     font-style: italic;
     display: none; /* Hidden by default */
 }
+
+/* Star Icon Styling */
+.star-btn {
+    color: var(--accent);
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 5px;
+}
+.star-btn.active {
+    content: "★"; /* We will handle the character change via JS */
+}
+
+/* Ensure header grid handles 3 columns correctly */
+.card-header {
+    display: grid;
+    grid-template-columns: 40px 1fr 60px; /* Adjusted for star button */
+    align-items: center;
+}
