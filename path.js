@@ -114,7 +114,9 @@ function loadShloka() {
     textContainer.innerHTML = "";
 
     headerText.textContent = (s.type === "pushpika") ? 
-        `Adhyay ${s.chapter} Pushpika` : `Adhyay ${s.chapter} · Shloka ${s.verse}`;
+        //`Adhyay ${s.chapter} Pushpika` : `Adhyay ${s.chapter} · Shloka ${s.verse}`;
+        `Pushpika` : ` ${s.chapter} · ${s.verse}`;
+
 
     // Counter Display Logic
     if (isStarredMode) {
