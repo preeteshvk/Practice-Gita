@@ -81,7 +81,7 @@ function showToast(msg) {
         toast = document.createElement("div");
         toast.id = "toast";
         toast.style.cssText = `
-            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
             background: var(--accent); color: white; padding: 10px 20px;
             border-radius: 50px; z-index: 2000; font-size: 14px;
             transition: opacity 0.3s; pointer-events: none; opacity: 0;
@@ -357,3 +357,4 @@ if (prevShlokaBtn) prevShlokaBtn.onclick = (e) => { e.stopPropagation(); navigat
 if (nextShlokaBtn) nextShlokaBtn.onclick = (e) => { e.stopPropagation(); navigateAdjacent(1); };
 
 updateStartState();
+
