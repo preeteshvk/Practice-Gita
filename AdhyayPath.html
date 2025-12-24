@@ -32,11 +32,23 @@
 
     <div class="practice-screen" id="reading-screen">
         <div class="card" id="card" style="height: 70vh;"> 
-            <div class="card-header">
-                <div id="star-btn" class="star-btn" style="cursor: pointer; font-size: 20px; text-align: left;">☆</div>
-                <div id="header-text" class="header-text" style="color: var(--accent);"></div>
-                <div id="counter" class="counter-text"></div>
-            </div>
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;">
+    
+    <div id="counter" class="counter-text" style="font-weight: 600; font-size: 1rem; color: var(--text); opacity: 0.8;">
+        </div>
+
+    <div id="header-text" class="header-text" style="position: absolute; left: 50%; transform: translateX(-50%);"></div>
+
+    <div style="display: flex; align-items: center; justify-content: flex-end; min-width: 60px; gap: 12px; padding-right: 5px;">
+                    <button id="star-btn" style="background:none; border:none; font-size: 1.6rem; cursor:pointer; color: var(--accent); padding: 0; margin: 0; line-height: 1;">☆</button>
+                    
+                    <button class="icon" id="flip" style="background:none; border:none; padding: 0; margin: 0; display: flex; align-items: center;">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <path d="M12 6V3L8 7l4 4V8c2.76 0 5 2.24 5 5 0 .34-.03.67-.1 1h2.02c.05-.33.08-.66.08-1 0-3.87-3.13-7-7-7zm-5 5c0-.34.03-.67.1-1H5.08c-.05.33-.08.66-.08 1 0 3.87 3.13 7 7 7v3l4-4-4-4v3c-2.76 0-5-2.24-5-5z"/>
+                        </svg>
+                    </button>
+                </div>
+</div>
             <div class="card-body">
                 <div id="shloka-text" class="shloka-text" style="display: block;"></div>
                 <div id="translation-text" class="translation-text" style="display: none;"></div>
