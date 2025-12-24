@@ -2,10 +2,12 @@
  * path.js
  * Handles dual-mode logic: Linear Adhyay-Path and Starred List Navigation.
  */
+
 if (new URLSearchParams(window.location.search).get("mode") === "starred") {
     const selScreen = document.getElementById("selection-screen");
     if (selScreen) selScreen.style.display = "none";
 }
+
 let allShlokas = [], currentAdhyayShlokas = [];
 let index = 0;
 let flipped = false; 
@@ -25,21 +27,41 @@ const card = document.getElementById("card");
 
 // Navigation Elements
 const starBtn = document.getElementById("star-btn");
-const prevBtn = document.getElementById("prev-btn"); // Inner
-const nextBtn = document.getElementById("next-btn"); // Inner
+const flipBtn = document.getElementById("flip"); 
+const prevBtn = document.getElementById("prev-btn"); 
+const nextBtn = document.getElementById("next-btn"); 
 
-const nextContainer = document.querySelector(".next-container"); // Outer Container
-const globalPrev = document.getElementById("prev"); // Outer Button
-const globalNext = document.getElementById("next"); // Outer Button
+const nextContainer = document.querySelector(".next-container"); 
+const globalPrev = document.getElementById("prev"); 
+const globalNext = document.getElementById("next"); 
 const adhyayHeaderBtn = document.getElementById("go-select");
 
-// --- 1. STAR LOGIC ---
+// --- 1. STAR & TOAST LOGIC ---
 
 function getStarred() {
     return JSON.parse(localStorage.getItem("gita_stars") || "[]");
 }
 
-function toggleStar() {
+function showToast(msg) {
+    let toast = document.getElementById("toast");
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "toast";
+        toast.style.cssText = `
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: white; padding: 10px 20px;
+            border-radius: 50px; z-index: 2000; font-size: 14px;
+            transition: opacity 0.3s; pointer-events: none; opacity: 0;
+        `;
+        document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = "1";
+    setTimeout(() => { toast.style.opacity = "0"; }, 2000);
+}
+
+function toggleStar(e) {
+    if (e) e.stopPropagation();
     const s = currentAdhyayShlokas[index];
     if (!s) return;
     
@@ -49,7 +71,7 @@ function toggleStar() {
     
     if (existsIndex > -1) {
         stars.splice(existsIndex, 1);
-        // Instant removal logic for Starred Mode
+        showToast("Removed from Starred List");
         if (isStarredMode) {
             currentAdhyayShlokas.splice(index, 1);
             if (currentAdhyayShlokas.length === 0) {
@@ -57,13 +79,14 @@ function toggleStar() {
                 window.location.href = "index.html";
                 return;
             }
-            // Adjust index so it doesn't go out of bounds after removal
             if (index >= currentAdhyayShlokas.length) index = currentAdhyayShlokas.length - 1;
             loadShloka();
+            return;
         }
     } else {
         stars.push({ id: starId, chapter: s.chapter, verse: s.verse });
         stars.sort((a, b) => (a.chapter - b.chapter) || (a.verse - b.verse));
+        showToast("Added to Starred List");
     }
     
     localStorage.setItem("gita_stars", JSON.stringify(stars));
@@ -85,22 +108,18 @@ function loadShloka() {
     const s = currentAdhyayShlokas[index];
     if (!s) return;
 
+    // Reset flipped state
     flipped = false; 
     updateStarIcon();
+    textContainer.innerHTML = "";
 
-    // 1. Handle the Header Text
-    if (s.type === "pushpika") {
-        headerText.textContent = `Adhyay ${s.chapter} Pushpika`;
-    } else {
-        headerText.textContent = `Adhyay ${s.chapter} · Shloka ${s.verse}`;
-    }
+    headerText.textContent = (s.type === "pushpika") ? 
+        `Adhyay ${s.chapter} Pushpika` : `Adhyay ${s.chapter} · Shloka ${s.verse}`;
 
-    // 2. Handle the Counter Display
+    // Counter Display Logic
     if (isStarredMode) {
-        // In Starred Mode, ALWAYS show the count (e.g., 1 / 1), even for pushpikas
         counterDisplay.textContent = `${index + 1} / ${currentAdhyayShlokas.length}`;
     } else {
-        // In normal Adhyay Path, hide counter for pushpika, show for shlokas
         if (s.type === "pushpika") {
             counterDisplay.textContent = ""; 
         } else {
@@ -109,9 +128,11 @@ function loadShloka() {
         }
     }
     
-    textContainer.innerHTML = "";
+    // Front Side: Shloka Container
     const shlokaDiv = document.createElement("div");
     shlokaDiv.id = "view-shloka";
+    // Inline style to ensure it starts visible
+    shlokaDiv.style.display = "block"; 
     
     s.charans.forEach((line, i) => {
         const div = document.createElement("div");
@@ -125,38 +146,31 @@ function loadShloka() {
         if (s.type === "pushpika" && i === s.charans.length - 1) {
             const namasteDiv = document.createElement("div");
             namasteDiv.textContent = "🙏";
-            namasteDiv.style.textAlign = "center";
-            namasteDiv.style.marginTop = "15px";
-            namasteDiv.style.fontSize = "2.5rem";
+            namasteDiv.style.cssText = "text-align:center; margin-top:15px; font-size:2.5rem;";
             shlokaDiv.appendChild(namasteDiv);
         }
     });
 
+    // Back Side: Translation Container
     const transDiv = document.createElement("div");
     transDiv.id = "view-translation";
-    transDiv.style.display = "none"; 
+    // INLINE CSS is more reliable for the initial hide than setting it later
+    transDiv.style.cssText = "display: none; font-style: italic; text-align: center;";
     transDiv.className = "shloka-line";
-    transDiv.style.fontStyle = "italic";
-    transDiv.style.textAlign = "center";
     transDiv.innerHTML = s.translation_hindi || "अनुवाद उपलब्ध नहीं है।";
 
     textContainer.appendChild(shlokaDiv);
     textContainer.appendChild(transDiv);
 
-    // MODE-BASED UI LOGIC
+    // Nav Button States
     if (isStarredMode) {
-        // Starred Mode: Inner buttons HIDDEN
         prevBtn.style.visibility = "hidden";
         nextBtn.style.visibility = "hidden";
         if (nextContainer) nextContainer.style.display = "flex";
         if (adhyayHeaderBtn) adhyayHeaderBtn.style.display = "none";
-
-        // Outer Button Boundaries
         if (globalPrev) globalPrev.style.visibility = (index === 0) ? "hidden" : "visible";
         if (globalNext) globalNext.style.visibility = (index === currentAdhyayShlokas.length - 1) ? "hidden" : "visible";
-
     } else {
-        // Adhyay Mode: Inner buttons VISIBLE, Outer buttons HIDDEN
         prevBtn.style.visibility = (index === 0) ? "hidden" : "visible";
         nextBtn.style.visibility = "visible";
         if (nextContainer) nextContainer.style.display = "none";
@@ -167,6 +181,17 @@ function loadShloka() {
 }
 
 // --- 3. NAVIGATION ---
+
+function toggleFlip(e) {
+    if (e) e.stopPropagation();
+    const sView = document.getElementById("view-shloka");
+    const tView = document.getElementById("view-translation");
+    if (!sView || !tView) return;
+    
+    flipped = !flipped;
+    sView.style.display = flipped ? "none" : "block";
+    tView.style.display = flipped ? "block" : "none";
+}
 
 function goNext() {
     if (index < currentAdhyayShlokas.length - 1) {
@@ -182,15 +207,6 @@ function goPrev() {
         index--;
         loadShloka();
     }
-}
-
-function toggleFlip() {
-    const sView = document.getElementById("view-shloka");
-    const tView = document.getElementById("view-translation");
-    if (!sView || !tView) return;
-    flipped = !flipped;
-    sView.style.display = flipped ? "none" : "block";
-    tView.style.display = flipped ? "block" : "none";
 }
 
 function showCompletion() {
@@ -217,17 +233,13 @@ fetch("verse.json")
             isStarredMode = true;
             const stars = getStarred();
             if (stars.length > 0) {
-                // Filter: Only include shlokas currently in the star list
                 currentAdhyayShlokas = allShlokas.filter(s => 
                     stars.some(st => st.chapter === s.chapter && st.verse === s.verse)
                 );
-                
-                // Final safety check: if filter resulted in 0 shlokas, go home
                 if (currentAdhyayShlokas.length === 0) {
                     window.location.href = "index.html";
                     return;
                 }
-
                 index = 0;
                 selectionScreen.style.display = "none";
                 readingScreen.style.display = "block";
@@ -238,7 +250,6 @@ fetch("verse.json")
         }
     });
 
-// Adhyay Selection Grid
 for (let i = 1; i <= 18; i++) {
     const d = document.createElement("div");
     d.textContent = i;
@@ -266,11 +277,11 @@ if (startBtn) {
     };
 }
 
-starBtn.onclick = (e) => { e.stopPropagation(); toggleStar(); };
+starBtn.onclick = toggleStar;
+if (flipBtn) flipBtn.onclick = toggleFlip;
 nextBtn.onclick = (e) => { e.stopPropagation(); goNext(); };
 prevBtn.onclick = (e) => { e.stopPropagation(); goPrev(); };
 
-// Outer Navigation
 if (globalNext) globalNext.onclick = (e) => { e.stopPropagation(); goNext(); };
 if (globalPrev) globalPrev.onclick = (e) => { e.stopPropagation(); goPrev(); };
 
