@@ -450,3 +450,12 @@ body {
     margin: 15px auto;
 }
 
+.translation-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text);
+    text-align: center;
+    padding: 15px;
+    font-style: italic;
+    display: none; /* Hidden by default */
+}
