@@ -31,12 +31,12 @@
     </div>
 
     <div class="practice-screen" id="reading-screen">
-        <div class="card" id="card" style="height: 70vh;"> <div class="card-header">
-                <div></div>
+        <div class="card" id="card" style="height: 70vh;"> 
+            <div class="card-header">
+                <div id="star-btn" class="star-btn" style="cursor: pointer; font-size: 20px; text-align: left;">☆</div>
                 <div id="header-text" class="header-text" style="color: var(--accent);"></div>
                 <div id="counter" class="counter-text"></div>
             </div>
-
             <div class="card-body">
                 <div id="shloka-text" class="shloka-text" style="display: block;"></div>
                 <div id="translation-text" class="translation-text" style="display: none;"></div>
@@ -50,6 +50,19 @@
                     <svg class="shloka-nav-svg" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
                 </button>
             </div>
+        </div>
+        <div class="next-container">
+            <button class="icon" id="prev">
+                <svg class="icon-svg" viewBox="0 0 24 24" style="transform: scaleX(-1);">
+                    <path d="M12 4l-1.41 1.41L15.17 10H4v2h11.17l-4.58 4.59L12 18l8-8z"/>
+                </svg>
+            </button>
+            
+            <button class="icon" id="next">
+                <svg class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M12 4l-1.41 1.41L15.17 10H4v2h11.17l-4.58 4.59L12 18l8-8z"/>
+                </svg>
+            </button>
         </div>
     </div>
 
