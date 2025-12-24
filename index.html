@@ -44,14 +44,40 @@
                     <p>Master shlokas through active recall and memorization.</p>
                 </div>
             </a>
+            <a href="AdhyayPath.html?mode=starred" class="menu-item" id="starred-menu-item">
+                <div class="icon-box">⭐</div>
+                <div class="text-box">
+                    <h2>Starred Shlokas</h2>
+                    <p>Revisit your bookmarked verses.</p>
+                </div>
+             </a>
         </div>
 
         <div class="footer">
             "Yoga is the journey of the self, through the self, to the self."
         </div>
     </div>
-
-    <script src="theme.js"></script>
+<script>
+    // Disable Starred Menu Item if no stars exist
+    document.addEventListener("DOMContentLoaded", () => {
+        const starredBtn = document.getElementById("starred-menu-item");
+        if (starredBtn) {
+            const stars = JSON.parse(localStorage.getItem("gita_stars") || "[]");
+            if (stars.length === 0) {
+                // Visual feedback
+                starredBtn.style.opacity = "0.6";
+                starredBtn.style.filter = "grayscale(1)";
+                // Disable clicking
+                starredBtn.style.pointerEvents = "none";
+                
+                // Optional: Update text to explain why it's disabled
+                const p = starredBtn.querySelector('p');
+                if (p) p.textContent = "No bookmarked verses yet.";
+            }
+        }
+    });
+</script>
+<script src="theme.js"></script>
 
 </body>
 </html>
