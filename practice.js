@@ -5,7 +5,7 @@
 
 let allShlokas = [], shlokas = [];
 let index = 0, flipped = false;
-let sessionShloka = null; // Add this to track neighboring shlokas
+let sessionShloka = null; 
 let timerInterval, startTime;
 let currentAccentColor = "";
 const borderColors = ["#d32f2f", "#6398BB", "#F54927", "#ad1457", "#6a1b9a", "#00695c"];
@@ -23,6 +23,7 @@ const text = document.getElementById("shloka-text");
 const hint = document.getElementById("hint");
 const hintBtn = document.getElementById("hint-btn");
 const flipBtn = document.getElementById("flip");
+const starBtn = document.getElementById("star-btn"); // Added Star Btn
 const nextBtn = document.getElementById("next");
 const prevBtn = document.getElementById("prev");
 const prevShlokaBtn = document.getElementById("prev-shloka");
@@ -34,12 +35,62 @@ const svgs = document.querySelectorAll(".icon-svg");
 const globalHomeBtn = document.getElementById("go-home");
 const goSelectBtn = document.getElementById("go-select");
 
-// 1. UTILITIES
+// 1. UTILITIES & STAR LOGIC
 function shuffle(a) {
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [a[i], a[j]] = [a[j], a[i]];
     }
+}
+
+function getStarred() {
+    return JSON.parse(localStorage.getItem("gita_stars") || "[]");
+}
+
+function updateStarIcon() {
+    if (!starBtn || !sessionShloka) return;
+    const stars = getStarred();
+    const starId = `${sessionShloka.c}.${sessionShloka.v}`;
+    starBtn.textContent = stars.some(item => item.id === starId) ? "★" : "☆";
+}
+
+function toggleStar(e) {
+    if (e) e.stopPropagation();
+    if (!sessionShloka) return;
+
+    let stars = getStarred();
+    const starId = `${sessionShloka.c}.${sessionShloka.v}`;
+    const existsIndex = stars.findIndex(item => item.id === starId);
+
+    if (existsIndex > -1) {
+        stars.splice(existsIndex, 1);
+        showToast("Removed from Starred List");
+    } else {
+        stars.push({ id: starId, chapter: sessionShloka.c, verse: sessionShloka.v });
+        stars.sort((a, b) => (a.chapter - b.chapter) || (a.verse - b.verse));
+        showToast("Added to Starred List");
+    }
+
+    localStorage.setItem("gita_stars", JSON.stringify(stars));
+    updateStarIcon();
+}
+
+function showToast(msg) {
+    let toast = document.getElementById("toast");
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "toast";
+        toast.style.cssText = `
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: white; padding: 10px 20px;
+            border-radius: 50px; z-index: 2000; font-size: 14px;
+            transition: opacity 0.3s; pointer-events: none; opacity: 0;
+        `;
+        document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = "1";
+    setTimeout(() => { toast.style.opacity = "0"; }, 2000);
 }
 
 // 2. SELECTION SCREEN LOGIC
@@ -100,6 +151,7 @@ function navigateAdjacent(step) {
     if (target) {
         sessionShloka = target; 
         renderShlokaContent(sessionShloka); 
+        updateStarIcon(); // Update star for adjacent navigation
         
         if (!flipped) toggleFlip(); 
         else {
@@ -122,10 +174,9 @@ function load(keepColor = false) {
     }
 
     hintBtn.style.color = currentAccentColor;
-
-    // Set the session shloka to the current item in the shuffled list
     sessionShloka = shlokas[index]; 
-    renderShlokaContent(sessionShloka); // We'll move the rendering to a helper
+    renderShlokaContent(sessionShloka);
+    updateStarIcon(); // Update star for new shloka load
 
     prevBtn.style.visibility = (index === 0) ? "hidden" : "visible";
     startTimer();
@@ -133,14 +184,12 @@ function load(keepColor = false) {
 }
 
 function renderShlokaContent(s) {
-    // UPDATED: Handle Pushpika Header Title
     const isPushpika = s.type === "pushpika" || s.v === 999;
     const shlokaInfo = isPushpika ? `Adhyay ${s.c} Pushpika` : `Adhyay ${s.c} · Shloka ${s.v}`;
     
     center.textContent = shlokaInfo;
     header.textContent = flipped ? shlokaInfo : "";
 
-    // Timer Visibility Logic (Unchanged)
     const isOriginalQuestion = (s.c === shlokas[index].c && s.v === shlokas[index].v);
     if (timerBox) {
         timerBox.style.visibility = (isOriginalQuestion && !isPushpika) ? "visible" : "hidden";
@@ -151,8 +200,6 @@ function renderShlokaContent(s) {
     text.innerHTML = "";
     s.charans.forEach((line, i) => {
         const div = document.createElement("div");
-        
-        // Disable speaker styling for Pushpika
         const isSpeaker = !isPushpika && (line.trim().endsWith("उवाच") || line.includes("श्रीभगवानुवाच"));
         div.className = isSpeaker ? "shloka-line speaker" : "shloka-line";
         
@@ -165,14 +212,10 @@ function renderShlokaContent(s) {
         div.innerHTML = formatted;
         text.appendChild(div);
 
-        // NEW: Add Namaste Emoji at the end of Pushpika
         if (isPushpika && i === s.charans.length - 1) {
             const namasteDiv = document.createElement("div");
             namasteDiv.textContent = "🙏";
-            namasteDiv.style.textAlign = "center";
-            namasteDiv.style.marginTop = "10px";
-            namasteDiv.style.fontSize = "2.5rem";
-            namasteDiv.style.width = "100%";
+            namasteDiv.style.cssText = "text-align:center; margin-top:10px; font-size:2.5rem; width:100%;";
             text.appendChild(namasteDiv);
         }
     });
@@ -199,17 +242,11 @@ function updateShlokaNavVisibility() {
         return;
     }
 
-    const chapterVerses = allShlokas.filter(v => v.c === s.c);
-    
-    // Sort them by verse number to find neighbors correctly
-    const sortedVerses = chapterVerses.sort((a, b) => a.v - b.v);
-    const currentIndex = sortedVerses.findIndex(v => v.v === s.v);
+    const chapterVerses = allShlokas.filter(v => v.c === s.c).sort((a, b) => a.v - b.v);
+    const currentIndex = chapterVerses.findIndex(v => v.v === s.v);
 
-    // Show Prev if we are not at the first verse
     prevShlokaBtn.style.visibility = (currentIndex > 0) ? "visible" : "hidden";
-    
-    // Show Next if we are not at the Pushpika (last index)
-    nextShlokaBtn.style.visibility = (currentIndex < sortedVerses.length - 1) ? "visible" : "hidden";
+    nextShlokaBtn.style.visibility = (currentIndex < chapterVerses.length - 1) ? "visible" : "hidden";
 }
 
 function toggleFlip() {
@@ -219,22 +256,18 @@ function toggleFlip() {
     } else {
         startTimer();
         flipped = false;
-        // Reset to original question (Timer will become visible in renderShlokaContent)
         sessionShloka = shlokas[index]; 
     }
-    
     renderShlokaContent(sessionShloka);
+    updateStarIcon(); // Sync star when flipping back
     updateShlokaNavVisibility();
 }
 
-// Navigation Functions
 function goSelectScreen() {
     stopTimer();
     document.getElementById("practice-screen").style.display = "none";
     document.getElementById("completion-screen").style.display = "none";
     document.getElementById("selection-screen").style.display = "block";
-    if (globalHomeBtn) globalHomeBtn.style.color = "";
-    if (goSelectBtn) goSelectBtn.style.color = "";
 }
 
 // EVENT HANDLERS
@@ -252,6 +285,7 @@ if (startBtn) {
 }
 
 if (flipBtn) flipBtn.onclick = toggleFlip;
+if (starBtn) starBtn.onclick = toggleStar; // Set Star Listener
 
 if (hintBtn) {
     hintBtn.onclick = () => {
@@ -260,13 +294,8 @@ if (hintBtn) {
         if (verseLine) {
             const firstLineText = verseLine.innerHTML.split("<br>")[0].trim();
             hint.textContent = firstLineText.split(" ")[0];
-            
             hint.style.display = "block";
-            
-            // CHANGE: Match the main question text color instead of accent color
             hint.style.color = "var(--text)"; 
-            
-            // Keep the box border matching the card theme
             hint.style.borderColor = currentAccentColor; 
             hintBtn.classList.add("active");
         }
@@ -292,8 +321,6 @@ if (nextBtn) {
             stopTimer();
             document.getElementById("practice-screen").style.display = "none";
             document.getElementById("completion-screen").style.display = "block";
-            if (globalHomeBtn) globalHomeBtn.style.color = "";
-            if (goSelectBtn) goSelectBtn.style.color = "";
         }
     };
 }
@@ -302,7 +329,13 @@ if (prevBtn) prevBtn.onclick = () => { if (index > 0) { index--; load(); } };
 // 4. TOUCH & MOUSE SWIPE GESTURES
 let sx = 0, sy = 0;
 card.addEventListener("touchstart", e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: false });
-card.addEventListener("touchmove", e => { e.preventDefault(); }, { passive: false });
+card.addEventListener("touchmove", e => { 
+    // Prevent default only if moving mostly horizontally/vertically to avoid jamming page scroll
+    const dx = Math.abs(e.touches[0].clientX - sx);
+    const dy = Math.abs(e.touches[0].clientY - sy);
+    if (dx > 10 || dy > 10) e.preventDefault(); 
+}, { passive: false });
+
 card.addEventListener("touchend", e => {
     const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
     if (Math.abs(dy) > 50) toggleFlip();
@@ -320,14 +353,7 @@ card.addEventListener("mouseup", e => {
     else if (dx > 80) prevBtn.click();
 });
 
-window.addEventListener('themeChanged', () => {
-    if (document.getElementById("practice-screen").style.display !== "block") {
-        if (globalHomeBtn) globalHomeBtn.style.color = "";
-        if (goSelectBtn) goSelectBtn.style.color = "";
-    }
-});
-
-updateStartState();
-
 if (prevShlokaBtn) prevShlokaBtn.onclick = (e) => { e.stopPropagation(); navigateAdjacent(-1); };
 if (nextShlokaBtn) nextShlokaBtn.onclick = (e) => { e.stopPropagation(); navigateAdjacent(1); };
+
+updateStartState();
