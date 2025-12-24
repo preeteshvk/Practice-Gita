@@ -49,11 +49,15 @@
                     <div id="header-text" class="header-text"></div>
                 </div>
 
-                <button class="icon" id="flip" style="text-align: right;">
-                    <svg class="icon-svg" viewBox="0 0 24 24">
-                        <path d="M12 6V3L8 7l4 4V8c2.76 0 5 2.24 5 5 0 .34-.03.67-.1 1h2.02c.05-.33.08-.66.08-1 0-3.87-3.13-7-7-7zm-5 5c0-.34.03-.67.1-1H5.08c-.05.33-.08.66-.08 1 0 3.87 3.13 7 7 7v3l4-4-4-4v3c-2.76 0-5-2.24-5-5z"/>
-                    </svg>
-                </button>
+                <div style="display: flex; align-items: center; justify-content: flex-end; min-width: 60px; gap: 12px; padding-right: 5px;">
+                    <button id="star-btn" style="background:none; border:none; font-size: 1.6rem; cursor:pointer; color: var(--accent); padding: 0; margin: 0; line-height: 1;">☆</button>
+                    
+                    <button class="icon" id="flip" style="background:none; border:none; padding: 0; margin: 0; display: flex; align-items: center;">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <path d="M12 6V3L8 7l4 4V8c2.76 0 5 2.24 5 5 0 .34-.03.67-.1 1h2.02c.05-.33.08-.66.08-1 0-3.87-3.13-7-7-7zm-5 5c0-.34.03-.67.1-1H5.08c-.05.33-.08.66-.08 1 0 3.87 3.13 7 7 7v3l4-4-4-4v3c-2.76 0-5-2.24-5-5z"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <div class="card-body">
