@@ -1,332 +1,92 @@
-/**
- * path.js
- * Handles dual-mode logic: Linear Adhyay-Path and Starred List Navigation.
- */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Gita Adhyay Path</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="nav-bar">
+        <div class="nav-left-group">
+            <a href="index.html" class="nav-btn" id="go-home">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> Home
+            </a>
+            <a href="AdhyayPath.html" class="nav-btn" id="go-select">
+                <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+                Adhyay
+            </a>
+        </div>
+        <div class="theme-toggle" id="themeToggle">🌙</div>
+    </div>
 
-if (new URLSearchParams(window.location.search).get("mode") === "starred") {
-    const selScreen = document.getElementById("selection-screen");
-    if (selScreen) selScreen.style.display = "none";
-}
+    <div class="adhyay-selection" id="selection-screen">
+        <div class="logo-area" style="margin-top: 40px;">
+            <div class="subtitle">Select Chapter</div>
+            <h1>अध्याय चयन</h1>
+        </div>
+        <div class="adhyay-grid" id="grid"></div>
+        <button id="start" class="start-btn" disabled>Start Reading</button>
+    </div>
 
-let allShlokas = [], currentAdhyayShlokas = [];
-let index = 0;
-let flipped = false; 
-let isStarredMode = false;
-const accentColor = "var(--accent)";
-
-// DOM Elements
-const grid = document.getElementById("grid");
-const startBtn = document.getElementById("start");
-const readingScreen = document.getElementById("reading-screen");
-const selectionScreen = document.getElementById("selection-screen");
-const completionScreen = document.getElementById("completion-screen");
-const textContainer = document.getElementById("shloka-text");
-const headerText = document.getElementById("header-text");
-const counterDisplay = document.getElementById("counter");
-const card = document.getElementById("card");
-
-// Navigation Elements
-const starBtn = document.getElementById("star-btn");
-const flipBtn = document.getElementById("flip"); 
-const prevBtn = document.getElementById("prev-btn"); 
-const nextBtn = document.getElementById("next-btn"); 
-
-const nextContainer = document.querySelector(".next-container"); 
-const globalPrev = document.getElementById("prev"); 
-const globalNext = document.getElementById("next"); 
-const adhyayHeaderBtn = document.getElementById("go-select");
-
-// --- 1. STAR & TOAST LOGIC ---
-
-function getStarred() {
-    return JSON.parse(localStorage.getItem("gita_stars") || "[]");
-}
-
-function showToast(msg) {
-    let toast = document.getElementById("toast");
-    if (!toast) {
-        toast = document.createElement("div");
-        toast.id = "toast";
-        toast.style.cssText = `
-            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-            background: var(--accent); color: white; padding: 10px 20px;
-            border-radius: 50px; z-index: 2000; font-size: 14px;
-            transition: opacity 0.3s; pointer-events: none; opacity: 0;
-        `;
-        document.body.appendChild(toast);
-    }
-    toast.textContent = msg;
-    toast.style.opacity = "1";
-    setTimeout(() => { toast.style.opacity = "0"; }, 2000);
-}
-
-function toggleStar(e) {
-    if (e) e.stopPropagation();
-    const s = currentAdhyayShlokas[index];
-    if (!s) return;
+    <div class="practice-screen" id="reading-screen">
+        <div class="card" id="card" style="height: 70vh;"> 
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;">
     
-    let stars = getStarred();
-    const starId = `${s.chapter}.${s.verse}`;
-    const existsIndex = stars.findIndex(item => item.id === starId);
-    
-    if (existsIndex > -1) {
-        stars.splice(existsIndex, 1);
-        showToast("Removed from Starred List");
-        if (isStarredMode) {
-            currentAdhyayShlokas.splice(index, 1);
-            if (currentAdhyayShlokas.length === 0) {
-                localStorage.setItem("gita_stars", JSON.stringify([]));
-                window.location.href = "index.html";
-                return;
-            }
-            if (index >= currentAdhyayShlokas.length) index = currentAdhyayShlokas.length - 1;
-            loadShloka();
-            return;
-        }
-    } else {
-        stars.push({ id: starId, chapter: s.chapter, verse: s.verse });
-        stars.sort((a, b) => (a.chapter - b.chapter) || (a.verse - b.verse));
-        showToast("Added to Starred List");
-    }
-    
-    localStorage.setItem("gita_stars", JSON.stringify(stars));
-    updateStarIcon();
-}
+    <div id="counter" class="counter-text" style="font-weight: 600; font-size: 1rem; color: var(--text); opacity: 0.8;">
+        </div>
 
-function updateStarIcon() {
-    if (!starBtn) return;
-    const s = currentAdhyayShlokas[index];
-    if (!s) return;
-    const stars = getStarred();
-    const starId = `${s.chapter}.${s.verse}`;
-    starBtn.textContent = stars.some(item => item.id === starId) ? "★" : "☆";
-}
+    <div id="header-text" class="header-text" style="position: absolute; left: 50%; transform: translateX(-50%);"></div>
 
-// --- 2. CORE RENDERING ---
+    <div style="display: flex; align-items: center; justify-content: flex-end; min-width: 60px; gap: 12px; padding-right: 5px;">
+                    <button id="star-btn" style="background:none; border:none; font-size: 1.6rem; cursor:pointer; color: var(--accent); padding: 0; margin: 0; line-height: 1;">☆</button>
+                    
+                    <button class="icon" id="flip" style="background:none; border:none; padding: 0; margin: 0; display: flex; align-items: center;">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <path d="M12 6V3L8 7l4 4V8c2.76 0 5 2.24 5 5 0 .34-.03.67-.1 1h2.02c.05-.33.08-.66.08-1 0-3.87-3.13-7-7-7zm-5 5c0-.34.03-.67.1-1H5.08c-.05.33-.08.66-.08 1 0 3.87 3.13 7 7 7v3l4-4-4-4v3c-2.76 0-5-2.24-5-5z"/>
+                        </svg>
+                    </button>
+                </div>
+</div>
+            <div class="card-body">
+                <div id="shloka-text" class="shloka-text" style="display: block;"></div>
+                <div id="translation-text" class="translation-text" style="display: none;"></div>
+            </div>
 
-function loadShloka() {
-    const s = currentAdhyayShlokas[index];
-    if (!s) return;
+            <div class="card-footer">
+                <button class="shloka-nav-btn" id="prev-btn">
+                    <svg class="shloka-nav-svg" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                </button>
+                <div style="grid-column: 2;"></div> <button class="shloka-nav-btn" id="next-btn">
+                    <svg class="shloka-nav-svg" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="next-container">
+            <button class="icon" id="prev">
+                <svg class="icon-svg" viewBox="0 0 24 24" style="transform: scaleX(-1);">
+                    <path d="M12 4l-1.41 1.41L15.17 10H4v2h11.17l-4.58 4.59L12 18l8-8z"/>
+                </svg>
+            </button>
+            
+            <button class="icon" id="next">
+                <svg class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M12 4l-1.41 1.41L15.17 10H4v2h11.17l-4.58 4.59L12 18l8-8z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
 
-    // Reset flipped state
-    flipped = false; 
-    updateStarIcon();
-    textContainer.innerHTML = "";
+    <div class="completion-screen" id="completion-screen">
+        <h1>Chapter Complete! 📖✨</h1>
+        <p id="completion-msg"></p>
+        <button class="action-btn" id="btn-restart">Reread Chapter</button>
+        <button class="action-btn" id="btn-next-adhyay">Next Chapter</button>
+        <button class="action-btn secondary" onclick="location.reload()">Select Adhyay</button>
+    </div>
 
-    headerText.textContent = (s.type === "pushpika") ? 
-        //`Adhyay ${s.chapter} Pushpika` : `Adhyay ${s.chapter} · Shloka ${s.verse}`;
-        `Pushpika` : ` ${s.chapter} · ${s.verse}`;
-
-
-    // Counter Display Logic
-    if (isStarredMode) {
-        counterDisplay.textContent = `${index + 1} / ${currentAdhyayShlokas.length}`;
-    } else {
-        if (s.type === "pushpika") {
-            counterDisplay.textContent = ""; 
-        } else {
-            const totalShlokas = currentAdhyayShlokas.filter(item => item.type !== "pushpika").length;
-            counterDisplay.textContent = `${index + 1} / ${totalShlokas}`;
-        }
-    }
-    
-    // Front Side: Shloka Container
-    const shlokaDiv = document.createElement("div");
-    shlokaDiv.id = "view-shloka";
-    // Inline style to ensure it starts visible
-    shlokaDiv.style.display = "block"; 
-    
-    s.charans.forEach((line, i) => {
-        const div = document.createElement("div");
-        const isSpeaker = s.type !== "pushpika" && (line.trim().endsWith("उवाच") || line.includes("श्रीभगवानुवाच"));
-        div.className = isSpeaker ? "shloka-line speaker" : "shloka-line";
-        let formatted = line.replace(/।।/g, "॥").replace(/।(?![॥।0-9])/g, "।<br>");
-        if (isSpeaker) formatted = formatted.replace(/उवाच/g, "उवाच<br>");
-        div.innerHTML = formatted;
-        shlokaDiv.appendChild(div);
-
-        if (s.type === "pushpika" && i === s.charans.length - 1) {
-            const namasteDiv = document.createElement("div");
-            namasteDiv.textContent = "🙏";
-            namasteDiv.style.cssText = "text-align:center; margin-top:15px; font-size:2.5rem;";
-            shlokaDiv.appendChild(namasteDiv);
-        }
-    });
-
-    // Back Side: Translation Container
-    const transDiv = document.createElement("div");
-    transDiv.id = "view-translation";
-    // INLINE CSS is more reliable for the initial hide than setting it later
-    transDiv.style.cssText = "display: none; font-style: italic; text-align: center;";
-    transDiv.className = "shloka-line";
-    transDiv.innerHTML = s.translation_hindi || "अनुवाद उपलब्ध नहीं है।";
-
-    textContainer.appendChild(shlokaDiv);
-    textContainer.appendChild(transDiv);
-
-    // Nav Button States
-    if (isStarredMode) {
-        prevBtn.style.visibility = "hidden";
-        nextBtn.style.visibility = "hidden";
-        if (nextContainer) nextContainer.style.display = "flex";
-        if (adhyayHeaderBtn) adhyayHeaderBtn.style.display = "none";
-        if (globalPrev) globalPrev.style.visibility = (index === 0) ? "hidden" : "visible";
-        if (globalNext) globalNext.style.visibility = (index === currentAdhyayShlokas.length - 1) ? "hidden" : "visible";
-    } else {
-        prevBtn.style.visibility = (index === 0) ? "hidden" : "visible";
-        nextBtn.style.visibility = "visible";
-        if (nextContainer) nextContainer.style.display = "none";
-        if (adhyayHeaderBtn) adhyayHeaderBtn.style.display = "flex";
-    }
-
-    card.scrollTop = 0;
-}
-
-// --- 3. NAVIGATION ---
-
-function toggleFlip(e) {
-    if (e) e.stopPropagation();
-    const sView = document.getElementById("view-shloka");
-    const tView = document.getElementById("view-translation");
-    if (!sView || !tView) return;
-    
-    flipped = !flipped;
-    sView.style.display = flipped ? "none" : "block";
-    tView.style.display = flipped ? "block" : "none";
-}
-
-function goNext() {
-    if (index < currentAdhyayShlokas.length - 1) {
-        index++;
-        loadShloka();
-    } else if (!isStarredMode) {
-        showCompletion();
-    }
-}
-
-function goPrev() {
-    if (index > 0) {
-        index--;
-        loadShloka();
-    }
-}
-
-function showCompletion() {
-    readingScreen.style.display = "none";
-    completionScreen.style.display = "block";
-    const currentChapter = currentAdhyayShlokas[0].chapter;
-    document.getElementById("completion-msg").textContent = `You have completed reading Adhyay ${currentChapter}.`;
-    const nBtn = document.getElementById("btn-next-adhyay");
-    if (nBtn) nBtn.style.display = (currentChapter < 18) ? "block" : "none";
-}
-
-// --- 4. INITIALIZATION ---
-
-fetch("verse.json")
-    .then(r => r.json())
-    .then(d => {
-        allShlokas = d.map(v => ({ 
-            chapter: v.chapter, verse: v.verse, charans: v.charans,
-            translation_hindi: v.hindi_translation, type: v.type || "shloka"
-        }));
-
-        const params = new URLSearchParams(window.location.search);
-        if (params.get("mode") === "starred") {
-            isStarredMode = true;
-            const stars = getStarred();
-            if (stars.length > 0) {
-                currentAdhyayShlokas = allShlokas.filter(s => 
-                    stars.some(st => st.chapter === s.chapter && st.verse === s.verse)
-                );
-                if (currentAdhyayShlokas.length === 0) {
-                    window.location.href = "index.html";
-                    return;
-                }
-                index = 0;
-                selectionScreen.style.display = "none";
-                readingScreen.style.display = "block";
-                loadShloka();
-            } else {
-                window.location.href = "index.html";
-            }
-        }
-    });
-
-for (let i = 1; i <= 18; i++) {
-    const d = document.createElement("div");
-    d.textContent = i;
-    d.className = "adhyay-card";
-    d.onclick = () => {
-        document.querySelectorAll(".adhyay-card").forEach(c => c.classList.remove("selected"));
-        d.classList.add("selected");
-        if (startBtn) startBtn.disabled = false;
-    };
-    if (grid) grid.appendChild(d);
-}
-
-// --- 5. EVENT HANDLERS ---
-
-if (startBtn) {
-    startBtn.onclick = () => {
-        const selected = document.querySelector(".adhyay-card.selected");
-        if (!selected) return;
-        currentAdhyayShlokas = allShlokas.filter(s => s.chapter === parseInt(selected.textContent));
-        index = 0;
-        isStarredMode = false;
-        selectionScreen.style.display = "none";
-        readingScreen.style.display = "block";
-        loadShloka();
-    };
-}
-
-starBtn.onclick = toggleStar;
-if (flipBtn) flipBtn.onclick = toggleFlip;
-nextBtn.onclick = (e) => { e.stopPropagation(); goNext(); };
-prevBtn.onclick = (e) => { e.stopPropagation(); goPrev(); };
-
-if (globalNext) globalNext.onclick = (e) => { e.stopPropagation(); goNext(); };
-if (globalPrev) globalPrev.onclick = (e) => { e.stopPropagation(); goPrev(); };
-
-document.getElementById("btn-restart").onclick = () => {
-    index = 0; completionScreen.style.display = "none";
-    readingScreen.style.display = "block"; loadShloka();
-};
-
-document.getElementById("btn-next-adhyay").onclick = () => {
-    const nextCh = currentAdhyayShlokas[0].chapter + 1;
-    currentAdhyayShlokas = allShlokas.filter(s => s.chapter === nextCh);
-    index = 0; completionScreen.style.display = "none";
-    readingScreen.style.display = "block"; loadShloka();
-};
-
-// --- 6. GESTURES ---
-
-let sx = 0, sy = 0;
-card.addEventListener("touchstart", e => { 
-    sx = e.touches[0].clientX; sy = e.touches[0].clientY; 
-}, { passive: false });
-
-card.addEventListener("touchmove", e => { 
-    if (e.cancelable) e.preventDefault(); 
-}, { passive: false });
-
-card.addEventListener("touchend", e => {
-    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
-    if (Math.abs(dy) > 50) toggleFlip(); 
-    else if (Math.abs(dx) > 70) {
-        if (dx < -70) goNext(); 
-        else if (dx > 70) goPrev(); 
-    }
-}, { passive: false });
-
-// Mouse support
-let mx = 0, my = 0, down = false;
-card.addEventListener("mousedown", e => { down = true; mx = e.clientX; my = e.clientY; });
-card.addEventListener("mouseup", e => {
-    if (!down) return; down = false;
-    const dx = e.clientX - mx, dy = e.clientY - my;
-    if (Math.abs(dy) > 60) toggleFlip();
-    else if (Math.abs(dx) > 100) {
-        if (dx < -100) goNext(); else goPrev();
-    }
-});
+    <script src="theme.js"></script>
+    <script src="path.js"></script>
+</body>
+</html>
