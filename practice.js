@@ -341,22 +341,33 @@ card.addEventListener("touchstart", e => {
 card.addEventListener("touchmove", e => { 
     const dx = Math.abs(e.touches[0].clientX - sx);
     const dy = Math.abs(e.touches[0].clientY - sy);
+    const currentY = e.touches[0].clientY;
     
-    // 1. Horizontal Swipe: Lock page scroll to keep the transition smooth
+    // 1. HARD LOCK: If text fits perfectly, lock the background 100%
+    const isScrollable = cardBody.scrollHeight > cardBody.clientHeight;
+    if (!isScrollable) {
+        if (e.cancelable) e.preventDefault(); 
+        return;
+    }
+
+    // 2. Navigation Lock: Prevent the page from wiggling when swiping Left/Right
     if (dx > dy && dx > 5) {
         if (e.cancelable) e.preventDefault(); 
         return;
     }
 
-    // 2. Vertical Scroll: Smart-Lock background only if we are inside the text area
+    // 3. Vertical Edge Logic: For long text that NEEDS scrolling
     const isTouchingCardBody = e.target.closest('.card-body');
     if (isTouchingCardBody) {
         const isAtTop = cardBody.scrollTop <= 0;
         const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - 1);
-        
-        // If the card has scrollable space, don't move the background body
-        if (!isAtTop && !isAtBottom && dy > dx) {
-            if (e.cancelable) e.preventDefault(); 
+
+        const swipingDown = currentY > sy; // Pulling finger down
+        const swipingUp = currentY < sy;   // Pushing finger up
+
+        // Lock background only if we are at the boundaries to prevent "Rubber-Banding"
+        if ((isAtTop && swipingDown) || (isAtBottom && swipingUp)) {
+            if (e.cancelable) e.preventDefault();
         }
     }
 }, { passive: false });
