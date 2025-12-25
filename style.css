@@ -23,13 +23,14 @@
    2. CORE LAYOUT (UPDATED FOR SCROLLING & HEADER SPACE)
    ========================================================================== */
 html, body {
-  height: 100%;
-  width: 100%;
+  /* Remove position: fixed and overflow: hidden */
+  height: auto; 
+  min-height: 100%;
   margin: 0;
   padding: 0;
-  /* CRITICAL: Prevents the whole page from bouncing or scrolling */
-  overflow: hidden; 
-  position: fixed; 
+  /* This prevents the "pull-to-refresh" bounce on mobile Chrome/Safari 
+     without locking the scroll entirely */
+  overscroll-behavior-y: none; 
 }
 
 body {
@@ -39,9 +40,10 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Space for header */
   padding-top: 80px; 
   box-sizing: border-box;
+  /* Allow the body to scroll naturally if content is taller than screen */
+  overflow-y: auto; 
 }
 
 /* ==========================================================================
@@ -301,7 +303,6 @@ body {
   font-weight: 600;
 }
 
-/* Your .card-body stays the same as you provided */
 .card-body {
   display: flex;
   flex-direction: column;
@@ -313,14 +314,11 @@ body {
   min-height: 0; 
   width: 100%;
   box-sizing: border-box;
+  /* This keeps scroll energy inside the card when the user is reading */
   overscroll-behavior: contain; 
   -webkit-overflow-scrolling: touch; 
 }
 
-/* Vertical Centering Hack: 
-   Only centers content if it fits. 
-   If content is longer than the card, it scrolls naturally from the top.
-*/
 .card-body::before, .card-body::after {
   content: "";
   margin: auto;
