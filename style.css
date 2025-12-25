@@ -281,7 +281,7 @@ body {
    ========================================================================== */
 .practice-screen, .completion-screen, .reading-screen { 
   display: none; 
-  margin: 5vh auto 0 auto;
+  margin: auto auto auto auto;
   width: 95%;
   max-width: 600px;
   text-align: center;
@@ -291,7 +291,7 @@ body {
 }
 
 .card {
-  height: 70vh; 
+  height: 60vh; 
   min-height: 400px;
   /* Removed max-height because height: 70vh already handles it */
   background: var(--card-bg);
