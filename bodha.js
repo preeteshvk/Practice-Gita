@@ -186,18 +186,40 @@ function renderShlokaContent(s) {
         center.innerHTML = `<div style="font-size: 1.1em; font-style: italic; opacity: 0.8;">Chapter Conclusion...</div>`;
         header.textContent = flipped ? `Adhyay ${s.c} Pushpika` : "Pushpika";
     } else {
+        // 1. Filter out speaker lines
         const actualVerseLines = s.charans.filter(line => 
             !line.trim().endsWith("उवाच") && !line.includes("श्रीभगवानुवाच")
         );
-        const firstLineParts = actualVerseLines[0].split(',');
-        const firstCharan = firstLineParts[0].trim();
-        const secondCharan = firstLineParts[1] ? firstLineParts[1].replace(/[॥।\d.]/g, "").trim() : "";
 
-        center.innerHTML = `<div style="font-size: 1.2em; font-weight: 500;">${firstCharan}...</div>`;
+        const firstLine = actualVerseLines[0] || "";
+        let firstCharan = "";
+        let secondCharan = "";
+
+        // 2. LOGIC: Extract Hint (Handles comma at end of line like 2.5)
+        if (firstLine.includes(',')) {
+            const parts = firstLine.split(',');
+            firstCharan = parts[0].trim();
+            // If comma is at the end, parts[1] is empty. If so, take the next line.
+            secondCharan = (parts[1] && parts[1].trim().length > 0) 
+                           ? parts[1].trim() 
+                           : (actualVerseLines[1] ? actualVerseLines[1].trim() : "");
+        } else {
+            // No comma at all, hint is definitely the next line
+            firstCharan = firstLine.trim();
+            secondCharan = actualVerseLines[1] ? actualVerseLines[1].trim() : "";
+        }
+
+        // 3. Clean up for display
+        const cleanFirst = firstCharan.replace(/[॥।\d.]/g, "").trim();
+        const cleanSecond = secondCharan.replace(/[॥।\d.]/g, "").trim();
+
+        center.innerHTML = `<div style="font-size: 1.2em; font-weight: 500;">${cleanFirst}...</div>`;
         header.textContent = flipped ? `Adhyay ${s.c} · Shloka ${s.v}` : "Identify the Verse";
-        hint.textContent = secondCharan;
+        
+        hint.textContent = cleanSecond || "---"; 
     }
 
+    // --- Remaining logic stays exactly as in your previous working code ---
     counterDisplay.textContent = `${index + 1} / ${shlokas.length}`;
     const isOriginalQuestion = (s.c === shlokas[index].c && s.v === shlokas[index].v);
     if (timerBox) {
@@ -353,4 +375,3 @@ if (prevShlokaBtn) prevShlokaBtn.onclick = (e) => { e.stopPropagation(); navigat
 if (nextShlokaBtn) nextShlokaBtn.onclick = (e) => { e.stopPropagation(); navigateAdjacent(1); };
 
 updateStartState();
-
