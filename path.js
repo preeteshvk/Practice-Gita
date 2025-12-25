@@ -319,9 +319,16 @@ card.addEventListener("touchmove", e => {
     const dx = Math.abs(e.touches[0].clientX - sx);
     const dy = Math.abs(e.touches[0].clientY - sy);
     
-    // Only lock scroll if horizontal swipe is detected for navigation
-    if (dx > dy && dx > 10) {
+    // Prevent background page movement when interacting with the card
+    if (dx > dy && dx > 5) {
         if (e.cancelable) e.preventDefault(); 
+    }
+    
+    // If scrolling text, prevent the whole page from bouncing
+    const isAtTop = cardBody.scrollTop <= 0;
+    const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - 1);
+    if (dy > dx && !isAtTop && !isAtBottom) {
+        // We are scrolling inside the card, don't move the page
     }
 }, { passive: false });
 
@@ -329,7 +336,7 @@ card.addEventListener("touchend", e => {
     const dx = e.changedTouches[0].clientX - sx;
     const dy = e.changedTouches[0].clientY - sy;
     
-    // 1. Horizontal Swipe (Navigation)
+    // 1. Horizontal Swipe (Next/Prev Shloka)
     if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)) {
         if (dx < -70) goNext(); 
         else if (dx > 70) goPrev();
@@ -341,16 +348,18 @@ card.addEventListener("touchend", e => {
         const isScrollable = cardBody.scrollHeight > cardBody.clientHeight;
 
         if (!isScrollable) {
+            // Text is short: Any vertical swipe flips the card
             toggleFlip();
         } else {
+            // Text is long: Check if we are at the boundaries
             const isAtTop = cardBody.scrollTop <= T_BUFFER;
             const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - T_BUFFER);
 
-            if (dy < -50 && !flipped && isAtBottom) {
-                // Swipe UP at the BOTTOM of front side -> Flip
+            if (dy < -50 && isAtBottom) {
+                // Swipe UP at the BOTTOM (of either side) -> FLIP forward
                 toggleFlip();
-            } else if (dy > 50 && flipped && isAtTop) {
-                // Swipe DOWN at the TOP of back side -> Flip
+            } else if (dy > 50 && isAtTop) {
+                // Swipe DOWN at the TOP (of either side) -> FLIP backward
                 toggleFlip();
             }
         }
