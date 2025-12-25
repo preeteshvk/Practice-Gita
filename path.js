@@ -305,60 +305,67 @@ if(nextAdhyayBtn) nextAdhyayBtn.onclick = () => {
     readingScreen.style.display = "block"; loadShloka();
 };
 
-// --- 6. GESTURES (SMART-SCROLL) ---
+// --- 6. GESTURES (SMART-SCROLL & BUTTON ACCESS) ---
 
-// --- 6. GESTURES (SMART-SCROLL) ---
-
-let sx = 0, sy = 0, startTime = 0; // Added startTime
-const T_BUFFER = 10; 
+let sx = 0, sy = 0, startTime = 0;
 
 card.addEventListener("touchstart", e => { 
     sx = e.touches[0].clientX; 
     sy = e.touches[0].clientY; 
-    startTime = Date.now(); // Capture start time
+    startTime = Date.now();
 }, { passive: true });
 
 card.addEventListener("touchmove", e => { 
     const dx = Math.abs(e.touches[0].clientX - sx);
     const dy = Math.abs(e.touches[0].clientY - sy);
     
-    // Prevent background page movement
+    // 1. If horizontal swipe (navigation), lock the page to prevent diagonal jumping
     if (dx > dy && dx > 5) {
         if (e.cancelable) e.preventDefault(); 
+        return;
     }
+
+    // 2. Vertical Scroll Logic
+    const isTouchingCardBody = e.target.closest('.card-body');
+    if (isTouchingCardBody) {
+        const isAtTop = cardBody.scrollTop <= 0;
+        const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - 1);
+
+        // If user is in the MIDDLE of reading a long translation, 
+        // prevent the whole page from moving.
+        if (!isAtTop && !isAtBottom) {
+            // We want ONLY the card-body to move, not the background.
+            // Note: overscroll-behavior: contain in CSS handles most of this.
+        }
+    }
+    // If they touch buttons OUTSIDE the card, we don't preventDefault,
+    // so the page scrolls naturally.
 }, { passive: false });
 
 card.addEventListener("touchend", e => {
     const dx = e.changedTouches[0].clientX - sx;
     const dy = e.changedTouches[0].clientY - sy;
-    const duration = Date.now() - startTime; // How long the swipe took
+    const duration = Date.now() - startTime;
 
-    // 1. Horizontal Swipe (Navigation) - Keep this consistent
+    // A. Horizontal Swipe (Go to Next/Prev Shloka)
     if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)) {
         if (dx < -70) goNext(); 
         else if (dx > 70) goPrev();
         return;
     }
 
-    // 2. Vertical Swipe (Smart-Scroll & Flip Boundary)
-    if (Math.abs(dy) > 60) {
-        // NEW: If the swipe took longer than 300ms, it's a "Scroll", not a "Flip"
-        // This prevents accidental flips while reading.
-        if (duration > 300) return; 
+    // B. Vertical Intent (Flip Card)
+    // Threshold: Must be faster than 300ms and move more than 60px
+    if (Math.abs(dy) > 60 && duration < 300) {
+        const isAtTop = cardBody.scrollTop <= 10;
+        const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - 10);
 
-        const isScrollable = cardBody.scrollHeight > cardBody.clientHeight;
-
-        if (!isScrollable) {
+        if (dy < 0 && isAtBottom) {
+            // Swipe UP at the bottom -> Flip
             toggleFlip();
-        } else {
-            const isAtTop = cardBody.scrollTop <= T_BUFFER;
-            const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - T_BUFFER);
-
-            if (dy < -60 && isAtBottom) {
-                toggleFlip();
-            } else if (dy > 60 && isAtTop) {
-                toggleFlip();
-            }
+        } else if (dy > 0 && isAtTop) {
+            // Swipe DOWN at the top -> Flip
+            toggleFlip();
         }
     }
 }, { passive: false });
