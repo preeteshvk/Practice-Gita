@@ -307,36 +307,33 @@ if(nextAdhyayBtn) nextAdhyayBtn.onclick = () => {
 
 // --- 6. GESTURES (SMART-SCROLL) ---
 
-let sx = 0, sy = 0;
-const T_BUFFER = 10; // Tolerance for boundary detection
+// --- 6. GESTURES (SMART-SCROLL) ---
+
+let sx = 0, sy = 0, startTime = 0; // Added startTime
+const T_BUFFER = 10; 
 
 card.addEventListener("touchstart", e => { 
     sx = e.touches[0].clientX; 
     sy = e.touches[0].clientY; 
+    startTime = Date.now(); // Capture start time
 }, { passive: true });
 
 card.addEventListener("touchmove", e => { 
     const dx = Math.abs(e.touches[0].clientX - sx);
     const dy = Math.abs(e.touches[0].clientY - sy);
     
-    // Prevent background page movement when interacting with the card
+    // Prevent background page movement
     if (dx > dy && dx > 5) {
         if (e.cancelable) e.preventDefault(); 
-    }
-    
-    // If scrolling text, prevent the whole page from bouncing
-    const isAtTop = cardBody.scrollTop <= 0;
-    const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - 1);
-    if (dy > dx && !isAtTop && !isAtBottom) {
-        // We are scrolling inside the card, don't move the page
     }
 }, { passive: false });
 
 card.addEventListener("touchend", e => {
     const dx = e.changedTouches[0].clientX - sx;
     const dy = e.changedTouches[0].clientY - sy;
-    
-    // 1. Horizontal Swipe (Next/Prev Shloka)
+    const duration = Date.now() - startTime; // How long the swipe took
+
+    // 1. Horizontal Swipe (Navigation) - Keep this consistent
     if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)) {
         if (dx < -70) goNext(); 
         else if (dx > 70) goPrev();
@@ -344,22 +341,22 @@ card.addEventListener("touchend", e => {
     }
 
     // 2. Vertical Swipe (Smart-Scroll & Flip Boundary)
-    if (Math.abs(dy) > 50) {
+    if (Math.abs(dy) > 60) {
+        // NEW: If the swipe took longer than 300ms, it's a "Scroll", not a "Flip"
+        // This prevents accidental flips while reading.
+        if (duration > 300) return; 
+
         const isScrollable = cardBody.scrollHeight > cardBody.clientHeight;
 
         if (!isScrollable) {
-            // Text is short: Any vertical swipe flips the card
             toggleFlip();
         } else {
-            // Text is long: Check if we are at the boundaries
             const isAtTop = cardBody.scrollTop <= T_BUFFER;
             const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - T_BUFFER);
 
-            if (dy < -50 && isAtBottom) {
-                // Swipe UP at the BOTTOM (of either side) -> FLIP forward
+            if (dy < -60 && isAtBottom) {
                 toggleFlip();
-            } else if (dy > 50 && isAtTop) {
-                // Swipe DOWN at the TOP (of either side) -> FLIP backward
+            } else if (dy > 60 && isAtTop) {
                 toggleFlip();
             }
         }
