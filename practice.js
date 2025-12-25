@@ -328,33 +328,87 @@ if (prevBtn) prevBtn.onclick = () => { if (index > 0) { index--; load(); } };
 
 // 4. TOUCH & MOUSE SWIPE GESTURES
 let sx = 0, sy = 0;
-card.addEventListener("touchstart", e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: false });
+let gestureStartTime = 0; // Using a specific name to avoid conflict with timer startTime
+const T_BUFFER = 10; 
+const cardBody = document.querySelector(".card-body");
+
+card.addEventListener("touchstart", e => { 
+    sx = e.touches[0].clientX; 
+    sy = e.touches[0].clientY; 
+    gestureStartTime = Date.now(); // Capture the exact moment the touch starts
+}, { passive: true });
+
 card.addEventListener("touchmove", e => { 
-    // Prevent default only if moving mostly horizontally/vertically to avoid jamming page scroll
     const dx = Math.abs(e.touches[0].clientX - sx);
     const dy = Math.abs(e.touches[0].clientY - sy);
-    if (dx > 10 || dy > 10) e.preventDefault(); 
+    
+    // 1. Horizontal Swipe: Lock page scroll to keep the transition smooth
+    if (dx > dy && dx > 5) {
+        if (e.cancelable) e.preventDefault(); 
+        return;
+    }
+
+    // 2. Vertical Scroll: Smart-Lock background only if we are inside the text area
+    const isTouchingCardBody = e.target.closest('.card-body');
+    if (isTouchingCardBody) {
+        const isAtTop = cardBody.scrollTop <= 0;
+        const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - 1);
+        
+        // If the card has scrollable space, don't move the background body
+        if (!isAtTop && !isAtBottom && dy > dx) {
+            if (e.cancelable) e.preventDefault(); 
+        }
+    }
 }, { passive: false });
 
 card.addEventListener("touchend", e => {
-    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
-    if (Math.abs(dy) > 50) toggleFlip();
-    else if (dx < -60) nextBtn.click();
-    else if (dx > 60) prevBtn.click();
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    const duration = Date.now() - gestureStartTime; // Calculate swipe speed
+
+    // A. Horizontal Navigation (Practice Session)
+    if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)) {
+        if (dx < -70) nextBtn.click(); 
+        else if (dx > 70) prevBtn.click();
+        return;
+    }
+
+    // B. Vertical Flip (Intent-Aware)
+    // duration < 300ms = Quick Flick (Flip)
+    // duration > 300ms = Slow Drag (Scroll)
+    if (Math.abs(dy) > 60 && duration < 300) {
+        const isScrollable = cardBody.scrollHeight > cardBody.clientHeight;
+
+        if (!isScrollable) {
+            toggleFlip();
+        } else {
+            const isAtTop = cardBody.scrollTop <= T_BUFFER;
+            const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - T_BUFFER);
+
+            // Flip only if at the very start or very end of the text
+            if (dy < -60 && isAtBottom) {
+                toggleFlip(); // Swipe UP at bottom -> Flip
+            } else if (dy > 60 && isAtTop) {
+                toggleFlip(); // Swipe DOWN at top -> Flip
+            }
+        }
+    }
 }, { passive: false });
 
+// Mouse Support updated for consistency
 let mx = 0, my = 0, down = false;
-card.addEventListener("mousedown", e => { down = true; mx = e.clientX; my = e.clientY; });
+card.addEventListener("mousedown", e => { 
+    down = true; mx = e.clientX; my = e.clientY; 
+});
 card.addEventListener("mouseup", e => {
     if (!down) return; down = false;
     const dx = e.clientX - mx, dy = e.clientY - my;
     if (Math.abs(dy) > 60) toggleFlip();
-    else if (dx < -80) nextBtn.click();
-    else if (dx > 80) prevBtn.click();
+    else if (Math.abs(dx) > 100) {
+        if (dx < -100) nextBtn.click(); else prevBtn.click();
+    }
 });
-
 if (prevShlokaBtn) prevShlokaBtn.onclick = (e) => { e.stopPropagation(); navigateAdjacent(-1); };
 if (nextShlokaBtn) nextShlokaBtn.onclick = (e) => { e.stopPropagation(); navigateAdjacent(1); };
 
 updateStartState();
-
