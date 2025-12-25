@@ -1,6 +1,7 @@
 /**
  * path.js
  * Handles dual-mode logic: Linear Adhyay-Path and Starred List Navigation.
+ * Includes Smart-Scroll Gesture logic for multi-line text accessibility.
  */
 
 if (new URLSearchParams(window.location.search).get("mode") === "starred") {
@@ -20,7 +21,8 @@ const startBtn = document.getElementById("start");
 const readingScreen = document.getElementById("reading-screen");
 const selectionScreen = document.getElementById("selection-screen");
 const completionScreen = document.getElementById("completion-screen");
-const textContainer = document.getElementById("shloka-text");
+const textContainer = document.getElementById("shloka-text"); // The .shloka-text div
+const cardBody = document.querySelector(".card-body");        // The scrollable container
 const headerText = document.getElementById("header-text");
 const counterDisplay = document.getElementById("counter");
 const card = document.getElementById("card");
@@ -108,17 +110,15 @@ function loadShloka() {
     const s = currentAdhyayShlokas[index];
     if (!s) return;
 
-    // Reset flipped state
     flipped = false; 
     updateStarIcon();
+    
+    // Clear and show textContainer (shloka-text)
     textContainer.innerHTML = "";
+    textContainer.style.display = "block";
 
-    headerText.textContent = (s.type === "pushpika") ? 
-        //`Adhyay ${s.chapter} Pushpika` : `Adhyay ${s.chapter} · Shloka ${s.verse}`;
-        `Pushpika` : ` ${s.chapter} · ${s.verse}`;
+    headerText.textContent = (s.type === "pushpika") ? `Pushpika` : ` ${s.chapter} · ${s.verse}`;
 
-
-    // Counter Display Logic
     if (isStarredMode) {
         counterDisplay.textContent = `${index + 1} / ${currentAdhyayShlokas.length}`;
     } else {
@@ -130,10 +130,9 @@ function loadShloka() {
         }
     }
     
-    // Front Side: Shloka Container
+    // Front Side
     const shlokaDiv = document.createElement("div");
     shlokaDiv.id = "view-shloka";
-    // Inline style to ensure it starts visible
     shlokaDiv.style.display = "block"; 
     
     s.charans.forEach((line, i) => {
@@ -153,10 +152,9 @@ function loadShloka() {
         }
     });
 
-    // Back Side: Translation Container
+    // Back Side
     const transDiv = document.createElement("div");
     transDiv.id = "view-translation";
-    // INLINE CSS is more reliable for the initial hide than setting it later
     transDiv.style.cssText = "display: none; font-style: italic; text-align: center;";
     transDiv.className = "shloka-line";
     transDiv.innerHTML = s.translation_hindi || "अनुवाद उपलब्ध नहीं है।";
@@ -164,7 +162,6 @@ function loadShloka() {
     textContainer.appendChild(shlokaDiv);
     textContainer.appendChild(transDiv);
 
-    // Nav Button States
     if (isStarredMode) {
         prevBtn.style.visibility = "hidden";
         nextBtn.style.visibility = "hidden";
@@ -179,7 +176,8 @@ function loadShloka() {
         if (adhyayHeaderBtn) adhyayHeaderBtn.style.display = "flex";
     }
 
-    card.scrollTop = 0;
+    // Reset scroll of the body to top
+    cardBody.scrollTop = 0;
 }
 
 // --- 3. NAVIGATION ---
@@ -193,6 +191,9 @@ function toggleFlip(e) {
     flipped = !flipped;
     sView.style.display = flipped ? "none" : "block";
     tView.style.display = flipped ? "block" : "none";
+    
+    // Reset scroll so they start at the top of the translation/shloka
+    cardBody.scrollTop = 0;
 }
 
 function goNext() {
@@ -215,7 +216,8 @@ function showCompletion() {
     readingScreen.style.display = "none";
     completionScreen.style.display = "block";
     const currentChapter = currentAdhyayShlokas[0].chapter;
-    document.getElementById("completion-msg").textContent = `You have completed reading Adhyay ${currentChapter}.`;
+    const msg = document.getElementById("completion-msg");
+    if(msg) msg.textContent = `You have completed reading Adhyay ${currentChapter}.`;
     const nBtn = document.getElementById("btn-next-adhyay");
     if (nBtn) nBtn.style.display = (currentChapter < 18) ? "block" : "none";
 }
@@ -243,8 +245,8 @@ fetch("verse.json")
                     return;
                 }
                 index = 0;
-                selectionScreen.style.display = "none";
-                readingScreen.style.display = "block";
+                if(selectionScreen) selectionScreen.style.display = "none";
+                if(readingScreen) readingScreen.style.display = "block";
                 loadShloka();
             } else {
                 window.location.href = "index.html";
@@ -252,16 +254,18 @@ fetch("verse.json")
         }
     });
 
-for (let i = 1; i <= 18; i++) {
-    const d = document.createElement("div");
-    d.textContent = i;
-    d.className = "adhyay-card";
-    d.onclick = () => {
-        document.querySelectorAll(".adhyay-card").forEach(c => c.classList.remove("selected"));
-        d.classList.add("selected");
-        if (startBtn) startBtn.disabled = false;
-    };
-    if (grid) grid.appendChild(d);
+if (grid) {
+    for (let i = 1; i <= 18; i++) {
+        const d = document.createElement("div");
+        d.textContent = i;
+        d.className = "adhyay-card";
+        d.onclick = () => {
+            document.querySelectorAll(".adhyay-card").forEach(c => c.classList.remove("selected"));
+            d.classList.add("selected");
+            if (startBtn) startBtn.disabled = false;
+        };
+        grid.appendChild(d);
+    }
 }
 
 // --- 5. EVENT HANDLERS ---
@@ -279,43 +283,77 @@ if (startBtn) {
     };
 }
 
-starBtn.onclick = toggleStar;
+if(starBtn) starBtn.onclick = toggleStar;
 if (flipBtn) flipBtn.onclick = toggleFlip;
-nextBtn.onclick = (e) => { e.stopPropagation(); goNext(); };
-prevBtn.onclick = (e) => { e.stopPropagation(); goPrev(); };
+if(nextBtn) nextBtn.onclick = (e) => { e.stopPropagation(); goNext(); };
+if(prevBtn) prevBtn.onclick = (e) => { e.stopPropagation(); goPrev(); };
 
 if (globalNext) globalNext.onclick = (e) => { e.stopPropagation(); goNext(); };
 if (globalPrev) globalPrev.onclick = (e) => { e.stopPropagation(); goPrev(); };
 
-document.getElementById("btn-restart").onclick = () => {
+const restartBtn = document.getElementById("btn-restart");
+if(restartBtn) restartBtn.onclick = () => {
     index = 0; completionScreen.style.display = "none";
     readingScreen.style.display = "block"; loadShloka();
 };
 
-document.getElementById("btn-next-adhyay").onclick = () => {
+const nextAdhyayBtn = document.getElementById("btn-next-adhyay");
+if(nextAdhyayBtn) nextAdhyayBtn.onclick = () => {
     const nextCh = currentAdhyayShlokas[0].chapter + 1;
     currentAdhyayShlokas = allShlokas.filter(s => s.chapter === nextCh);
     index = 0; completionScreen.style.display = "none";
     readingScreen.style.display = "block"; loadShloka();
 };
 
-// --- 6. GESTURES ---
+// --- 6. GESTURES (SMART-SCROLL) ---
 
 let sx = 0, sy = 0;
+const T_BUFFER = 10; // Tolerance for boundary detection
+
 card.addEventListener("touchstart", e => { 
-    sx = e.touches[0].clientX; sy = e.touches[0].clientY; 
-}, { passive: false });
+    sx = e.touches[0].clientX; 
+    sy = e.touches[0].clientY; 
+}, { passive: true });
 
 card.addEventListener("touchmove", e => { 
-    if (e.cancelable) e.preventDefault(); 
+    const dx = Math.abs(e.touches[0].clientX - sx);
+    const dy = Math.abs(e.touches[0].clientY - sy);
+    
+    // Only lock scroll if horizontal swipe is detected for navigation
+    if (dx > dy && dx > 10) {
+        if (e.cancelable) e.preventDefault(); 
+    }
 }, { passive: false });
 
 card.addEventListener("touchend", e => {
-    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
-    if (Math.abs(dy) > 50) toggleFlip(); 
-    else if (Math.abs(dx) > 70) {
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    
+    // 1. Horizontal Swipe (Navigation)
+    if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)) {
         if (dx < -70) goNext(); 
-        else if (dx > 70) goPrev(); 
+        else if (dx > 70) goPrev();
+        return;
+    }
+
+    // 2. Vertical Swipe (Smart-Scroll & Flip Boundary)
+    if (Math.abs(dy) > 50) {
+        const isScrollable = cardBody.scrollHeight > cardBody.clientHeight;
+
+        if (!isScrollable) {
+            toggleFlip();
+        } else {
+            const isAtTop = cardBody.scrollTop <= T_BUFFER;
+            const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - T_BUFFER);
+
+            if (dy < -50 && !flipped && isAtBottom) {
+                // Swipe UP at the BOTTOM of front side -> Flip
+                toggleFlip();
+            } else if (dy > 50 && flipped && isAtTop) {
+                // Swipe DOWN at the TOP of back side -> Flip
+                toggleFlip();
+            }
+        }
     }
 }, { passive: false });
 
@@ -330,4 +368,3 @@ card.addEventListener("mouseup", e => {
         if (dx < -100) goNext(); else goPrev();
     }
 });
-
