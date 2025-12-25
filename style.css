@@ -25,6 +25,7 @@
 html {
   /* Set to 100% to allow the body to calculate vertical centering */
   height: 100%;
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -594,3 +595,4 @@ body {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
