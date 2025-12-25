@@ -20,30 +20,36 @@
 }
 
 /* ==========================================================================
-   2. CORE LAYOUT (UPDATED FOR SCROLLING & HEADER SPACE)
+   2. CORE LAYOUT (CENTRALLY ALIGNED & RESPONSIVE)
    ========================================================================== */
-html, body {
-  /* Remove position: fixed and overflow: hidden */
-  height: auto; 
-  min-height: 100%;
-  margin: 0;
-  padding: 0;
-  /* This prevents the "pull-to-refresh" bounce on mobile Chrome/Safari 
-     without locking the scroll entirely */
-  overscroll-behavior-y: none; 
+html {
+  /* Set to 100% to allow the body to calculate vertical centering */
+  height: 100%;
 }
 
 body {
   font-family: 'Noto Sans Devanagari', sans-serif;
   background: var(--bg);
   color: var(--text);
+  margin: 0;
+  padding: 0;
+  
+  /* FLEX CENTERING LOGIC */
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: calc(60px + env(safe-area-inset-top));
+  justify-content: center; /* Centers content vertically in available space */
+  
+  /* min-height 100% ensures it takes full screen but expands if content is long */
+  min-height: 100%; 
+  
+  /* Space for fixed header - Adjusted to ensure content doesn't overlap nav */
+  padding-top: calc(80px + env(safe-area-inset-top));
+  padding-bottom: 40px;
+  
   box-sizing: border-box;
-  /* Allow the body to scroll naturally if content is taller than screen */
   overflow-y: auto; 
+  overscroll-behavior-y: none; 
 }
 
 /* ==========================================================================
@@ -190,6 +196,8 @@ body {
    4. SELECTION SCREEN (RESTORED ORIGINAL GRID)
    ========================================================================== */
 .adhyay-selection {
+  /* Added auto margins to assist in vertical centering within the flex body */
+  margin: auto 0;
   width: 95%;
   max-width: 600px;
   text-align: center;
@@ -259,6 +267,8 @@ body {
    ========================================================================== */
 .practice-screen, .completion-screen { 
   display: none; 
+  /* Added auto margins to assist in vertical centering within the flex body */
+  margin: auto 0;
   width: 95%;
   max-width: 600px;
   text-align: center;
@@ -267,7 +277,10 @@ body {
 }
 
 .card {
-  height: 60vh;
+  /* Flexible height for centering logic */
+  height: auto;
+  min-height: 400px;
+  max-height: 70vh;
   background: var(--card-bg);
   border-radius: 16px;
   box-shadow: 0 8px 20px rgba(0,0,0,.15);
@@ -502,6 +515,8 @@ body {
    7. HOME PAGE STYLES (RESTORED UNIFORM ALIGNMENT)
    ========================================================================== */
 .content-wrapper {
+  /* Added auto margins to assist in vertical centering within the flex body */
+  margin: auto 0;
   width: 90%;
   max-width: 420px;
   text-align: center;
