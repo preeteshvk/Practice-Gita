@@ -302,16 +302,24 @@ body {
   align-items: center;
 }
 
+/* Ensure the Timer Icon is visible and sized */
 .timer-container {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 14px;
-  font-family: monospace;
+  gap: 6px;
 }
 
-.timer-container svg { width: 16px; height: 16px; }
+.timer-container svg {
+  width: 18px !important;
+  height: 18px !important;
+  display: inline-block !important;
+  flex-shrink: 0;
+}
 
+.timer-container span {
+  font-family: monospace;
+  font-size: 14px;
+}
 .counter-text {
   font-size: 11px;
   letter-spacing: 1px;
@@ -595,4 +603,5 @@ body {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
 
