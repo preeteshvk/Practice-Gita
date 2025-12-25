@@ -319,27 +319,30 @@ card.addEventListener("touchmove", e => {
     const dx = Math.abs(e.touches[0].clientX - sx);
     const dy = Math.abs(e.touches[0].clientY - sy);
     
-    // 1. If horizontal swipe (navigation), lock the page to prevent diagonal jumping
+    // 1. HARD LOCK: If the content fits in the card, prevent the whole page from moving/bouncing
+    const isScrollable = cardBody.scrollHeight > cardBody.clientHeight;
+    if (!isScrollable) {
+        if (e.cancelable) e.preventDefault(); 
+        return;
+    }
+
+    // 2. Navigation Lock: If horizontal swipe, lock the page to prevent diagonal jumping
     if (dx > dy && dx > 5) {
         if (e.cancelable) e.preventDefault(); 
         return;
     }
 
-    // 2. Vertical Scroll Logic
+    // 3. Vertical Edge Logic (for long text)
     const isTouchingCardBody = e.target.closest('.card-body');
     if (isTouchingCardBody) {
         const isAtTop = cardBody.scrollTop <= 0;
         const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - 1);
 
-        // If user is in the MIDDLE of reading a long translation, 
-        // prevent the whole page from moving.
-        if (!isAtTop && !isAtBottom) {
-            // We want ONLY the card-body to move, not the background.
-            // Note: overscroll-behavior: contain in CSS handles most of this.
+        // If swiping DOWN at the top, or UP at the bottom, lock it
+        if ((isAtTop && (e.touches[0].clientY > sy)) || (isAtBottom && (e.touches[0].clientY < sy))) {
+            if (e.cancelable) e.preventDefault();
         }
     }
-    // If they touch buttons OUTSIDE the card, we don't preventDefault,
-    // so the page scrolls naturally.
 }, { passive: false });
 
 card.addEventListener("touchend", e => {
