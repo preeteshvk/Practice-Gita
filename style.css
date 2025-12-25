@@ -291,7 +291,7 @@ body {
 }
 
 .card {
-  height: 60vh; 
+  height: 70vh; 
   min-height: 400px;
   /* Removed max-height because height: 70vh already handles it */
   background: var(--card-bg);
