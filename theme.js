@@ -1,13 +1,12 @@
 /**
  * theme.js
- * Handles global dark/light mode persistence and PWA navigation.
+ * Handles global dark/light mode persistence, System Sync, and PWA navigation.
  */
 
 const themeToggle = document.getElementById("themeToggle");
 
 /**
  * Applies the theme to the body and updates the toggle icon.
- * @param {string} theme - 'dark' or 'light'
  */
 function applyTheme(theme) {
   if (theme === "dark") {
@@ -20,10 +19,36 @@ function applyTheme(theme) {
   window.dispatchEvent(new Event('themeChanged'));
 }
 
-// Initial Load
-const savedTheme = localStorage.getItem("gita_theme") || "light";
-applyTheme(savedTheme);
+/**
+ * 1. INITIAL LOAD LOGIC
+ * Checks LocalStorage first, then falls back to System Preference
+ */
+const savedTheme = localStorage.getItem("gita_theme");
+const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)");
 
+if (savedTheme) {
+  // If user previously picked a theme, use that
+  applyTheme(savedTheme);
+} else {
+  // Otherwise, follow the device setting
+  applyTheme(systemPrefersDark.matches ? "dark" : "light");
+}
+
+/**
+ * 2. LIVE SYSTEM SYNC
+ * Updates theme automatically if device settings change (e.g., sunset/sunrise)
+ * only if the user hasn't manually set a preference.
+ */
+systemPrefersDark.addEventListener("change", (e) => {
+  if (!localStorage.getItem("gita_theme")) {
+    applyTheme(e.matches ? "dark" : "light");
+  }
+});
+
+/**
+ * 3. MANUAL TOGGLE
+ * Saves choice to localStorage to override system preference
+ */
 if (themeToggle) {
   themeToggle.onclick = () => {
     const isDark = document.body.classList.toggle("dark");
@@ -35,20 +60,14 @@ if (themeToggle) {
 }
 
 /**
- * PWA NAVIGATION FIX (For iPhone Standalone Mode)
- * Ensures that clicking links (Home, Adhyay, etc.) does not open 
- * the Safari browser UI.
+ * 4. PWA NAVIGATION FIX
  */
 if (("standalone" in window.navigator) && window.navigator.standalone) {
   document.addEventListener('click', (e) => {
-    // Look for the closest link element from the click target
     const targetLink = e.target.closest('a');
-    
     if (targetLink && targetLink.href) {
-      // Internal links only: prevent default behavior and navigate manually
       const isInternal = targetLink.href.includes(window.location.hostname);
       const isNotNewTab = targetLink.target !== "_blank";
-
       if (isInternal && isNotNewTab) {
         e.preventDefault();
         window.location.href = targetLink.href;
