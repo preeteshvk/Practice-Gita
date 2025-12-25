@@ -40,7 +40,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 80px; 
+  padding-top: calc(60px + env(safe-area-inset-top));
   box-sizing: border-box;
   /* Allow the body to scroll naturally if content is taller than screen */
   overflow-y: auto; 
@@ -54,14 +54,22 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  
+  /* Fallback for very old browsers */
+  height: 60px; 
+  padding: 0 16px;
+
+  /* Modern Smart-Phone logic */
+  height: calc(60px + env(safe-area-inset-top)); 
+  padding: env(safe-area-inset-top) 16px 0 16px; 
+  
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 16px;
   z-index: 1000;
-  background: var(--bg); /* Opaque background so content scrolls behind it */
+  background: var(--bg);
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  box-sizing: border-box;
 }
 
 .nav-left-group {
