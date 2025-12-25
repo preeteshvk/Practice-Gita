@@ -20,24 +20,29 @@
 }
 
 /* ==========================================================================
-   2. CORE LAYOUT
+   2. CORE LAYOUT (UPDATED FOR SCROLLING & HEADER SPACE)
    ========================================================================== */
 html, body {
   height: 100%;
-  overflow: hidden;
-  position: fixed;
   width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
   font-family: 'Noto Sans Devanagari', sans-serif;
   background: var(--bg);
   color: var(--text);
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* Stack header and content */
   align-items: center;
   transition: background 0.3s, color 0.3s;
+  /* Allow natural scrolling for Home and Selection screens */
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Space for the 60px fixed header + 20px breathing room */
+  padding-top: 80px; 
+  box-sizing: border-box;
 }
 
 /* ==========================================================================
@@ -54,6 +59,8 @@ body {
   align-items: center;
   padding: 0 16px;
   z-index: 1000;
+  background: var(--bg); /* Opaque background so content scrolls behind it */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 .nav-left-group {
@@ -171,12 +178,14 @@ body {
 }
 
 /* ==========================================================================
-   4. SELECTION SCREEN (ADHYAY GRID)
+   4. SELECTION SCREEN (RESTORED ORIGINAL GRID)
    ========================================================================== */
 .adhyay-selection {
-  max-height: 85vh;
-  overflow-y: auto;
-  padding-bottom: 20px;
+  width: 95%;
+  max-width: 600px;
+  text-align: center;
+  position: relative;
+  padding-bottom: 40px;
 }
 
 .select-all {
@@ -237,15 +246,15 @@ body {
 .toggle.active::after { transform: translateX(22px); }
 
 /* ==========================================================================
-   5. PRACTICE CARD COMPONENT
+   5. PRACTICE CARD COMPONENT (FIXED INTERNAL SCROLL)
    ========================================================================== */
-.practice-screen, .completion-screen { display: none; }
-
-.adhyay-selection, .practice-screen, .completion-screen {
+.practice-screen, .completion-screen { 
+  display: none; 
   width: 95%;
   max-width: 600px;
   text-align: center;
   position: relative;
+  padding-bottom: 40px;
 }
 
 .card {
@@ -255,12 +264,12 @@ body {
   box-shadow: 0 8px 20px rgba(0,0,0,.15);
   padding: 15px;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 1fr auto; 
   user-select: none;
   border: 4px solid var(--border);
   transition: border-color .4s, background .3s;
-  touch-action: none; 
   box-sizing: border-box;
+  overflow: hidden; 
 }
 
 /* Header */
@@ -293,19 +302,27 @@ body {
   font-weight: 600;
 }
 
-/* Body & Text */
+/* Body & Text - Internal Center/Scroll Fix */
 .card-body {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   text-align: center;
   overflow-y: auto;
   padding: 10px;
+  min-height: 0;
+}
+
+.card-body::before, .card-body::after {
+  content: "";
+  margin: auto;
 }
 
 .center-number { 
   font-size: 26px; 
   font-weight: 600; 
+  margin-bottom: 10px;
 }
 
 .shloka-text {
@@ -417,7 +434,7 @@ body {
 .star-btn.active { content: "★"; }
 
 /* ==========================================================================
-   6. BUTTONS & ICONS
+   6. BUTTONS & ICONS (RESTORED ORIGINAL POSITIONS)
    ========================================================================== */
 .start-btn, .action-btn {
   background: var(--accent);
@@ -469,12 +486,13 @@ body {
 }
 
 /* ==========================================================================
-   7. HOME PAGE STYLES
+   7. HOME PAGE STYLES (RESTORED UNIFORM ALIGNMENT)
    ========================================================================== */
 .content-wrapper {
   width: 90%;
   max-width: 420px;
   text-align: center;
+  padding-bottom: 40px;
 }
 
 .logo-area { margin-bottom: 50px; }
@@ -510,7 +528,7 @@ body {
   border: 1px solid var(--muted);
   box-shadow: 0 10px 30px rgba(0,0,0,0.05);
   transition: transform 0.2s;
-  text-align: left;
+  text-align: left; /* Restored left alignment */
 }
 
 .menu-item:active { transform: scale(0.98); }
@@ -537,7 +555,7 @@ body {
 }
 
 /* ==========================================================================
-   8. ANIMATIONS
+   8. ANIMATIONS (RESTORED BOTH KEYFRAMES)
    ========================================================================== */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
