@@ -279,7 +279,7 @@ body {
 /* ==========================================================================
    5. PRACTICE CARD COMPONENT (FIXED INTERNAL SCROLL)
    ========================================================================== */
-.practice-screen, .completion-screen { 
+.practice-screen, .completion-screen, .reading-screen { 
   display: none; 
   margin: 5vh auto 0 auto;
   width: 95%;
@@ -291,9 +291,9 @@ body {
 }
 
 .card {
-  height: 70vh; /* Changed from auto to fixed */
+  height: 70vh; 
   min-height: 400px;
-  max-height: 70vh;
+  /* Removed max-height because height: 70vh already handles it */
   background: var(--card-bg);
   border-radius: 16px;
   box-shadow: 0 8px 20px rgba(0,0,0,.15);
