@@ -20,11 +20,11 @@
 }
 
 /* ==========================================================================
-   2. CORE LAYOUT (CENTRALLY ALIGNED & RESPONSIVE)
+   2. CORE LAYOUT (PREVENTS DISTORTION ON SMALL HEIGHT)
    ========================================================================== */
 html {
-  /* Set to 100% to allow the body to calculate vertical centering */
   height: 100%;
+  overflow: hidden; 
   overscroll-behavior-y: none;
 }
 
@@ -35,24 +35,47 @@ body {
   margin: 0;
   padding: 0;
   
-  /* FLEX CENTERING LOGIC */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* Centers content vertically in available space */
   
-  /* min-height 100% ensures it takes full screen but expands if content is long */
-  min-height: 100%; 
+  /* 1. ANCHOR: Start from top to prevent 'wobble' during transitions */
+  justify-content: flex-start; 
   
-  /* Space for fixed header - Adjusted to ensure content doesn't overlap nav */
+  height: 100%; 
+  width: 100%;
+  box-sizing: border-box;
+  
+  /* 2. SPACING: Fixed space for header ensures card never moves */
   padding-top: calc(80px + env(safe-area-inset-top));
   padding-bottom: 40px;
   
-  box-sizing: border-box;
   overflow-y: auto; 
   overscroll-behavior-y: none; 
+  -webkit-overflow-scrolling: touch;
 }
 
+/* FIX: Laptop or Landscape phone */
+@media (max-height: 700px) {
+  /* No need to set justify-content: flex-start here, it's already inherited */
+  
+  .card {
+    /* Ensure the card doesn't get squashed on short screens */
+    max-height: none; 
+    min-height: 300px;
+    height: auto !important; /* Overrides the 70vh if it causes overflow */
+  }
+}
+
+/* Desktop Fix: Re-allows scrolling and centers if necessary */
+@media (min-width: 1024px) {
+  html { overflow: auto; }
+  body { 
+    height: auto; 
+    min-height: 100%; 
+    justify-content: center; /* Centering is safe on desktop as there is no swipe wobble */
+  }
+}
 /* ==========================================================================
    3. NAVIGATION (HEADER, SIDEBAR & OVERLAY)
    ========================================================================== */
@@ -61,15 +84,8 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  
-  /* Fallback for very old browsers */
-  height: 60px; 
-  padding: 0 16px;
-
-  /* Modern Smart-Phone logic */
   height: calc(60px + env(safe-area-inset-top)); 
   padding: env(safe-area-inset-top) 16px 0 16px; 
-  
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -117,7 +133,6 @@ body {
   opacity: .8;
 }
 
-/* Sidebar */
 .sidebar {
   position: fixed;
   top: 0;
@@ -166,7 +181,6 @@ body {
 
 .sidebar-link:active { background: rgba(211, 47, 47, 0.1); }
 
-/* Overlay & Hamburger */
 .overlay {
   position: fixed;
   top: 0;
@@ -197,13 +211,13 @@ body {
    4. SELECTION SCREEN (RESTORED ORIGINAL GRID)
    ========================================================================== */
 .adhyay-selection {
-  /* Added auto margins to assist in vertical centering within the flex body */
   margin: auto 0;
   width: 95%;
   max-width: 600px;
   text-align: center;
   position: relative;
   padding-bottom: 40px;
+  flex-shrink: 0; /* Prevents squishing on desktop */
 }
 
 .select-all {
@@ -238,7 +252,6 @@ body {
   border-color: var(--accent);
 }
 
-/* Toggle Switch */
 .toggle {
   width: 44px;
   height: 22px;
@@ -268,17 +281,17 @@ body {
    ========================================================================== */
 .practice-screen, .completion-screen { 
   display: none; 
-  /* Added auto margins to assist in vertical centering within the flex body */
-  margin: auto 0;
+  margin: 5vh auto 0 auto;
   width: 95%;
   max-width: 600px;
   text-align: center;
   position: relative;
   padding-bottom: 40px;
+  flex-shrink: 0;
 }
 
 .card {
-  height: 70vh; 
+  height: 70vh; /* Changed from auto to fixed */
   min-height: 400px;
   max-height: 70vh;
   background: var(--card-bg);
@@ -294,14 +307,12 @@ body {
   overflow: hidden; 
 }
 
-/* Header */
 .card-header {
   display: grid;
   grid-template-columns: 40px 1fr 60px;
   align-items: center;
 }
 
-/* Ensure the Timer Icon is visible and sized */
 .timer-container {
   display: flex;
   align-items: center;
@@ -319,6 +330,7 @@ body {
   font-family: monospace;
   font-size: 14px;
 }
+
 .counter-text {
   font-size: 11px;
   letter-spacing: 1px;
@@ -343,7 +355,6 @@ body {
   min-height: 0; 
   width: 100%;
   box-sizing: border-box;
-  /* This keeps scroll energy inside the card when the user is reading */
   overscroll-behavior: contain; 
   -webkit-overflow-scrolling: touch; 
 }
@@ -360,7 +371,6 @@ body {
 }
 
 .shloka-text {
-  /* Remove 'display: none' from here if you handle visibility via JS */
   width: 100%;
   font-size: clamp(19px, 5.5vw, 25px);
   line-height: 1.6;
@@ -391,7 +401,6 @@ body {
   display: none;
 }
 
-/* Footer & Navigation */
 .card-footer {
   display: grid;
   grid-template-columns: 60px 1fr 60px;
@@ -419,7 +428,6 @@ body {
   fill: var(--accent) !important;
 }
 
-/* Hints */
 .hint-btn {
   grid-column: 2;
   grid-row: 1;
@@ -455,7 +463,6 @@ body {
 
 .dark .hint-banner { background: rgba(255,255,255,.1); }
 
-/* Star Button */
 .star-btn {
   color: var(--accent);
   transition: transform 0.2s ease;
@@ -523,12 +530,12 @@ body {
    7. HOME PAGE STYLES (RESTORED UNIFORM ALIGNMENT)
    ========================================================================== */
 .content-wrapper {
-  /* Added auto margins to assist in vertical centering within the flex body */
   margin: auto 0;
   width: 90%;
   max-width: 420px;
   text-align: center;
   padding-bottom: 40px;
+  flex-shrink: 0;
 }
 
 .logo-area { margin-bottom: 50px; }
@@ -564,7 +571,7 @@ body {
   border: 1px solid var(--muted);
   box-shadow: 0 10px 30px rgba(0,0,0,0.05);
   transition: transform 0.2s;
-  text-align: left; /* Restored left alignment */
+  text-align: left;
 }
 
 .menu-item:active { transform: scale(0.98); }
@@ -602,4 +609,3 @@ body {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
