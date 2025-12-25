@@ -278,8 +278,7 @@ body {
 }
 
 .card {
-  /* Flexible height for centering logic */
-  height: auto;
+  height: 70vh; 
   min-height: 400px;
   max-height: 70vh;
   background: var(--card-bg);
@@ -603,3 +602,4 @@ body {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
