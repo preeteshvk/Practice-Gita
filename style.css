@@ -527,18 +527,33 @@ body {
 }
 
 /* ==========================================================================
-   7. HOME PAGE STYLES (RESTORED UNIFORM ALIGNMENT)
+   7. HOME PAGE STYLES (RESTORED UNIFORM ALIGNMENT - NO SCROLL FIX)
    ========================================================================== */
 .content-wrapper {
-  margin: auto 0;
+  /* 1. We replace 'margin: auto 0' with a flex-grow strategy.
+        This centers the content vertically without adding extra height 
+        that triggers the scrollbar. */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1; 
+  
+  margin: 0 auto; /* Center horizontally */
   width: 90%;
   max-width: 420px;
   text-align: center;
-  padding-bottom: 40px;
+  
+  /* 2. Reduced from 40px to 10px to save 'floor' space */
+  padding-bottom: 10px; 
   flex-shrink: 0;
+  
+  /* 3. This ensures it doesn't fight with the 80px body padding */
+  box-sizing: border-box;
 }
 
-.logo-area { margin-bottom: 50px; }
+/* 4. Reduced margin from 50px to 30px. 
+      Visually it looks almost the same, but saves 20px of scroll space. */
+.logo-area { margin-bottom: 30px; }
 
 .logo-area h1 {
   font-size: 34px;
@@ -557,14 +572,17 @@ body {
 .menu-stack {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  /* 5. Reduced gap from 20px to 15px. 
+        Ensures all 4 buttons stay within the viewport height. */
+  gap: 15px; 
 }
 
 .menu-item {
   display: flex;
   align-items: center;
   background: var(--card-bg);
-  padding: 24px;
+  /* 6. Reduced padding from 24px to 20px. */
+  padding: 20px; 
   border-radius: 16px;
   text-decoration: none;
   color: inherit;
@@ -591,7 +609,9 @@ body {
 }
 
 .footer {
-  margin-top: 60px;
+  /* 7. CRITICAL: Reduced from 60px to 20px. 
+        A 60px margin is almost certainly what was forcing the scroll. */
+  margin-top: 20px; 
   font-size: 13px;
   color: var(--muted);
   opacity: 0.7;
