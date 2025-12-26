@@ -2,6 +2,7 @@
  * path.js
  * Handles dual-mode logic: Linear Adhyay-Path and Starred List Navigation.
  * Includes Smart-Scroll Gesture logic for multi-line text accessibility.
+ * NEW: Integrated Quick Jump / Dropdown Search functionality.
  */
 
 if (new URLSearchParams(window.location.search).get("mode") === "starred") {
@@ -37,6 +38,13 @@ const nextContainer = document.querySelector(".next-container");
 const globalPrev = document.getElementById("prev"); 
 const globalNext = document.getElementById("next"); 
 const adhyayHeaderBtn = document.getElementById("go-select");
+
+// NEW: JUMP MODAL ELEMENTS
+const jumpModal = document.getElementById("jump-modal");
+const chSelect = document.getElementById("jump-ch-select");
+const vsSelect = document.getElementById("jump-vs-select");
+const jumpConfirm = document.getElementById("jump-confirm");
+const jumpCancel = document.getElementById("jump-cancel");
 
 // --- 1. STAR & TOAST LOGIC ---
 
@@ -113,7 +121,6 @@ function loadShloka() {
     flipped = false; 
     updateStarIcon();
     
-    // Clear and show textContainer (shloka-text)
     textContainer.innerHTML = "";
     textContainer.style.display = "block";
 
@@ -130,7 +137,6 @@ function loadShloka() {
         }
     }
     
-    // Front Side
     const shlokaDiv = document.createElement("div");
     shlokaDiv.id = "view-shloka";
     shlokaDiv.style.display = "block"; 
@@ -152,7 +158,6 @@ function loadShloka() {
         }
     });
 
-    // Back Side
     const transDiv = document.createElement("div");
     transDiv.id = "view-translation";
     transDiv.style.cssText = "display: none; font-style: italic; text-align: center;";
@@ -176,7 +181,6 @@ function loadShloka() {
         if (adhyayHeaderBtn) adhyayHeaderBtn.style.display = "flex";
     }
 
-    // Reset scroll of the body to top
     cardBody.scrollTop = 0;
 }
 
@@ -192,7 +196,6 @@ function toggleFlip(e) {
     sView.style.display = flipped ? "none" : "block";
     tView.style.display = flipped ? "block" : "none";
     
-    // Reset scroll so they start at the top of the translation/shloka
     cardBody.scrollTop = 0;
 }
 
@@ -222,7 +225,7 @@ function showCompletion() {
     if (nBtn) nBtn.style.display = (currentChapter < 18) ? "block" : "none";
 }
 
-// --- 4. INITIALIZATION ---
+// --- 4. DATA LOADING & JUMP LOGIC ---
 
 fetch("verse.json")
     .then(r => r.json())
@@ -232,7 +235,27 @@ fetch("verse.json")
             translation_hindi: v.hindi_translation, type: v.type || "shloka"
         }));
 
+        // Populate Jump Modal Chapters
+        if(chSelect) {
+            for (let i = 1; i <= 18; i++) {
+                let opt = document.createElement("option");
+                opt.value = i;
+                opt.textContent = "Adhyay " + i;
+                chSelect.appendChild(opt);
+            }
+        }
+
         const params = new URLSearchParams(window.location.search);
+        
+        // AUTO-OPEN JUMP MODAL: From Home Search Icon
+        if (window.location.hash === "#jump") {
+            if(jumpModal)
+                selectionScreen.style.display = "none"; 
+                adhyayHeaderBtn.style.display= "none";
+                jumpModal.style.display = "flex";
+            history.replaceState(null, null, ' '); 
+        }
+
         if (params.get("mode") === "starred") {
             isStarredMode = true;
             const stars = getStarred();
@@ -254,6 +277,55 @@ fetch("verse.json")
         }
     });
 
+// Dropdown: Filter Verse list when Adhyay changes
+if(chSelect) {
+    chSelect.onchange = () => {
+        const chNum = parseInt(chSelect.value);
+        
+        // REMOVED the filter that was hiding pushpikas
+        const verses = allShlokas.filter(s => s.chapter === chNum);
+        
+        vsSelect.innerHTML = '<option value="" disabled selected>Select Shloka</option>';
+        
+        verses.forEach(v => {
+            let opt = document.createElement("option");
+            opt.value = v.verse;
+            
+            // If it's a pushpika, show "Pushpika", otherwise show the Shloka number
+            opt.textContent = (v.type === "pushpika") ? "Pushpika" : "Shloka " + v.verse;
+            
+            vsSelect.appendChild(opt);
+        });
+        vsSelect.disabled = false;
+    };
+}
+
+// Execute Quick Jump
+if(jumpConfirm) {
+    jumpConfirm.onclick = () => {
+        const ch = parseInt(chSelect.value);
+        const vs = parseInt(vsSelect.value);
+        if (!ch || !vs) return;
+        currentAdhyayShlokas = allShlokas.filter(s => s.chapter === ch);
+        index = currentAdhyayShlokas.findIndex(s => s.verse == vs);
+        isStarredMode = false;
+        jumpModal.style.display = "none";
+        selectionScreen.style.display = "none";
+        readingScreen.style.display = "block";
+        loadShloka();
+    };
+}
+
+if (jumpCancel) {
+    jumpCancel.onclick = () => { 
+        jumpModal.style.display = "none"; 
+        document.body.style.opacity = "0";
+        window.location.href = "./index.html"; 
+    };
+}
+
+// --- 5. INITIALIZATION ---
+
 if (grid) {
     for (let i = 1; i <= 18; i++) {
         const d = document.createElement("div");
@@ -268,8 +340,6 @@ if (grid) {
     }
 }
 
-// --- 5. EVENT HANDLERS ---
-
 if (startBtn) {
     startBtn.onclick = () => {
         const selected = document.querySelector(".adhyay-card.selected");
@@ -282,6 +352,8 @@ if (startBtn) {
         loadShloka();
     };
 }
+
+// --- 6. EVENT HANDLERS ---
 
 if(starBtn) starBtn.onclick = toggleStar;
 if (flipBtn) flipBtn.onclick = toggleFlip;
@@ -305,7 +377,7 @@ if(nextAdhyayBtn) nextAdhyayBtn.onclick = () => {
     readingScreen.style.display = "block"; loadShloka();
 };
 
-// --- 6. GESTURES (SMART-SCROLL & BUTTON ACCESS) ---
+// --- 7. GESTURES (SMART-SCROLL & BUTTON ACCESS) ---
 
 let sx = 0, sy = 0, startTime = 0;
 
@@ -318,27 +390,19 @@ card.addEventListener("touchstart", e => {
 card.addEventListener("touchmove", e => { 
     const dx = Math.abs(e.touches[0].clientX - sx);
     const dy = Math.abs(e.touches[0].clientY - sy);
-    
-    // 1. HARD LOCK: If the content fits in the card, prevent the whole page from moving/bouncing
     const isScrollable = cardBody.scrollHeight > cardBody.clientHeight;
     if (!isScrollable) {
         if (e.cancelable) e.preventDefault(); 
         return;
     }
-
-    // 2. Navigation Lock: If horizontal swipe, lock the page to prevent diagonal jumping
     if (dx > dy && dx > 5) {
         if (e.cancelable) e.preventDefault(); 
         return;
     }
-
-    // 3. Vertical Edge Logic (for long text)
     const isTouchingCardBody = e.target.closest('.card-body');
     if (isTouchingCardBody) {
         const isAtTop = cardBody.scrollTop <= 0;
         const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - 1);
-
-        // If swiping DOWN at the top, or UP at the bottom, lock it
         if ((isAtTop && (e.touches[0].clientY > sy)) || (isAtBottom && (e.touches[0].clientY < sy))) {
             if (e.cancelable) e.preventDefault();
         }
@@ -350,26 +414,17 @@ card.addEventListener("touchend", e => {
     const dy = e.changedTouches[0].clientY - sy;
     const duration = Date.now() - startTime;
 
-    // A. Horizontal Swipe (Go to Next/Prev Shloka)
     if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)) {
         if (dx < -70) goNext(); 
         else if (dx > 70) goPrev();
         return;
     }
 
-    // B. Vertical Intent (Flip Card)
-    // Threshold: Must be faster than 300ms and move more than 60px
     if (Math.abs(dy) > 60 && duration < 300) {
         const isAtTop = cardBody.scrollTop <= 10;
         const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - 10);
-
-        if (dy < 0 && isAtBottom) {
-            // Swipe UP at the bottom -> Flip
-            toggleFlip();
-        } else if (dy > 0 && isAtTop) {
-            // Swipe DOWN at the top -> Flip
-            toggleFlip();
-        }
+        if (dy < 0 && isAtBottom) { toggleFlip(); } 
+        else if (dy > 0 && isAtTop) { toggleFlip(); }
     }
 }, { passive: false });
 
