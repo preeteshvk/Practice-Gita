@@ -94,6 +94,28 @@
         <button class="action-btn secondary" onclick="location.reload()">Select Adhyay</button>
     </div>
 
+    <div id="jump-modal" class="jump-overlay" style="display:none;">
+    <div class="jump-card">
+        <h3>Quick Jump</h3>
+        <div class="drop-group">
+            <label>Select Adhyay</label>
+            <select id="jump-ch-select">
+                <option value="" disabled selected>Pick Chapter</option>
+            </select>
+        </div>
+        <div class="drop-group">
+            <label>Select Shloka</label>
+            <select id="jump-vs-select" disabled>
+                <option value="" disabled selected>Pick Shloka</option>
+            </select>
+        </div>
+        <div class="jump-actions">
+            <button id="jump-confirm" class="jump-btn-go">Go</button>
+            <button id="jump-cancel" class="jump-btn-cancel">Cancel</button>
+        </div>
+    </div>
+    </div>
+
     <script src="theme.js"></script>
     <script src="path.js"></script>
 </body>
