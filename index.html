@@ -4,22 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Project Gita</title>
+    <meta name="title" content="Project Gita - Shrimad Bhagavad Gita">
+    <meta name="description" content="Master the Gita through Adhyay-Path, Charan-Bodha, and Shlokank. Read and revise verses.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://preeteshvk.github.io/Practice-Gita/">
+    <meta property="og:title" content="Project Gita">
+    <meta property="og:description" content="Journey of the self, through the self, to the self. Master Bhagavad Gita shlokas.">
+    <meta property="og:image" content="https://preeteshvk.github.io/Practice-Gita/og-baner.jpg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://preeteshvk.github.io/Practice-Gita/">
+    <meta property="twitter:title" content="Project Gita">
+    <meta property="twitter:description" content="Master the Gita through Adhyay-Path, Charan-Bodha, and Shlokank.">
+    <meta property="twitter:image" content="https://preeteshvk.github.io/Practice-Gita/og-baner.jpg">
+
     <link rel="manifest" href="manifest.json">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Project Gita">
     <link rel="apple-touch-icon" href="icon-192.png">
-
     <link rel="apple-touch-startup-image" href="icon-512.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;500;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
     <div class="nav-bar">
         <div class="hamburger" id="openMenu">
             <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
@@ -68,27 +80,23 @@
             "Yoga is the journey of the self, through the self, to the self."
         </div>
     </div>
-<script>
-    // Disable Starred Menu Item if no stars exist
-    document.addEventListener("DOMContentLoaded", () => {
-        const starredBtn = document.getElementById("starred-menu-item");
-        if (starredBtn) {
-            const stars = JSON.parse(localStorage.getItem("gita_stars") || "[]");
-            if (stars.length === 0) {
-                // Visual feedback
-                starredBtn.style.opacity = "0.6";
-                starredBtn.style.filter = "grayscale(1)";
-                // Disable clicking
-                starredBtn.style.pointerEvents = "none";
-                
-                // Optional: Update text to explain why it's disabled
-                const p = starredBtn.querySelector('p');
-                if (p) p.textContent = "No bookmarked verses yet.";
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const starredBtn = document.getElementById("starred-menu-item");
+            if (starredBtn) {
+                const stars = JSON.parse(localStorage.getItem("gita_stars") || "[]");
+                if (stars.length === 0) {
+                    starredBtn.style.opacity = "0.6";
+                    starredBtn.style.filter = "grayscale(1)";
+                    starredBtn.style.pointerEvents = "none";
+                    const p = starredBtn.querySelector('p');
+                    if (p) p.textContent = "No bookmarked verses yet.";
+                }
             }
-        }
-    });
-</script>
-<script src="theme.js"></script>
-<script src="menu.js"></script>
+        });
+    </script>
+    <script src="theme.js"></script>
+    <script src="menu.js"></script>
 </body>
 </html>
