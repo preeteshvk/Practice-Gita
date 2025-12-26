@@ -136,64 +136,186 @@ body {
 .sidebar {
   position: fixed;
   top: 0;
-  left: -280px;
-  width: 280px;
+  left: -300px; /* Hidden by default */
+  width: 85%; 
+  max-width: 300px; 
   height: 100%;
   background: var(--card-bg);
-  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-  transition: left 0.3s ease;
+  box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 3000;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  /* env(safe-area-inset-top) handles the notch on modern iPhones */
+  padding: env(safe-area-inset-top) 16px 20px 16px;
   box-sizing: border-box;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.sidebar.active { left: 0; }
+.sidebar.active { 
+  left: 0; 
+}
 
+/* --- Sidebar Header --- */
 .sidebar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 15px;
+  padding: 24px 12px 16px 12px; 
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
 }
 
+.dark .sidebar-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800; 
+  color: var(--accent);
+  letter-spacing: -0.5px;
+}
+
+#closeMenu {
+  cursor: pointer;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+#closeMenu:hover {
+  background: rgba(0, 0, 0, 0.05);
+  opacity: 1;
+}
+
+.dark #closeMenu:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* --- Sidebar Links --- */
 .sidebar-links {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 4px;
 }
 
 .sidebar-link {
   text-decoration: none;
   color: var(--text);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
-  padding: 12px;
-  border-radius: 8px;
-  transition: background 0.2s;
+  padding: 10px;
+  border-radius: 14px;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
-.sidebar-link:active { background: rgba(211, 47, 47, 0.1); }
+/* Icon Container */
+.sidebar-link span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; 
+  height: 40px;
+  border-radius: 12px;
+  font-size: 20px;
+  flex-shrink: 0;
+  background: #f5f5f7; /* Fallback tint */
+}
 
+/* --- Color Map (Robust Attribute Selection) --- */
+.sidebar-link[href="about.html"] span     { background: #efe5fd; } /* Purple */
+.sidebar-link[href="guide.html"] span     { background: #ffebee; } /* Red */
+.sidebar-link[href="resources.html"] span { background: #e8f5e9; } /* Green */
+.sidebar-link[href="blogs.html"] span     { background: #e3f2fd; } /* Blue */
+.sidebar-link[href="request.html"] span   { background: #fff8e1; } /* Amber */
+.sidebar-link[href="contact.html"] span   { background: #f3e5f5; } /* Violet */
+.sidebar-link[href="support.html"] span   { background: #fff0f0; } /* Soft Red */
+
+.dark .sidebar-link span {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* --- Hover & Divider --- */
+.sidebar-link:hover {
+  background: rgba(0, 0, 0, 0.03);
+  transform: translateX(4px);
+}
+
+.sidebar-link:active { 
+  transform: scale(0.97); 
+}
+
+.sidebar hr {
+  width: 90%;
+  border: 0;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  margin: 12px auto;
+  flex-shrink: 0;
+}
+
+.dark .sidebar hr {
+  border-top-color: rgba(255,255,255,0.1);
+}
+
+/* --- Overlay --- */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(4px); /* Frosted glass effect */
   display: none;
   z-index: 2500;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.overlay.active { display: block; }
+.overlay.active { 
+  display: block; 
+  opacity: 1;
+}
 
+/* --- Responsive Adaptability (Landscape & Short Screens) --- */
+@media (max-height: 600px) {
+  .sidebar-header {
+    padding: 16px 12px 10px 12px;
+    margin-bottom: 5px;
+  }
+  .sidebar-header h2 {
+    font-size: 20px;
+  }
+  #closeMenu {
+    width: 18px;
+    height: 18px;
+  }
+  .sidebar-link { 
+    padding: 8px 10px; 
+  }
+  .sidebar-link span { 
+    width: 34px; 
+    height: 34px; 
+    font-size: 17px; 
+  }
+  .sidebar hr { 
+    margin: 8px auto; 
+  }
+}
 .hamburger {
   cursor: pointer;
   display: flex;
