@@ -751,3 +751,100 @@ body {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* ==========================================================================
+   OFFLINE-READY QUICK JUMP MODAL
+   ========================================================================== */
+
+.jump-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;     /* Vertical center */
+    justify-content: center;   /* Horizontal center */
+    z-index: 9999;
+}
+
+.jump-card {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    /* Remove any top: 0 or absolute positioning here */
+    position: relative; 
+}
+
+.jump-card h3 {
+    margin: 0 0 15px 0;
+    text-align: center;
+    color: var(--accent);
+}
+
+.drop-group {
+    margin-bottom: 20px;
+}
+
+.drop-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--muted);
+    margin-bottom: 8px;
+}
+
+/* OFFLINE DROPDOWN: No external assets */
+.drop-group select {
+    width: 100%;
+    height: 48px; /* Fixed height for consistency */
+    padding: 0 12px; /* Adjusted padding for fixed height */
+    font-size: 16px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--muted);
+    border-radius: 10px;
+    outline: none;
+    cursor: pointer;
+}
+
+.jump-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.jump-btn-go {
+    flex: 2;
+    padding: 12px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.jump-btn-cancel {
+    flex: 1;
+    padding: 12px;
+    background: #eee; /* Light neutral for offline contrast */
+    color: #333;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Dark Mode Overrides for Cancel button */
+.dark .jump-btn-cancel {
+    background: #333;
+    color: #fff;
+}
+
+/*Features section*/
+
+
+/*Feature request section*/
