@@ -77,3 +77,33 @@ if (("standalone" in window.navigator) && window.navigator.standalone) {
     }
   }, false);
 }
+
+// 1. Define our 3 specific formats
+const GITA_LANGS = {
+    HINDI: 'hi',          // Sanskrit + Hindi
+    EN_SANS: 'en_sanskrit', // Sanskrit + English
+    EN_IAST: 'en_iast'      // Transliterated + English
+};
+
+// 2. Function to update the language globally
+function setLanguage(lang) {
+    localStorage.setItem("gita_lang", lang);
+    document.documentElement.setAttribute('data-lang', lang);
+    
+    // Refresh the UI if we are on a shloka page
+    if (typeof loadShloka === 'function') {
+        loadShloka(); 
+    }
+    
+    // Update the Sidebar UI to show what's active
+    updateSidebarActiveState(lang);
+    
+    // Close modal if it's open
+    const modal = document.getElementById('lang-modal');
+    if(modal) modal.style.display = 'none';
+}
+
+// 3. Get saved language or return null
+function getLanguage() {
+    return localStorage.getItem("gita_lang");
+}
