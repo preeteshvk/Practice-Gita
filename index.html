@@ -93,16 +93,16 @@
 
     <div id="lang-modal" class="modal-overlay" style="display:none;">
         <div class="modal-card">
-            <h3>Select Language</h3>
+            <h3>Select Language & Script</h3>
             <p>Choose how you'd like to read the Shlokas.</p>
             <div class="lang-options">
                 <button onclick="setLanguage('hi')">
                     <strong>हिन्दी (Sanskrit)</strong>
-                    <span>Sanskrit shlokas + Hindi translation</span>
+                    <span>Sanskrit script + Hindi translation</span>
                 </button>
                 <button onclick="setLanguage('en_sanskrit')">
                     <strong>English (Sanskrit)</strong>
-                    <span>Sanskrit shlokas + English translation</span>
+                    <span>Sanskrit script + English translation</span>
                 </button>
                 <button onclick="setLanguage('en_iast')">
                     <strong>English (IAST)</strong>
@@ -113,33 +113,8 @@
     </div>
 
     <script>
-        // GLOBAL FUNCTION: Needs to be outside DOMContentLoaded so buttons can trigger it
-        function setLanguage(lang) {
-            // 1. Save the preference
-            localStorage.setItem("gita_lang", lang);
-            document.documentElement.setAttribute('data-lang', lang);
-            
-            // 2. Hide the modal immediately
-            const modal = document.getElementById('lang-modal');
-            if (modal) {
-                modal.style.display = 'none';
-                console.log("Modal hidden successfully");
-            }
-
-            // 3. Update Sidebar (with safety check)
-            if (typeof updateLangUI === 'function') {
-                updateLangUI();
-            }
-
-            // 4. Update Content (for AdhyayPath etc)
-            window.dispatchEvent(new CustomEvent('langChanged', { detail: lang }));
-            
-            // 5. Force a small UI refresh for the body to ensure overlay is gone
-            document.body.style.overflow = 'auto'; 
-        }
-
         document.addEventListener("DOMContentLoaded", () => {
-            // 1. Language Modal Check
+            // --- 1. Language Onboarding Check ---
             const savedLang = localStorage.getItem("gita_lang");
             const modal = document.getElementById('lang-modal');
             
@@ -149,7 +124,7 @@
                 document.documentElement.setAttribute('data-lang', savedLang);
             }
 
-            // 2. Starred Menu Logic (Your existing logic)
+            // --- 2. Starred Menu Item Logic ---
             const starredBtn = document.getElementById("starred-menu-item");
             if (starredBtn) {
                 const stars = JSON.parse(localStorage.getItem("gita_stars") || "[]");
