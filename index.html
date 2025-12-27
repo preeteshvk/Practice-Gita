@@ -37,17 +37,16 @@
             <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
         </div>
         <div class="nav-right-actions" style="display: flex; align-items: center; gap: 18px;">
-      <a href="AdhyayPath.html#jump" class="nav-tool-btn search-link">
-    <span class="search-text">Search Shloka</span>
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-    </svg>
-    <span class="separator">|</span>
-</a>
-         <div class="theme-toggle" id="themeToggle">🌙</div>
+            <a href="AdhyayPath.html#jump" class="nav-tool-btn search-link">
+                <span class="search-text">Search Shloka</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span class="separator">|</span>
+            </a>
+            <div class="theme-toggle" id="themeToggle">🌙</div>
         </div>
-       
     </div>
 
     <div class="content-wrapper">
@@ -64,7 +63,7 @@
                     <p>Read and revise the Gita verse by verse.</p>
                 </div>
             </a>
-             <a href="CharanBodha.html" class="menu-item">
+            <a href="CharanBodha.html" class="menu-item">
                 <div class="icon-box">🧩</div>
                 <div class="text-box">
                     <h2>Charan-Bodha</h2>
@@ -84,35 +83,66 @@
                     <h2>Starred Shlokas</h2>
                     <p>Revisit your bookmarked verses.</p>
                 </div>
-             </a>
+            </a>
         </div>
 
         <div class="footer">
             "Yoga is the journey of the self, through the self, to the self."
         </div>
     </div>
+
     <div id="lang-modal" class="modal-overlay" style="display:none;">
-    <div class="modal-card">
-        <h3>Select Language & Script</h3>
-        <p>Choose how you'd like to read the Shlokas.</p>
-        <div class="lang-options">
-            <button onclick="setLanguage('hi')">
-                <strong>हिन्दी</strong>
-                <span>Sanskrit + Hindi Translation</span>
-            </button>
-            <button onclick="setLanguage('en_sanskrit')">
-                <strong>English (Sanskrit)</strong>
-                <span>Sanskrit + English Translation</span>
-            </button>
-            <button onclick="setLanguage('en_iast')">
-                <strong>English (IAST)</strong>
-                <span>Transliteration + English Translation</span>
-            </button>
+        <div class="modal-card">
+            <h3>Select Language</h3>
+            <p>Choose how you'd like to read the Shlokas.</p>
+            <div class="lang-options">
+                <button onclick="setLanguage('hi')">
+                    <strong>हिन्दी (Sanskrit)</strong>
+                    <span>Sanskrit shlokas + Hindi translation</span>
+                </button>
+                <button onclick="setLanguage('en_sanskrit')">
+                    <strong>English (Sanskrit)</strong>
+                    <span>Sanskrit shlokas + English translation</span>
+                </button>
+                <button onclick="setLanguage('en_iast')">
+                    <strong>English (IAST)</strong>
+                    <span>Sanskrit transliteration + English translation</span>
+                </button>
+            </div>
         </div>
     </div>
-</div>
+
     <script>
+        // GLOBAL FUNCTION: Needs to be outside DOMContentLoaded so buttons can trigger it
+        function setLanguage(lang) {
+            localStorage.setItem("gita_lang", lang);
+            document.documentElement.setAttribute('data-lang', lang);
+            
+            // Hide the modal
+            const modal = document.getElementById('lang-modal');
+            if (modal) modal.style.display = 'none';
+
+            // Tell the sidebar/menu to update its visual active state
+            if (typeof updateLangUI === 'function') {
+                updateLangUI();
+            }
+
+            // Tell other scripts (like path.js) that language has changed
+            window.dispatchEvent(new CustomEvent('langChanged', { detail: lang }));
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
+            // 1. Language Modal Check
+            const savedLang = localStorage.getItem("gita_lang");
+            const modal = document.getElementById('lang-modal');
+            
+            if (!savedLang && modal) {
+                modal.style.display = 'flex';
+            } else if (savedLang) {
+                document.documentElement.setAttribute('data-lang', savedLang);
+            }
+
+            // 2. Starred Menu Logic (Your existing logic)
             const starredBtn = document.getElementById("starred-menu-item");
             if (starredBtn) {
                 const stars = JSON.parse(localStorage.getItem("gita_stars") || "[]");
