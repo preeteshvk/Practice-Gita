@@ -251,11 +251,32 @@ function goPrev() {
 function showCompletion() {
     readingScreen.style.display = "none";
     completionScreen.style.display = "block";
+    
     const currentChapter = currentAdhyayShlokas[0].chapter;
     const msg = document.getElementById("completion-msg");
-    if(msg) msg.textContent = `You have completed reading Adhyay ${currentChapter}.`;
+    
+    // 1. Get current language from storage
+    const currentLang = localStorage.getItem("gita_lang") || 'hi';
+
+    // 2. Set translated message
+    if (msg) {
+        if (currentLang === 'hi') {
+            msg.textContent = `आपने सफलतापूर्वक अध्याय ${currentChapter} पूरा कर लिया है।`;
+        } else if (currentLang === 'en_iast') {
+            msg.textContent = `You have completed reading Adhyāya ${currentChapter}.`;
+        } else {
+            // Default for English (Sanskrit)
+            msg.textContent = `You have completed reading Adhyay ${currentChapter}.`;
+        }
+    }
+
     const nBtn = document.getElementById("btn-next-adhyay");
     if (nBtn) nBtn.style.display = (currentChapter < 18) ? "block" : "none";
+    
+    // 3. Re-run translation engine to ensure buttons translate immediately
+    if (typeof applyUILanguage === 'function') {
+        applyUILanguage();
+    }
 }
 
 // --- 4. DATA LOADING & JUMP LOGIC ---
@@ -271,11 +292,18 @@ fetch("verse.json")
             type: v.type || "shloka"
         }));
 
-        if(chSelect) {
+       if(chSelect) {
+            const lang = localStorage.getItem("gita_lang") || 'hi';
+            const adhyayWord = uiTranslations[lang].adhyay; // Grabs "अध्याय", "Adhyay", or "Adhyāya"
+            const pickChLabel = uiTranslations[lang].pick_ch;
+
+            // Set the placeholder first
+            chSelect.innerHTML = `<option value="" disabled selected>${pickChLabel}</option>`;
+
             for (let i = 1; i <= 18; i++) {
                 let opt = document.createElement("option");
                 opt.value = i;
-                opt.textContent = "Adhyay " + i;
+                opt.textContent = `${adhyayWord} ${i}`; // Dynamic Label
                 chSelect.appendChild(opt);
             }
         }
@@ -317,13 +345,27 @@ fetch("verse.json")
 
 if(chSelect) {
     chSelect.onchange = () => {
+        // 1. Get current language
+        const lang = localStorage.getItem("gita_lang") || 'hi';
+        
+        // 2. Fetch the words from your existing uiTranslations list
+        const shlokaWord = uiTranslations[lang].shloka; 
+        const pushpikaWord = uiTranslations[lang].pushpika;
+        const pickVsLabel = uiTranslations[lang].pick_vs;
+
         const chNum = parseInt(chSelect.value);
         const verses = allShlokas.filter(s => s.chapter === chNum);
-        vsSelect.innerHTML = '<option value="" disabled selected>Select Shloka</option>';
+        
+        // 3. Use the pickVsLabel for the placeholder
+        vsSelect.innerHTML = `<option value="" disabled selected>${pickVsLabel}</option>`;
+        
         verses.forEach(v => {
             let opt = document.createElement("option");
             opt.value = v.verse;
-            opt.textContent = (v.type === "pushpika") ? "Pushpika" : "Shloka " + v.verse;
+            
+            // 4. Use pushpikaWord if it's a pushpika, otherwise use shlokaWord
+            opt.textContent = (v.type === "pushpika") ? pushpikaWord : `${shlokaWord} ${v.verse}`;
+            
             vsSelect.appendChild(opt);
         });
         vsSelect.disabled = false;
