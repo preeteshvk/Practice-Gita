@@ -11,41 +11,64 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="sidebar-links">
                 
-                <div class="sidebar-section-title" style="padding: 10px 15px 5px; font-size: 12px; text-transform: uppercase; color: var(--muted); font-weight: 700;">Language</div>
-                <div class="lang-selector-container" style="padding: 0 10px 10px;">
-                    <div class="lang-option" onclick="setLanguage('hi')" id="opt-hi" style="padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; border: 1px solid transparent; transition: 0.2s;">
-                        <div style="font-weight: 600; font-size: 14px;">हिन्दी (Sanskrit)</div>
-                        <div style="font-size: 11px; opacity: 0.8;">Sanskrit shlokas + Hindi translation</div>
+                <div class="sidebar-section-title" data-cap="language">Language</div>
+                <div class="lang-selector-container">
+                    <div class="lang-option" onclick="setLanguage('hi')" id="opt-hi">
+                        <div class="lang-name">हिन्दी (Sanskrit)</div>
+                        <div class="lang-desc" data-cap="lang_hi_desc">Sanskrit shlokas + Hindi translation</div>
                     </div>
-                    <div class="lang-option" onclick="setLanguage('en_sanskrit')" id="opt-en_sanskrit" style="padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; border: 1px solid transparent; transition: 0.2s;">
-                        <div style="font-weight: 600; font-size: 14px;">English (Sanskrit)</div>
-                        <div style="font-size: 11px; opacity: 0.8;">Sanskrit shlokas + English translation</div>
+                    
+                    <div class="lang-option" onclick="setLanguage('en_sanskrit')" id="opt-en_sanskrit">
+                        <div class="lang-name">English (Sanskrit)</div>
+                        <div class="lang-desc" data-cap="lang_en_s_desc">Sanskrit shlokas + English translation</div>
                     </div>
-                    <div class="lang-option" onclick="setLanguage('en_iast')" id="opt-en_iast" style="padding: 10px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; transition: 0.2s;">
-                        <div style="font-weight: 600; font-size: 14px;">English (IAST)</div>
-                        <div style="font-size: 11px; opacity: 0.8;">Sanskrit transliteration + English translation</div>
+                    
+                    <div class="lang-option" onclick="setLanguage('en_iast')" id="opt-en_iast">
+                        <div class="lang-name">English (IAST)</div>
+                        <div class="lang-desc" data-cap="lang_en_i_desc">Sanskrit transliteration + English translation</div>
                     </div>
                 </div>
 
                 <hr class="sidebar-divider">
 
-                <a href="about.html" class="sidebar-link"><span>🕉️</span> About Project Gita</a>
-                <a href="userguide.html" class="sidebar-link"><span>ℹ️</span> How to use</a>
+                <a href="about.html" class="sidebar-link">
+                    <span>🕉️</span> <span data-cap="about">About Project Gita</span>
+                </a>
+                <a href="userguide.html" class="sidebar-link">
+                    <span>ℹ️</span> <span data-cap="how_to_use">How to use</span>
+                </a>
                 
                 <hr class="sidebar-divider">
                 
-                <a href="resources.html" class="sidebar-link"><span>📚</span> Resources</a>
-                <a href="blogs.html" class="sidebar-link"><span>✍️</span> Blogs</a>
+                <a href="resources.html" class="sidebar-link">
+                    <span>📚</span> <span data-cap="resources">Resources</span>
+                </a>
+                <a href="blogs.html" class="sidebar-link">
+                    <span>✍️</span> <span data-cap="blogs">Blogs</span>
+                </a>
                 
                 <hr class="sidebar-divider">
                 
-                <a href="features.html" class="sidebar-link"><span>💡</span> Features</a>
-                <a href="contact.html" class="sidebar-link"><span>📧</span> Contact Us</a>
-                <a href="support.html" class="sidebar-link" style="color:var(--accent); font-weight: 700;"><span>🙏</span> Leave a tip</a>
+                <a href="features.html" class="sidebar-link">
+                    <span>💡</span> <span data-cap="features">Features</span>
+                </a>
+                <a href="contact.html" class="sidebar-link">
+                    <span>📧</span> <span data-cap="contact_us">Contact Us</span>
+                </a>
+                <a href="support.html" class="sidebar-link" style="color:var(--accent); font-weight: 700;">
+                    <span>🙏</span> <span data-cap="leave_tip">Leave a tip</span>
+                </a>
                 
                 <hr class="sidebar-divider">
-                <div class="sidebar-link" id="shareBtn" style="cursor:pointer;"><span>📤</span> Share with Friends</div>
+                <div class="sidebar-link" id="shareBtn" style="cursor:pointer;">
+                    <span>📤</span> <span data-cap="share_friends">Share with Friends</span>
+                </div>
+                
                 <hr class="sidebar-divider">
+
+                <div style="text-align: center; padding: 20px 10px; font-size: 14px; font-weight: 600; color: var(--text); opacity: 0.7; line-height: 1.4;" data-cap="salutation_footer">
+                    Jai Shri Krishna! Jai Gau Mata! 🙏
+                </div>
             </div>
         </nav>
     `;
@@ -54,49 +77,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- GLOBALIZED FUNCTIONS ---
     
-    /**
-     * Master function for changing language.
-     * Works for both the Home Modal and the Sidebar.
-     */
     window.setLanguage = (lang) => {
-    // A. Save data
-    localStorage.setItem("gita_lang", lang);
-    document.documentElement.setAttribute('data-lang', lang);
-    
-    // B. Update Sidebar Visuals
-    window.updateLangUI();
+        localStorage.setItem("gita_lang", lang);
+        document.documentElement.setAttribute('data-lang', lang);
+        
+        window.updateLangUI();
+        
+        if (typeof applyUILanguage === 'function') {
+            applyUILanguage();
+        }
 
-    // C. Update Modal Visuals with a CSS Class
-    const modalButtons = document.querySelectorAll('.lang-options button');
-    modalButtons.forEach(btn => btn.classList.remove('selected')); // Reset all
-    
-    // Find the one clicked
-    const clickedBtn = Array.from(modalButtons).find(b => b.getAttribute('onclick').includes(lang));
-    if (clickedBtn) {
-        clickedBtn.classList.add('selected'); // Apply the CSS class we made above
-    }
+        const modalButtons = document.querySelectorAll('.lang-options button');
+        modalButtons.forEach(btn => btn.classList.remove('selected')); 
+        
+        const clickedBtn = Array.from(modalButtons).find(b => b.getAttribute('onclick')?.includes(lang));
+        if (clickedBtn) {
+            clickedBtn.classList.add('selected'); 
+        }
 
-    // D. Close after a slight delay
-    const modal = document.getElementById('lang-modal');
-    if (modal) {
-        setTimeout(() => {
-            modal.style.opacity = '0'; // Fade out
+        const modal = document.getElementById('lang-modal');
+        if (modal) {
             setTimeout(() => {
-                modal.style.display = 'none';
-                modal.style.opacity = '1'; // Reset for next time
-            }, 200);
-        }, 400); // 400ms gives enough time to see the highlight
-    }
+                modal.style.opacity = '0'; 
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    modal.style.opacity = '1'; 
+                }, 200);
+            }, 400); 
+        }
 
-    window.dispatchEvent(new CustomEvent('langChanged', { detail: lang }));
-    /*if(window.innerWidth < 768) {
-        const sidebar = document.getElementById("sidebar");
-        if (sidebar && sidebar.classList.contains('active')) window.toggleMenu();
-    }*/
-};
+        window.dispatchEvent(new CustomEvent('langChanged', { detail: lang }));
+        
+        if(window.innerWidth < 768) {
+            const sidebar = document.getElementById("sidebar");
+            if (sidebar && sidebar.classList.contains('active')) window.toggleMenu();
+        }
+    };
 
     window.updateLangUI = () => {
         const current = getStoredLang();
+        
         document.querySelectorAll('.lang-option').forEach(opt => {
             opt.style.background = "transparent";
             opt.style.borderColor = "transparent";
@@ -106,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const activeOpt = document.getElementById(`opt-${current}`);
         if (activeOpt) {
             activeOpt.style.border = "1px solid var(--accent)";
-            activeOpt.style.color = "var(--accent)";
+           activeOpt.style.setProperty('color', 'var(--accent)', 'important');
             activeOpt.style.background = "rgba(128, 128, 128, 0.1)"; 
         }
     };
@@ -123,6 +143,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- Initialization ---
     window.updateLangUI();
     document.documentElement.setAttribute('data-lang', getStoredLang());
+    
+    if (typeof applyUILanguage === 'function') applyUILanguage();
 
     // --- Event Listeners ---
     const shareButton = document.getElementById('shareBtn');
