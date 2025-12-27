@@ -185,6 +185,14 @@ function load(keepColor = false) {
 
 function renderShlokaContent(s) {
     const isPushpika = s.type === "pushpika" || s.v === 999;
+    text.classList.remove("is-shloka", "is-pushpika");
+    if (flipped) {
+        if (isPushpika) {
+            text.classList.add("is-pushpika");
+        } else {
+            text.classList.add("is-shloka");
+        }
+    }
     const shlokaInfo = isPushpika ? `Adhyay ${s.c} Pushpika` : `Adhyay ${s.c} · Shloka ${s.v}`;
     
     center.textContent = shlokaInfo;
