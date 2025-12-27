@@ -59,46 +59,41 @@ document.addEventListener("DOMContentLoaded", () => {
      * Works for both the Home Modal and the Sidebar.
      */
     window.setLanguage = (lang) => {
-        // A. Update Data & Theme
-        localStorage.setItem("gita_lang", lang);
-        document.documentElement.setAttribute('data-lang', lang);
-        
-        // B. Update Sidebar UI
-        window.updateLangUI();
+    // A. Save data
+    localStorage.setItem("gita_lang", lang);
+    document.documentElement.setAttribute('data-lang', lang);
+    
+    // B. Update Sidebar Visuals
+    window.updateLangUI();
 
-        // C. Update Home Modal UI (if present)
-        const modalButtons = document.querySelectorAll('.lang-options button');
-        if (modalButtons.length > 0) {
-            modalButtons.forEach(btn => {
-                btn.style.borderColor = 'var(--border)';
-                btn.style.background = 'transparent';
-            });
-            // Highlight the one that was just clicked
-            const clickedBtn = Array.from(modalButtons).find(b => b.getAttribute('onclick').includes(lang));
-            if (clickedBtn) {
-                clickedBtn.style.borderColor = "var(--accent)";
-                clickedBtn.style.background = "rgba(128, 128, 128, 0.1)";
-            }
-        }
+    // C. Update Modal Visuals with a CSS Class
+    const modalButtons = document.querySelectorAll('.lang-options button');
+    modalButtons.forEach(btn => btn.classList.remove('selected')); // Reset all
+    
+    // Find the one clicked
+    const clickedBtn = Array.from(modalButtons).find(b => b.getAttribute('onclick').includes(lang));
+    if (clickedBtn) {
+        clickedBtn.classList.add('selected'); // Apply the CSS class we made above
+    }
 
-        // D. Handle Closing (Modal and Sidebar)
-        const modal = document.getElementById('lang-modal');
-        if (modal && modal.style.display !== 'none') {
-            // Delay closing slightly so user sees the highlight
+    // D. Close after a slight delay
+    const modal = document.getElementById('lang-modal');
+    if (modal) {
+        setTimeout(() => {
+            modal.style.opacity = '0'; // Fade out
             setTimeout(() => {
                 modal.style.display = 'none';
-            }, 300);
-        }
-        
-        // Broadcast the change to other scripts (like path.js)
-        window.dispatchEvent(new CustomEvent('langChanged', { detail: lang }));
-        
-        // If sidebar is open on mobile, close it
-        if(window.innerWidth < 768) {
-            const sidebar = document.getElementById("sidebar");
-            if (sidebar && sidebar.classList.contains('active')) window.toggleMenu();
-        }
-    };
+                modal.style.opacity = '1'; // Reset for next time
+            }, 200);
+        }, 400); // 400ms gives enough time to see the highlight
+    }
+
+    window.dispatchEvent(new CustomEvent('langChanged', { detail: lang }));
+    /*if(window.innerWidth < 768) {
+        const sidebar = document.getElementById("sidebar");
+        if (sidebar && sidebar.classList.contains('active')) window.toggleMenu();
+    }*/
+};
 
     window.updateLangUI = () => {
         const current = getStoredLang();
