@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Helper function to get current language (used for initial UI state)
+    // 1. Helper function to get current language
     const getStoredLang = () => localStorage.getItem("gita_lang") || 'hi';
 
     const sidebarHTML = `
@@ -52,20 +52,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.body.insertAdjacentHTML('afterbegin', sidebarHTML);
 
-    // --- NEW: Language Logic ---
+    // --- GLOBALIZED FUNCTIONS ---
+    // Attaching to window so index.html and buttons can reach them
+    
     window.changeLanguage = (lang) => {
         localStorage.setItem("gita_lang", lang);
         document.documentElement.setAttribute('data-lang', lang);
-        updateLangUI();
+        window.updateLangUI();
         
-        // Dispatch event for path.js to listen to
         window.dispatchEvent(new CustomEvent('langChanged', { detail: lang }));
         
-        // Optional: close menu after selection on mobile
-        if(window.innerWidth < 768) toggleMenu();
+        if(window.innerWidth < 768) window.toggleMenu();
     };
 
-    const updateLangUI = () => {
+    window.updateLangUI = () => {
         const current = getStoredLang();
         document.querySelectorAll('.lang-option').forEach(opt => {
             opt.style.background = "transparent";
@@ -75,20 +75,27 @@ document.addEventListener("DOMContentLoaded", () => {
         
         const activeOpt = document.getElementById(`opt-${current}`);
         if (activeOpt) {
-            // This preserves your exact --accent color while making it look like a "selected" button
             activeOpt.style.border = "1px solid var(--accent)";
             activeOpt.style.color = "var(--accent)";
-            activeOpt.style.background = "rgba(128, 128, 128, 0.1)"; // Very neutral tint
+            activeOpt.style.background = "rgba(128, 128, 128, 0.1)"; 
         }
     };
 
-    // Initialize UI state
-    updateLangUI();
+    window.toggleMenu = () => {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+        if (sidebar && overlay) {
+            sidebar.classList.toggle("active");
+            overlay.classList.toggle("active");
+        }
+    };
+
+    // --- Original Logic initialization ---
+    window.updateLangUI();
     document.documentElement.setAttribute('data-lang', getStoredLang());
 
-    // --- Original Share Logic ---
+    // --- Share Logic ---
     const shareButton = document.getElementById('shareBtn');
-
     if (shareButton) {
         shareButton.addEventListener('click', async () => {
             const shareData = {
@@ -98,34 +105,23 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             if (navigator.share) {
-                try {
-                    await navigator.share(shareData);
-                } catch (err) {
-                    console.log("Share sheet closed");
-                }
+                try { await navigator.share(shareData); } 
+                catch (err) { console.log("Share sheet closed"); }
             } else {
                 try {
                     await navigator.clipboard.writeText(shareData.url);
                     alert("Link copied to clipboard!"); 
-                } catch (err) {
-                    console.error("Failed to copy: ", err);
-                }
+                } catch (err) { console.error("Failed to copy: ", err); }
             }
         });
     }
 
-    // --- Original Menu Toggle Logic ---
+    // --- Menu Event Listeners ---
     const openBtn = document.getElementById("openMenu");
     const closeBtn = document.getElementById("closeMenu");
-    const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
 
-    const toggleMenu = () => {
-        sidebar.classList.toggle("active");
-        overlay.classList.toggle("active");
-    };
-
-    if (openBtn) openBtn.addEventListener("click", toggleMenu);
-    if (closeBtn) closeBtn.addEventListener("click", toggleMenu);
-    if (overlay) overlay.addEventListener("click", toggleMenu);
+    if (openBtn) openBtn.addEventListener("click", window.toggleMenu);
+    if (closeBtn) closeBtn.addEventListener("click", window.toggleMenu);
+    if (overlay) overlay.addEventListener("click", window.toggleMenu);
 });
