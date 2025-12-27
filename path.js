@@ -2,7 +2,8 @@
  * path.js
  * Handles dual-mode logic: Linear Adhyay-Path and Starred List Navigation.
  * Includes Smart-Scroll Gesture logic for multi-line text accessibility.
- * NEW: Integrated Quick Jump / Dropdown Search functionality.
+ * Integrated Quick Jump / Dropdown Search functionality.
+ * Multi-language support with Dynamic CSS Stickers.
  */
 
 if (new URLSearchParams(window.location.search).get("mode") === "starred") {
@@ -22,8 +23,8 @@ const startBtn = document.getElementById("start");
 const readingScreen = document.getElementById("reading-screen");
 const selectionScreen = document.getElementById("selection-screen");
 const completionScreen = document.getElementById("completion-screen");
-const textContainer = document.getElementById("shloka-text"); // The .shloka-text div
-const cardBody = document.querySelector(".card-body");        // The scrollable container
+const textContainer = document.getElementById("shloka-text");
+const cardBody = document.querySelector(".card-body");
 const headerText = document.getElementById("header-text");
 const counterDisplay = document.getElementById("counter");
 const card = document.getElementById("card");
@@ -39,7 +40,7 @@ const globalPrev = document.getElementById("prev");
 const globalNext = document.getElementById("next"); 
 const adhyayHeaderBtn = document.getElementById("go-select");
 
-// NEW: JUMP MODAL ELEMENTS
+// JUMP MODAL ELEMENTS
 const jumpModal = document.getElementById("jump-modal");
 const chSelect = document.getElementById("jump-ch-select");
 const vsSelect = document.getElementById("jump-vs-select");
@@ -121,11 +122,16 @@ function loadShloka() {
     flipped = false; 
     updateStarIcon();
     
+    const currentLang = localStorage.getItem("gita_lang") || 'hi';
+    const isEnglish = (currentLang === 'en_sanskrit' || currentLang === 'en_iast');
+
     textContainer.innerHTML = "";
     textContainer.style.display = "block";
 
-    headerText.textContent = (s.type === "pushpika") ? `Pushpika` : ` ${s.chapter} · ${s.verse}`;
+    // Header logic
+    headerText.textContent = (s.type === "pushpika") ? (isEnglish ? "Pushpika" : "पुष्पिका") : ` ${s.chapter} · ${s.verse}`;
 
+    // Counter logic
     if (isStarredMode) {
         counterDisplay.textContent = `${index + 1} / ${currentAdhyayShlokas.length}`;
     } else {
@@ -137,26 +143,38 @@ function loadShloka() {
         }
     }
     
+    // FRONT View
     const shlokaDiv = document.createElement("div");
     shlokaDiv.id = "view-shloka";
     shlokaDiv.style.display = "block"; 
+    shlokaDiv.classList.add(s.type === "pushpika" ? "is-pushpika" : "is-shloka");
 
+    // Dynamic Label logic for Stickers
     if (s.type === "pushpika") {
-        shlokaDiv.classList.add("is-pushpika");
+        shlokaDiv.setAttribute("data-label", isEnglish ? "PUSHPÍKĀ" : "पुष्पिका");
     } else {
-        shlokaDiv.classList.add("is-shloka");
+        shlokaDiv.setAttribute("data-label", isEnglish ? "VERSE" : "श्लोक");
     }
     
-    s.charans.forEach((line, i) => {
+    const lines = (currentLang === 'en_iast' && s.english_transliteration) ? s.english_transliteration : s.charans;
+
+    lines.forEach((line, i) => {
         const div = document.createElement("div");
-        const isSpeaker = s.type !== "pushpika" && (line.trim().endsWith("उवाच") || line.includes("श्रीभगवानुवाच"));
+        const isSpeaker = s.type !== "pushpika" && (
+            line.trim().endsWith("उवाच") || 
+            line.includes("श्रीभगवानुवाच") ||
+            line.toLowerCase().includes("uvāca")
+        );
+
         div.className = isSpeaker ? "shloka-line speaker" : "shloka-line";
+        
         let formatted = line.replace(/।।/g, "॥").replace(/।(?![॥।0-9])/g, "।<br>");
-        if (isSpeaker) formatted = formatted.replace(/उवाच/g, "उवाच<br>");
+        if (isSpeaker) formatted = formatted.replace(/(उवाच|uvāca)/gi, "$1<br>");
+        
         div.innerHTML = formatted;
         shlokaDiv.appendChild(div);
 
-        if (s.type === "pushpika" && i === s.charans.length - 1) {
+        if (s.type === "pushpika" && i === lines.length - 1) {
             const namasteDiv = document.createElement("div");
             namasteDiv.textContent = "🙏";
             namasteDiv.style.cssText = "text-align:center; margin-top:15px; font-size:2.5rem;";
@@ -164,15 +182,22 @@ function loadShloka() {
         }
     });
 
+    // BACK View
     const transDiv = document.createElement("div");
     transDiv.id = "view-translation";
-    transDiv.style.cssText = "display: none; font-style: italic; text-align: center;";
-    transDiv.className = "shloka-line";
-    transDiv.innerHTML = s.translation_hindi || "अनुवाद उपलब्ध नहीं है।";
+    transDiv.className = "shloka-line translation-text" + (isEnglish ? " is-english" : "");
+    transDiv.style.display = "none";
+    
+    // Dynamic Label for Translation
+    transDiv.setAttribute("data-label", isEnglish ? "TRANSLATION" : "अनुवाद");
+
+    const translationText = (currentLang === 'hi') ? s.translation_hindi : (s.english_translation || s.translation_hindi);
+    transDiv.innerHTML = translationText || (isEnglish ? "Translation not available." : "अनुवाद उपलब्ध नहीं है।");
 
     textContainer.appendChild(shlokaDiv);
     textContainer.appendChild(transDiv);
 
+    // Nav logic
     if (isStarredMode) {
         prevBtn.style.visibility = "hidden";
         nextBtn.style.visibility = "hidden";
@@ -186,9 +211,13 @@ function loadShloka() {
         if (nextContainer) nextContainer.style.display = "none";
         if (adhyayHeaderBtn) adhyayHeaderBtn.style.display = "flex";
     }
-
     cardBody.scrollTop = 0;
 }
+
+// React to language change from settings
+window.addEventListener('langChanged', () => {
+    loadShloka();
+});
 
 // --- 3. NAVIGATION ---
 
@@ -197,11 +226,9 @@ function toggleFlip(e) {
     const sView = document.getElementById("view-shloka");
     const tView = document.getElementById("view-translation");
     if (!sView || !tView) return;
-    
     flipped = !flipped;
     sView.style.display = flipped ? "none" : "block";
     tView.style.display = flipped ? "block" : "none";
-    
     cardBody.scrollTop = 0;
 }
 
@@ -238,10 +265,12 @@ fetch("verse.json")
     .then(d => {
         allShlokas = d.map(v => ({ 
             chapter: v.chapter, verse: v.verse, charans: v.charans,
-            translation_hindi: v.hindi_translation, type: v.type || "shloka"
+            english_transliteration: v.english_transliteration,
+            translation_hindi: v.hindi_translation,
+            english_translation: v.english_translation,
+            type: v.type || "shloka"
         }));
 
-        // Populate Jump Modal Chapters
         if(chSelect) {
             for (let i = 1; i <= 18; i++) {
                 let opt = document.createElement("option");
@@ -253,12 +282,12 @@ fetch("verse.json")
 
         const params = new URLSearchParams(window.location.search);
         
-        // AUTO-OPEN JUMP MODAL: From Home Search Icon
         if (window.location.hash === "#jump") {
-            if(jumpModal)
+            if(jumpModal) {
                 selectionScreen.style.display = "none"; 
-                adhyayHeaderBtn.style.display= "none";
+                if(adhyayHeaderBtn) adhyayHeaderBtn.style.display= "none";
                 jumpModal.style.display = "flex";
+            }
             history.replaceState(null, null, ' '); 
         }
 
@@ -269,10 +298,13 @@ fetch("verse.json")
                 currentAdhyayShlokas = allShlokas.filter(s => 
                     stars.some(st => st.chapter === s.chapter && st.verse === s.verse)
                 );
+                
+                // RESTORED SAFETY CHECK HERE
                 if (currentAdhyayShlokas.length === 0) {
                     window.location.href = "index.html";
                     return;
                 }
+
                 index = 0;
                 if(selectionScreen) selectionScreen.style.display = "none";
                 if(readingScreen) readingScreen.style.display = "block";
@@ -283,30 +315,21 @@ fetch("verse.json")
         }
     });
 
-// Dropdown: Filter Verse list when Adhyay changes
 if(chSelect) {
     chSelect.onchange = () => {
         const chNum = parseInt(chSelect.value);
-        
-        // REMOVED the filter that was hiding pushpikas
         const verses = allShlokas.filter(s => s.chapter === chNum);
-        
         vsSelect.innerHTML = '<option value="" disabled selected>Select Shloka</option>';
-        
         verses.forEach(v => {
             let opt = document.createElement("option");
             opt.value = v.verse;
-            
-            // If it's a pushpika, show "Pushpika", otherwise show the Shloka number
             opt.textContent = (v.type === "pushpika") ? "Pushpika" : "Shloka " + v.verse;
-            
             vsSelect.appendChild(opt);
         });
         vsSelect.disabled = false;
     };
 }
 
-// Execute Quick Jump
 if(jumpConfirm) {
     jumpConfirm.onclick = () => {
         const ch = parseInt(chSelect.value);
@@ -383,28 +406,20 @@ if(nextAdhyayBtn) nextAdhyayBtn.onclick = () => {
     readingScreen.style.display = "block"; loadShloka();
 };
 
-// --- 7. GESTURES (SMART-SCROLL & BUTTON ACCESS) ---
+// --- 7. GESTURES ---
 
 let sx = 0, sy = 0, startTime = 0;
 
 card.addEventListener("touchstart", e => { 
-    sx = e.touches[0].clientX; 
-    sy = e.touches[0].clientY; 
-    startTime = Date.now();
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; startTime = Date.now();
 }, { passive: true });
 
 card.addEventListener("touchmove", e => { 
     const dx = Math.abs(e.touches[0].clientX - sx);
     const dy = Math.abs(e.touches[0].clientY - sy);
     const isScrollable = cardBody.scrollHeight > cardBody.clientHeight;
-    if (!isScrollable) {
-        if (e.cancelable) e.preventDefault(); 
-        return;
-    }
-    if (dx > dy && dx > 5) {
-        if (e.cancelable) e.preventDefault(); 
-        return;
-    }
+    if (!isScrollable) { if (e.cancelable) e.preventDefault(); return; }
+    if (dx > dy && dx > 5) { if (e.cancelable) e.preventDefault(); return; }
     const isTouchingCardBody = e.target.closest('.card-body');
     if (isTouchingCardBody) {
         const isAtTop = cardBody.scrollTop <= 0;
@@ -419,13 +434,10 @@ card.addEventListener("touchend", e => {
     const dx = e.changedTouches[0].clientX - sx;
     const dy = e.changedTouches[0].clientY - sy;
     const duration = Date.now() - startTime;
-
     if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)) {
-        if (dx < -70) goNext(); 
-        else if (dx > 70) goPrev();
+        if (dx < -70) goNext(); else if (dx > 70) goPrev();
         return;
     }
-
     if (Math.abs(dy) > 60 && duration < 300) {
         const isAtTop = cardBody.scrollTop <= 10;
         const isAtBottom = (cardBody.scrollTop + cardBody.clientHeight) >= (cardBody.scrollHeight - 10);
@@ -434,14 +446,11 @@ card.addEventListener("touchend", e => {
     }
 }, { passive: false });
 
-// Mouse support
 let mx = 0, my = 0, down = false;
 card.addEventListener("mousedown", e => { down = true; mx = e.clientX; my = e.clientY; });
 card.addEventListener("mouseup", e => {
     if (!down) return; down = false;
     const dx = e.clientX - mx, dy = e.clientY - my;
     if (Math.abs(dy) > 60) toggleFlip();
-    else if (Math.abs(dx) > 100) {
-        if (dx < -100) goNext(); else goPrev();
-    }
+    else if (Math.abs(dx) > 100) { if (dx < -100) goNext(); else goPrev(); }
 });
