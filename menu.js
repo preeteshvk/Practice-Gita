@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // 1. Helper function to get current language (used for initial UI state)
+    const getStoredLang = () => localStorage.getItem("gita_lang") || 'hi';
+
     const sidebarHTML = `
         <div class="overlay" id="overlay"></div>
         <nav class="sidebar" id="sidebar">
@@ -7,6 +10,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div id="closeMenu" aria-label="Close Menu">✕</div>
             </div>
             <div class="sidebar-links">
+                
+                <div class="sidebar-section-title" style="padding: 10px 15px 5px; font-size: 12px; text-transform: uppercase; color: var(--muted); font-weight: 700;">Language</div>
+                <div class="lang-selector-container" style="padding: 0 10px 10px;">
+                    <div class="lang-option" onclick="changeLanguage('hi')" id="opt-hi" style="padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; border: 1px solid transparent; transition: 0.2s;">
+                        <div style="font-weight: 600; font-size: 14px;">हिन्दी (Sanskrit)</div>
+                        <div style="font-size: 11px; opacity: 0.8;">Sanskrit script + Hindi translation</div>
+                    </div>
+                    <div class="lang-option" onclick="changeLanguage('en_sanskrit')" id="opt-en_sanskrit" style="padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; border: 1px solid transparent; transition: 0.2s;">
+                        <div style="font-weight: 600; font-size: 14px;">English (Sanskrit)</div>
+                        <div style="font-size: 11px; opacity: 0.8;">Sanskrit script + English translation</div>
+                    </div>
+                    <div class="lang-option" onclick="changeLanguage('en_iast')" id="opt-en_iast" style="padding: 10px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; transition: 0.2s;">
+                        <div style="font-weight: 600; font-size: 14px;">English (IAST)</div>
+                        <div style="font-size: 11px; opacity: 0.8;">Sanskrit transliteration + English translation</div>
+                    </div>
+                </div>
+
+                <hr class="sidebar-divider">
+
                 <a href="about.html" class="sidebar-link"><span>🕉️</span> About Project Gita</a>
                 <a href="userguide.html" class="sidebar-link"><span>ℹ️</span> How to use</a>
                 
@@ -30,7 +52,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.body.insertAdjacentHTML('afterbegin', sidebarHTML);
 
-    // --- Share Logic ---
+    // --- NEW: Language Logic ---
+    window.changeLanguage = (lang) => {
+        localStorage.setItem("gita_lang", lang);
+        document.documentElement.setAttribute('data-lang', lang);
+        updateLangUI();
+        
+        // Dispatch event for path.js to listen to
+        window.dispatchEvent(new CustomEvent('langChanged', { detail: lang }));
+        
+        // Optional: close menu after selection on mobile
+        if(window.innerWidth < 768) toggleMenu();
+    };
+
+    const updateLangUI = () => {
+        const current = getStoredLang();
+        document.querySelectorAll('.lang-option').forEach(opt => {
+            opt.style.background = "transparent";
+            opt.style.borderColor = "transparent";
+            opt.style.color = "var(--text)";
+        });
+        
+        const activeOpt = document.getElementById(`opt-${current}`);
+        if (activeOpt) {
+            // This preserves your exact --accent color while making it look like a "selected" button
+            activeOpt.style.border = "1px solid var(--accent)";
+            activeOpt.style.color = "var(--accent)";
+            activeOpt.style.background = "rgba(128, 128, 128, 0.1)"; // Very neutral tint
+        }
+    };
+
+    // Initialize UI state
+    updateLangUI();
+    document.documentElement.setAttribute('data-lang', getStoredLang());
+
+    // --- Original Share Logic ---
     const shareButton = document.getElementById('shareBtn');
 
     if (shareButton) {
@@ -58,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- Menu Toggle Logic ---
+    // --- Original Menu Toggle Logic ---
     const openBtn = document.getElementById("openMenu");
     const closeBtn = document.getElementById("closeMenu");
     const sidebar = document.getElementById("sidebar");
