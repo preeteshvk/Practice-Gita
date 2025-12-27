@@ -523,6 +523,50 @@ body {
   display: none;
 }
 
+/* Base style for labels */
+#view-shloka::before, 
+#view-translation::before {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text);
+    opacity: 0.5;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    margin-bottom: 15px;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Front Side Logic */
+#view-shloka.is-shloka::before { content: "श्लोक"; }
+#view-shloka.is-pushpika::before { content: "पुष्पिका"; }
+
+/* Back Side Logic (Translation) */
+#view-translation::before { content: "अनुवाद"; }
+
+/* Base Style for labels in Practice Mode */
+#shloka-text.is-shloka::before,
+#shloka-text.is-pushpika::before {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text);
+    opacity: 0.5;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    margin-bottom: 15px;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Specific Content */
+#shloka-text.is-shloka::before {
+    content: "श्लोक";
+}
+
+#shloka-text.is-pushpika::before {
+    content: "पुष्पिका";
+}
+
 .card-footer {
   display: grid;
   grid-template-columns: 60px 1fr 60px;
