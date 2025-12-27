@@ -181,7 +181,14 @@ function load(keepColor = false) {
 
 function renderShlokaContent(s) {
     const isPushpika = s.type === "pushpika" || s.v === 999;
-
+    text.classList.remove("is-shloka", "is-pushpika");
+    if (flipped) {
+        if (isPushpika) {
+            text.classList.add("is-pushpika");
+        } else {
+            text.classList.add("is-shloka");
+        }
+    }
     if (isPushpika) {
         center.innerHTML = `<div style="font-size: 1.1em; font-style: italic; opacity: 0.8;">Chapter Conclusion...</div>`;
         header.textContent = flipped ? `Adhyay ${s.c} Pushpika` : "Pushpika";
