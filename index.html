@@ -115,20 +115,27 @@
     <script>
         // GLOBAL FUNCTION: Needs to be outside DOMContentLoaded so buttons can trigger it
         function setLanguage(lang) {
+            // 1. Save the preference
             localStorage.setItem("gita_lang", lang);
             document.documentElement.setAttribute('data-lang', lang);
             
-            // Hide the modal
+            // 2. Hide the modal immediately
             const modal = document.getElementById('lang-modal');
-            if (modal) modal.style.display = 'none';
+            if (modal) {
+                modal.style.display = 'none';
+                console.log("Modal hidden successfully");
+            }
 
-            // Tell the sidebar/menu to update its visual active state
+            // 3. Update Sidebar (with safety check)
             if (typeof updateLangUI === 'function') {
                 updateLangUI();
             }
 
-            // Tell other scripts (like path.js) that language has changed
+            // 4. Update Content (for AdhyayPath etc)
             window.dispatchEvent(new CustomEvent('langChanged', { detail: lang }));
+            
+            // 5. Force a small UI refresh for the body to ensure overlay is gone
+            document.body.style.overflow = 'auto'; 
         }
 
         document.addEventListener("DOMContentLoaded", () => {
