@@ -140,6 +140,12 @@ function loadShloka() {
     const shlokaDiv = document.createElement("div");
     shlokaDiv.id = "view-shloka";
     shlokaDiv.style.display = "block"; 
+
+    if (s.type === "pushpika") {
+        shlokaDiv.classList.add("is-pushpika");
+    } else {
+        shlokaDiv.classList.add("is-shloka");
+    }
     
     s.charans.forEach((line, i) => {
         const div = document.createElement("div");
