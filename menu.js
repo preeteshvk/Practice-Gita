@@ -15,11 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="lang-selector-container" style="padding: 0 10px 10px;">
                     <div class="lang-option" onclick="setLanguage('hi')" id="opt-hi" style="padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; border: 1px solid transparent; transition: 0.2s;">
                         <div style="font-weight: 600; font-size: 14px;">हिन्दी (Sanskrit)</div>
-                        <div style="font-size: 11px; opacity: 0.8;">Sanskrit script + Hindi translation</div>
+                        <div style="font-size: 11px; opacity: 0.8;">Sanskrit shlokas + Hindi translation</div>
                     </div>
                     <div class="lang-option" onclick="setLanguage('en_sanskrit')" id="opt-en_sanskrit" style="padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; border: 1px solid transparent; transition: 0.2s;">
                         <div style="font-weight: 600; font-size: 14px;">English (Sanskrit)</div>
-                        <div style="font-size: 11px; opacity: 0.8;">Sanskrit script + English translation</div>
+                        <div style="font-size: 11px; opacity: 0.8;">Sanskrit shlokas + English translation</div>
                     </div>
                     <div class="lang-option" onclick="setLanguage('en_iast')" id="opt-en_iast" style="padding: 10px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; transition: 0.2s;">
                         <div style="font-weight: 600; font-size: 14px;">English (IAST)</div>
