@@ -21,29 +21,38 @@
 
     <div class="nav-bar">
         <div class="nav-left-group">
+            <div class="hamburger" id="openMenu" style="margin-right: 10px; cursor: pointer;">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--accent)"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+            </div>
             <a href="index.html" class="nav-btn" id="go-home">
                 <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                Home
+                <span data-cap="home">Home</span>
             </a>
             <button class="nav-btn" id="go-select">
                 <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
-                Adhyay
+                <span data-cap="adhyay">Adhyay</span>
             </button>
         </div>
         <div class="theme-toggle" id="themeToggle">🌙</div>
     </div>
 
     <div class="adhyay-selection" id="selection-screen">
-        <h2>Select Adhyay</h2>
+         <div class="logo-area" style="margin-top: 40px;">
+            <div class="subtitle" data-cap="charan_bodha_title">Charan-Bodha</div>
+            <h1 data-cap="adhyay_select">अध्याय चयन</h1>
+        </div>
         <div class="select-all">
-            <span>Select All</span>
+            <span data-cap="all_select">Select All</span>
             <div id="toggle" class="toggle active"></div>
         </div>
         <div class="adhyay-grid" id="grid"></div>
-        <button class="start-btn" id="start">Start</button>
+        <button class="start-btn" id="start" data-cap="start_practice">Start Practice</button>
+        <div class="footer" data-cap="salutation_footer" style="text-align: center; margin-top: 30px; opacity: 0.7; font-weight: 600;">
+            Jai Shri Krishna! Jai Gau Mata! 🙏
+        </div>
     </div>
 
-    <div class="practice-screen" id="practice-screen">
+    <div class="practice-screen" id="practice-screen" style="display:none;">
         <div class="card" id="card">
            <div class="card-header">
                 <div class="timer-container" id="timer-box">
@@ -73,31 +82,30 @@
             </div>
 
             <div class="card-footer">
-    <button class="shloka-nav-btn" id="prev-shloka" title="Previous Shloka">
-        <svg class="shloka-nav-svg" viewBox="0 0 24 24">
-            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-        </svg>
-    </button>
+                <button class="shloka-nav-btn" id="prev-shloka">
+                    <svg class="shloka-nav-svg" viewBox="0 0 24 24">
+                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                    </svg>
+                </button>
 
-    <button class="hint-btn" id="hint-btn">Hint</button>
+                <button class="hint-btn" id="hint-btn" data-cap="hint">Hint</button>
 
-    <button class="shloka-nav-btn" id="next-shloka" title="Next Shloka">
-        <svg class="shloka-nav-svg" viewBox="0 0 24 24">
-            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-        </svg>
-    </button>
-    
-    <div class="hint-banner" id="hint"></div>
-</div>
+                <button class="shloka-nav-btn" id="next-shloka">
+                    <svg class="shloka-nav-svg" viewBox="0 0 24 24">
+                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                    </svg>
+                </button>
+                
+                <div class="hint-banner" id="hint"></div>
+            </div>
         </div>
 
-        <div class="next-container">
+        <div class="next-container" id="next-container">
             <button class="icon" id="prev">
                 <svg class="icon-svg" viewBox="0 0 24 24" style="transform: scaleX(-1);">
                     <path d="M12 4l-1.41 1.41L15.17 10H4v2h11.17l-4.58 4.59L12 18l8-8z"/>
                 </svg>
             </button>
-            
             <button class="icon" id="next">
                 <svg class="icon-svg" viewBox="0 0 24 24">
                     <path d="M12 4l-1.41 1.41L15.17 10H4v2h11.17l-4.58 4.59L12 18l8-8z"/>
@@ -106,14 +114,14 @@
         </div>
     </div>
 
-    <div class="completion-screen" id="completion-screen">
+    <div class="completion-screen" id="completion-screen" style="display:none;">
         <h1 style="font-size: 48px; margin-bottom: 10px;">🙏</h1>
-        <h2>Shlokas Finished!</h2>
-        <p style="color: var(--muted); margin-bottom: 30px;">You have completed all selected shlokas.</p>
-        <button class="action-btn" id="btn-restart">Continue Practicing</button>
-        <button class="action-btn secondary" id="btn-home-complete">Back to Selection</button>
+        <h2 data-cap="practice_complete">Practice Complete!</h2>
+        <p style="color: var(--muted); margin-bottom: 30px;" data-cap="practice_desc">You have successfully completed the practice for all selected shlokas.</p>
+        <button class="action-btn" id="btn-restart" data-cap="continue_practice">Continue Practicing</button>
+        <button class="action-btn secondary" id="btn-home-complete" data-cap="back_to_selection">Back to Selection</button>
     </div>
-
+    <script src="menu.js"></script>
     <script src="theme.js"></script>
     <script src="bodha.js"></script>
 
