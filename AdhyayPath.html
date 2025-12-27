@@ -18,12 +18,16 @@
 <body>
     <div class="nav-bar">
         <div class="nav-left-group">
+            <div class="hamburger" id="openMenu" style="margin-right: 10px; cursor: pointer;">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--accent)"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+            </div>
             <a href="index.html" class="nav-btn" id="go-home">
-                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> Home
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> 
+                <span data-cap="home">Home</span>
             </a>
             <a href="AdhyayPath.html" class="nav-btn" id="go-select">
                 <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
-                Adhyay
+                <span data-cap="adhyay">Adhyay</span>
             </a>
         </div>
         <div class="theme-toggle" id="themeToggle">🌙</div>
@@ -31,42 +35,41 @@
 
     <div class="adhyay-selection" id="selection-screen">
         <div class="logo-area" style="margin-top: 40px;">
-            <div class="subtitle">Select Chapter</div>
-            <h1>अध्याय चयन</h1>
+            <div class="subtitle" data-cap="adhyay_path_title">Gita Adhyay Path</div>
+            <h1 data-cap="adhyay_select">अध्याय चयन</h1>
         </div>
         <div class="adhyay-grid" id="grid"></div>
-        <button id="start" class="start-btn" disabled>Start Reading</button>
+        <button id="start" class="start-btn" data-cap="start_reading" disabled>Start Reading</button>
+        
+        <div class="footer" data-cap="salutation_footer" style="text-align: center; margin-top: 30px; opacity: 0.7; font-weight: 600;">
+            Jai Shri Krishna! Jai Gau Mata! 🙏
+        </div>
     </div>
 
     <div class="practice-screen" id="reading-screen">
         <div class="card" id="card" style="height: 70vh;"> 
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;">
-    
-    <div id="counter" class="counter-text" style="font-weight: 600; font-size: 1rem; color: var(--text); opacity: 0.8;">
-        </div>
-
-    <div id="header-text" class="header-text" style="position: absolute; left: 50%; transform: translateX(-50%);"></div>
-
-    <div style="display: flex; align-items: center; justify-content: flex-end; min-width: 60px; gap: 12px; padding-right: 5px;">
+                <div id="counter" class="counter-text" style="font-weight: 600; font-size: 1rem; color: var(--text); opacity: 0.8;"></div>
+                <div id="header-text" class="header-text" style="position: absolute; left: 50%; transform: translateX(-50%);"></div>
+                <div style="display: flex; align-items: center; justify-content: flex-end; min-width: 60px; gap: 12px; padding-right: 5px;">
                     <button id="star-btn" style="background:none; border:none; font-size: 1.6rem; cursor:pointer; color: var(--accent); padding: 0; margin: 0; line-height: 1;">☆</button>
-                    
                     <button class="icon" id="flip" style="background:none; border:none; padding: 0; margin: 0; display: flex; align-items: center;">
                         <svg class="icon-svg" viewBox="0 0 24 24">
                             <path d="M12 6V3L8 7l4 4V8c2.76 0 5 2.24 5 5 0 .34-.03.67-.1 1h2.02c.05-.33.08-.66.08-1 0-3.87-3.13-7-7-7zm-5 5c0-.34.03-.67.1-1H5.08c-.05.33-.08.66-.08 1 0 3.87 3.13 7 7 7v3l4-4-4-4v3c-2.76 0-5-2.24-5-5z"/>
                         </svg>
                     </button>
                 </div>
-</div>
+            </div>
             <div class="card-body">
                 <div id="shloka-text" class="shloka-text" style="display: block;"></div>
                 <div id="translation-text" class="translation-text" style="display: none;"></div>
             </div>
-
             <div class="card-footer">
                 <button class="shloka-nav-btn" id="prev-btn">
                     <svg class="shloka-nav-svg" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
                 </button>
-                <div style="grid-column: 2;"></div> <button class="shloka-nav-btn" id="next-btn">
+                <div style="grid-column: 2;"></div> 
+                <button class="shloka-nav-btn" id="next-btn">
                     <svg class="shloka-nav-svg" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
                 </button>
             </div>
@@ -77,7 +80,6 @@
                     <path d="M12 4l-1.41 1.41L15.17 10H4v2h11.17l-4.58 4.59L12 18l8-8z"/>
                 </svg>
             </button>
-            
             <button class="icon" id="next">
                 <svg class="icon-svg" viewBox="0 0 24 24">
                     <path d="M12 4l-1.41 1.41L15.17 10H4v2h11.17l-4.58 4.59L12 18l8-8z"/>
@@ -85,38 +87,38 @@
             </button>
         </div>
     </div>
-
     <div class="completion-screen" id="completion-screen">
-        <h1>Chapter Complete! 📖✨</h1>
-        <p id="completion-msg"></p>
-        <button class="action-btn" id="btn-restart">Reread Chapter</button>
-        <button class="action-btn" id="btn-next-adhyay">Next Chapter</button>
-        <button class="action-btn secondary" onclick="location.reload()">Select Adhyay</button>
+            <h1 data-cap="complete_title">Chapter Complete! 📖✨</h1>
+            <p id="completion-msg"></p>
+            <button class="action-btn" id="btn-restart" data-cap="reread">Reread Chapter</button>
+            <button class="action-btn" id="btn-next-adhyay" data-cap="next_adhyay">Next Chapter</button>
+            <button class="action-btn secondary" onclick="location.reload()" data-cap="adhyay_select">Select Adhyay</button>
     </div>
 
+   
     <div id="jump-modal" class="jump-overlay" style="display:none;">
     <div class="jump-card">
-        <h3>Quick Jump</h3>
+        <h3 data-cap="quick_jump">Quick Jump</h3>
         <div class="drop-group">
-            <label>Select Adhyay</label>
+            <label data-cap="pick_ch">Select Adhyay</label>
             <select id="jump-ch-select">
-                <option value="" disabled selected>Pick Chapter</option>
+                <option value="" disabled selected data-cap="pick_ch">Pick Chapter</option>
             </select>
         </div>
         <div class="drop-group">
-            <label>Select Shloka</label>
+            <label data-cap="pick_vs">Select Shloka</label>
             <select id="jump-vs-select" disabled>
-                <option value="" disabled selected>Pick Shloka</option>
+                <option value="" disabled selected data-cap="pick_vs">Pick Shloka</option>
             </select>
         </div>
         <div class="jump-actions">
-            <button id="jump-confirm" class="jump-btn-go">Go</button>
-            <button id="jump-cancel" class="jump-btn-cancel">Cancel</button>
+            <button id="jump-confirm" class="jump-btn-go" data-cap="start_reading">Go</button>
+            <button id="jump-cancel" class="jump-btn-cancel" data-cap="close">Cancel</button>
         </div>
     </div>
-    </div>
+</div>
 
     <script src="theme.js"></script>
-    <script src="path.js"></script>
+    <script src="menu.js"></script> <script src="path.js"></script>
 </body>
 </html>
