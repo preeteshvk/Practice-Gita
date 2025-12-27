@@ -13,15 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 <div class="sidebar-section-title" style="padding: 10px 15px 5px; font-size: 12px; text-transform: uppercase; color: var(--muted); font-weight: 700;">Language</div>
                 <div class="lang-selector-container" style="padding: 0 10px 10px;">
-                    <div class="lang-option" onclick="changeLanguage('hi')" id="opt-hi" style="padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; border: 1px solid transparent; transition: 0.2s;">
+                    <div class="lang-option" onclick="setLanguage('hi')" id="opt-hi" style="padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; border: 1px solid transparent; transition: 0.2s;">
                         <div style="font-weight: 600; font-size: 14px;">हिन्दी (Sanskrit)</div>
                         <div style="font-size: 11px; opacity: 0.8;">Sanskrit script + Hindi translation</div>
                     </div>
-                    <div class="lang-option" onclick="changeLanguage('en_sanskrit')" id="opt-en_sanskrit" style="padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; border: 1px solid transparent; transition: 0.2s;">
+                    <div class="lang-option" onclick="setLanguage('en_sanskrit')" id="opt-en_sanskrit" style="padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; border: 1px solid transparent; transition: 0.2s;">
                         <div style="font-weight: 600; font-size: 14px;">English (Sanskrit)</div>
                         <div style="font-size: 11px; opacity: 0.8;">Sanskrit script + English translation</div>
                     </div>
-                    <div class="lang-option" onclick="changeLanguage('en_iast')" id="opt-en_iast" style="padding: 10px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; transition: 0.2s;">
+                    <div class="lang-option" onclick="setLanguage('en_iast')" id="opt-en_iast" style="padding: 10px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; transition: 0.2s;">
                         <div style="font-weight: 600; font-size: 14px;">English (IAST)</div>
                         <div style="font-size: 11px; opacity: 0.8;">Sanskrit transliteration + English translation</div>
                     </div>
@@ -53,16 +53,51 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.insertAdjacentHTML('afterbegin', sidebarHTML);
 
     // --- GLOBALIZED FUNCTIONS ---
-    // Attaching to window so index.html and buttons can reach them
     
-    window.changeLanguage = (lang) => {
+    /**
+     * Master function for changing language.
+     * Works for both the Home Modal and the Sidebar.
+     */
+    window.setLanguage = (lang) => {
+        // A. Update Data & Theme
         localStorage.setItem("gita_lang", lang);
         document.documentElement.setAttribute('data-lang', lang);
-        window.updateLangUI();
         
+        // B. Update Sidebar UI
+        window.updateLangUI();
+
+        // C. Update Home Modal UI (if present)
+        const modalButtons = document.querySelectorAll('.lang-options button');
+        if (modalButtons.length > 0) {
+            modalButtons.forEach(btn => {
+                btn.style.borderColor = 'var(--border)';
+                btn.style.background = 'transparent';
+            });
+            // Highlight the one that was just clicked
+            const clickedBtn = Array.from(modalButtons).find(b => b.getAttribute('onclick').includes(lang));
+            if (clickedBtn) {
+                clickedBtn.style.borderColor = "var(--accent)";
+                clickedBtn.style.background = "rgba(128, 128, 128, 0.1)";
+            }
+        }
+
+        // D. Handle Closing (Modal and Sidebar)
+        const modal = document.getElementById('lang-modal');
+        if (modal && modal.style.display !== 'none') {
+            // Delay closing slightly so user sees the highlight
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+        
+        // Broadcast the change to other scripts (like path.js)
         window.dispatchEvent(new CustomEvent('langChanged', { detail: lang }));
         
-        if(window.innerWidth < 768) window.toggleMenu();
+        // If sidebar is open on mobile, close it
+        if(window.innerWidth < 768) {
+            const sidebar = document.getElementById("sidebar");
+            if (sidebar && sidebar.classList.contains('active')) window.toggleMenu();
+        }
     };
 
     window.updateLangUI = () => {
@@ -90,11 +125,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // --- Original Logic initialization ---
+    // --- Initialization ---
     window.updateLangUI();
     document.documentElement.setAttribute('data-lang', getStoredLang());
 
-    // --- Share Logic ---
+    // --- Event Listeners ---
     const shareButton = document.getElementById('shareBtn');
     if (shareButton) {
         shareButton.addEventListener('click', async () => {
@@ -103,7 +138,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 text: 'Experience the wisdom of Shrimad Bhagwad Gita in a modern, minimalistic way.',
                 url: 'https://preeteshvk.github.io/Practice-Gita/'
             };
-
             if (navigator.share) {
                 try { await navigator.share(shareData); } 
                 catch (err) { console.log("Share sheet closed"); }
@@ -116,7 +150,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- Menu Event Listeners ---
     const openBtn = document.getElementById("openMenu");
     const closeBtn = document.getElementById("closeMenu");
     const overlay = document.getElementById("overlay");
