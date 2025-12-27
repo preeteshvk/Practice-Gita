@@ -133,6 +133,9 @@ body {
   opacity: .8;
 }
 
+/* ==========================================================================
+   SIDEBAR & NAVIGATION
+   ========================================================================== */
 .sidebar {
   position: fixed;
   top: 0;
@@ -146,7 +149,6 @@ body {
   z-index: 3000;
   display: flex;
   flex-direction: column;
-  /* env(safe-area-inset-top) handles the notch on modern iPhones */
   padding: env(safe-area-inset-top) 16px 20px 16px;
   box-sizing: border-box;
   overflow-y: auto;
@@ -183,8 +185,8 @@ body {
 #closeMenu {
   cursor: pointer;
   font-size: 18px;
-  width: 18px;
-  height: 18px;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -199,8 +201,53 @@ body {
   opacity: 1;
 }
 
-.dark #closeMenu:hover {
-  background: rgba(255, 255, 255, 0.1);
+/* --- Language Selector Styling --- */
+.sidebar-section-title {
+    padding: 10px 12px 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.lang-selector-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 4px 10px;
+}
+
+.lang-option {
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.lang-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
+}
+
+.lang-desc {
+    font-size: 11px;
+    opacity: 0.7;
+    color: var(--text);
+}
+
+/* Hover effect for options */
+.lang-option:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.dark .lang-option:hover {
+    background: rgba(255, 255, 255, 0.05);
 }
 
 /* --- Sidebar Links --- */
@@ -223,40 +270,39 @@ body {
   gap: 16px;
 }
 
-/* Icon Container */
-.sidebar-link span {
+.sidebar-link span:first-child {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px; 
-  height: 40px;
+  width: 38px; 
+  height: 38px;
   border-radius: 12px;
-  font-size: 20px;
+  font-size: 18px;
   flex-shrink: 0;
-  background: #f5f5f7; /* Fallback tint */
+  background: #f5f5f7;
 }
 
-/* --- Color Map (Robust Attribute Selection) --- */
-.sidebar-link[href="about.html"] span     { background: #efe5fd; } /* Purple */
-.sidebar-link[href="guide.html"] span     { background: #ffebee; } /* Red */
-.sidebar-link[href="resources.html"] span { background: #e8f5e9; } /* Green */
-.sidebar-link[href="blogs.html"] span     { background: #e3f2fd; } /* Blue */
-.sidebar-link[href="request.html"] span   { background: #fff8e1; } /* Amber */
-.sidebar-link[href="contact.html"] span   { background: #f3e5f5; } /* Violet */
-.sidebar-link[href="support.html"] span   { background: #fff0f0; } /* Soft Red */
+/* Color Map for Icons */
+.sidebar-link[href="about.html"] span:first-child     { background: #efe5fd; }
+.sidebar-link[href="userguide.html"] span:first-child { background: #ffebee; }
+.sidebar-link[href="resources.html"] span:first-child { background: #e8f5e9; }
+.sidebar-link[href="blogs.html"] span:first-child     { background: #e3f2fd; }
+.sidebar-link[href="features.html"] span:first-child  { background: #fff8e1; }
+.sidebar-link[href="contact.html"] span:first-child   { background: #f3e5f5; }
+.sidebar-link[href="support.html"] span:first-child   { background: #fff0f0; }
+#shareBtn span:first-child                            { background: #f0f4ff; }
 
-.dark .sidebar-link span {
+.dark .sidebar-link span:first-child {
   background: rgba(255, 255, 255, 0.08) !important;
 }
 
-/* --- Hover & Divider --- */
 .sidebar-link:hover {
   background: rgba(0, 0, 0, 0.03);
   transform: translateX(4px);
 }
 
-.sidebar-link:active { 
-  transform: scale(0.97); 
+.dark .sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .sidebar hr {
@@ -264,7 +310,6 @@ body {
   border: 0;
   border-top: 1px solid rgba(0,0,0,0.06);
   margin: 12px auto;
-  flex-shrink: 0;
 }
 
 .dark .sidebar hr {
@@ -279,7 +324,8 @@ body {
   width: 100%;
   height: 100%;
   background: rgba(0,0,0,0.3);
-  backdrop-filter: blur(4px); /* Frosted glass effect */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: none;
   z-index: 2500;
   opacity: 0;
@@ -291,36 +337,12 @@ body {
   opacity: 1;
 }
 
-/* --- Responsive Adaptability (Landscape & Short Screens) --- */
-@media (max-height: 600px) {
-  .sidebar-header {
-    padding: 16px 12px 10px 12px;
-    margin-bottom: 5px;
-  }
-  .sidebar-header h2 {
-    font-size: 20px;
-  }
-  #closeMenu {
-    width: 18px;
-    height: 18px;
-  }
-  .sidebar-link { 
-    padding: 8px 10px; 
-  }
-  .sidebar-link span { 
-    width: 34px; 
-    height: 34px; 
-    font-size: 17px; 
-  }
-  .sidebar hr { 
-    margin: 8px auto; 
-  }
-}
+/* --- Hamburger Icon --- */
 .hamburger {
   cursor: pointer;
   display: flex;
   align-items: center;
-  padding: 5px;
+  padding: 10px;
 }
 
 .hamburger svg {
@@ -328,7 +350,6 @@ body {
   height: 28px;
   fill: var(--accent);
 }
-
 /* ==========================================================================
    4. SELECTION SCREEN (RESTORED ORIGINAL GRID)
    ========================================================================== */
@@ -723,10 +744,10 @@ body {
 }
 
 .subtitle {
-  font-size: 14px;
+  font-size: 18px;
   color: var(--accent);
   text-transform: uppercase;
-  letter-spacing: 3px;
+  letter-spacing: 1px;
   font-weight: 500;
 }
 
