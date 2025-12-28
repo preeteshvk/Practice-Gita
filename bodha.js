@@ -161,7 +161,7 @@ function load(keepColor = false) {
         card.style.borderColor = currentAccentColor;
         svgs.forEach(s => s.style.fill = currentAccentColor);
     }
-    hintBtn.style.color = currentAccentColor;
+    hintBtn.style.color = "var(--text)";
     sessionShloka = shlokas[index]; 
     renderShlokaContent(sessionShloka);
     updateStarIcon();
