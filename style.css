@@ -63,7 +63,6 @@ body {
     /* Ensure the card doesn't get squashed on short screens */
     max-height: none; 
     min-height: 300px;
-    height: auto !important; /* Overrides the 70vh if it causes overflow */
   }
 }
 
