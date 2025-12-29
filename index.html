@@ -98,17 +98,17 @@
             <h3 data-cap="language">Select Language</h3>
             <p>Choose how you'd like to read the Shlokas.</p>
             <div class="lang-options">
-                <button onclick="setLanguage('hi')">
+                <button onclick="handleLanguageSelect('hi')">
                     <div class="check-mark">✓</div>
                     <strong>हिन्दी (Sanskrit)</strong>
                     <span data-cap="lang_hi_desc">Sanskrit shlokas + Hindi translation</span>
                 </button>
-                <button onclick="setLanguage('en_sanskrit')">
+                <button onclick="handleLanguageSelect('en_sanskrit')">
                     <div class="check-mark">✓</div>
                     <strong>English (Sanskrit)</strong>
                     <span data-cap="lang_en_s_desc">Sanskrit shlokas + English translation</span>
                 </button>
-                <button onclick="setLanguage('en_iast')">
+                <button onclick="handleLanguageSelect('en_iast')">
                     <div class="check-mark">✓</div>
                     <strong>English (IAST)</strong>
                     <span data-cap="lang_en_i_desc">Sanskrit transliteration + English translation</span>
@@ -122,13 +122,14 @@
             const savedLang = localStorage.getItem("gita_lang");
             const modal = document.getElementById('lang-modal');
             
+            // 1. Language Check
             if (!savedLang && modal) {
                 modal.style.display = 'flex';
             } else if (savedLang) {
                 document.documentElement.setAttribute('data-lang', savedLang);
             }
 
-            // --- Starred Menu Item Logic ---
+            // 2. Starred Menu Item Logic (Existing)
             const starredBtn = document.getElementById("starred-menu-item");
             if (starredBtn) {
                 const stars = JSON.parse(localStorage.getItem("gita_stars") || "[]");
@@ -136,12 +137,29 @@
                     starredBtn.style.opacity = "0.6";
                     starredBtn.style.filter = "grayscale(1)";
                     starredBtn.style.pointerEvents = "none";
-                    // Tagged for translation even in disabled state
                     const p = starredBtn.querySelector('p');
                     if (p) p.setAttribute('data-cap', 'no_stars');
                 }
             }
         });
+
+        // 3. New Flow Logic
+        function handleLanguageSelect(lang) {
+            // Set the language
+            localStorage.setItem("gita_lang", lang);
+            document.documentElement.setAttribute('data-lang', lang);
+            
+            // Check if user has seen guide
+            const guideSeen = localStorage.getItem("gita_guide_seen");
+            
+            if (!guideSeen) {
+                // First time: go to guide
+                window.location.href = 'userguide.html'; 
+            } else {
+                // Not first time: just hide modal
+                document.getElementById('lang-modal').style.display = 'none';
+            }
+        }
     </script>
     <script src="theme.js"></script>
     <script src="menu.js"></script>
