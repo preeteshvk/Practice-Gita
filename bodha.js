@@ -125,12 +125,28 @@ fetch("verse.json").then(r => r.json()).then(d => {
 
 function startTimer() {
     clearInterval(timerInterval);
-    timerDisplay.textContent = "0.0s"; 
+    timerDisplay.textContent = "0:00.0"; // Initial format
     startTime = Date.now();
+    
     if (timerBox) timerBox.style.color = currentAccentColor;
     if (timerSvg) timerSvg.style.fill = currentAccentColor;
-    timerInterval = setInterval(() => {
-        timerDisplay.textContent = ((Date.now() - startTime) / 1000).toFixed(1) + "s";
+
+   timerInterval = setInterval(() => {
+        const elapsedMs = Date.now() - startTime;
+        const totalSeconds = elapsedMs / 1000;
+
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+
+        if (mins > 0) {
+            // Format: M:SS.t (e.g., 1:05.2)
+            // We pad the seconds so it's not "1:5.2"
+            const formattedSecs = secs.toFixed(1).padStart(4, '0'); 
+            timerDisplay.textContent = `${mins}:${formattedSecs}`;
+        } else {
+            // Format: S.ts (e.g., 5.2s)
+            timerDisplay.textContent = secs.toFixed(1) + "s";
+    }
     }, 100);
 }
 
