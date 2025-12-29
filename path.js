@@ -223,13 +223,23 @@ window.addEventListener('langChanged', () => {
 
 function toggleFlip(e) {
     if (e) e.stopPropagation();
+    
     const sView = document.getElementById("view-shloka");
     const tView = document.getElementById("view-translation");
     if (!sView || !tView) return;
+
     flipped = !flipped;
+    cardBody.style.overflowY = 'hidden';
+
     sView.style.display = flipped ? "none" : "block";
     tView.style.display = flipped ? "block" : "none";
+
     cardBody.scrollTop = 0;
+
+    setTimeout(() => {
+        cardBody.scrollTop = 0;
+        cardBody.style.overflowY = 'auto';
+    }, 50); 
 }
 
 function goNext() {
@@ -496,3 +506,4 @@ card.addEventListener("mouseup", e => {
     if (Math.abs(dy) > 60) toggleFlip();
     else if (Math.abs(dx) > 100) { if (dx < -100) goNext(); else goPrev(); }
 });
+
