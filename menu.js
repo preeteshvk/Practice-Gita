@@ -40,10 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 <a href="userguide.html" class="sidebar-link">
                     <span>ℹ️</span> <span data-cap="how_to_use">How to use</span>
                 </a>
-                <a href="contact.html" class="sidebar-link">
-                    <span>📧</span> <span data-cap="contact_us">Contact Us</span>
-                </a>
-
                 <hr class="sidebar-divider">
                 
                 <a href="resources.html" class="sidebar-link">
