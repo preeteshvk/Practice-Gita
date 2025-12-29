@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Features - Project Gita</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Feature Specific Styles */
+        .features-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 0 100px 0;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            color: var(--accent);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .version-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent);
+            position: relative;
+        }
+
+        .version-tag {
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .feature-item {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .feature-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            padding-top: 2px;
+        }
+
+        .feature-text {
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .suggest-section {
+            background: var(--accent);
+            color: white;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .suggest-section h2 { margin-top: 0; }
+
+        .btn-email {
+            background: white;
+            color: var(--accent);
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 15px;
+            transition: transform 0.2s;
+        }
+
+        .btn-email:active { transform: scale(0.95); }
+
+        @media (max-width: 600px) {
+            .page-header h1 { font-size: 1.8rem; }
+            .version-card { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <div class="nav-left-group">
+            <div class="hamburger" id="openMenu">
+                <svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+            </div>
+            <a href="index.html" class="nav-btn" id="go-home">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <span data-cap="home">Home</span>
+            </a>
+        </div>
+        <div class="theme-toggle" id="themeToggle">🌙</div>
+    </div>
+
+    <div class="features-container">
+        <div class="page-header">
+            <h1 data-cap="features">Features</h1>
+            <p class="feature-text">The journey of building a modern tool for spiritual mastery.</p>
+        </div>
+
+        <div class="version-card">
+            <span class="version-tag">Global Access</span>
+            <div class="feature-item">
+                <span class="feature-icon">🌐</span>
+                <div class="feature-text"><strong>Multi-language Support:</strong> Sanskrit shlokas with translations in Hindi and English, plus IAST transliteration for global reach.</div>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">📲</span>
+                <div class="feature-text"><strong>PWA Ready:</strong> Installable on Android and iOS to work like a native app with offline capabilities.</div>
+            </div>
+        </div>
+
+        <div class="version-card">
+            <span class="version-tag">Practice Ecosystem</span>
+            <div class="feature-item">
+                <span class="feature-icon">🎯</span>
+                <div class="feature-text"><strong>Shlokank & Charan Bodha:</strong> Specialized exam modes to identify verses by number or their first charan. Includes hints for the first/second charan.</div>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">📖</span>
+                <div class="feature-text"><strong>Adhyay Path:</strong> Sequential reading mode with "Quick Jump" functionality to any specific shloka.</div>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">⭐</span>
+                <div class="feature-text"><strong>Starred Verses:</strong> Bookmark difficult or meaningful shlokas for quick revision.</div>
+            </div>
+        </div>
+
+        <div class="version-card">
+            <span class="version-tag">Modern UX</span>
+            <div class="feature-item">
+                <span class="feature-icon">🖐️</span>
+                <div class="feature-text"><strong>Smart Gestures:</strong> Swipe up/down to flip cards, and left/right to navigate between questions.</div>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">⏱️</span>
+                <div class="feature-text"><strong>Auto-Timer:</strong> Automatic timer starts on question display and stops on flip for time-based practice.</div>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🌓</span>
+                <div class="feature-text"><strong>System-Synced Night Mode:</strong> Beautiful dark theme that syncs with your device settings.</div>
+            </div>
+        </div>
+
+        <div class="suggest-section">
+            <h2>Suggest a Feature</h2>
+            <p>Have an idea to make Project Gita better?</p>
+            <a href="request.html"  Request" class="btn-email">Request Feature</a>
+        </div>
+    </div>
+
+    <script src="theme.js"></script>
+    <script src="menu.js"></script>
+</body>
+</html>

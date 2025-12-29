@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Suggest a Feature | Project Gita</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* 1. LAYOUT ALIGNMENT */
+        * { box-sizing: border-box; }
+        
+        body { 
+            margin: 0;
+            padding-top: calc(80px + env(safe-area-inset-top)) !important;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 2. NAVIGATION BAR (Matching your Resources UI) */
+        .nav-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: calc(60px + env(safe-area-inset-top)); 
+            padding: env(safe-area-inset-top) 20px 0 20px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 3000; 
+            background: var(--bg);
+            border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--accent) !important;
+            font-weight: 500;
+        }
+        .nav-btn svg { width: 20px; height: 20px; fill: var(--accent); }
+
+        /* 3. CONTENT AREA */
+        .content-wrapper {
+            width: 100%;
+            max-width: 600px;
+            padding: 0 20px 60px 20px;
+        }
+
+        .logo-area {
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .subtitle {
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .logo-area h1 {
+            font-size: 2.2rem;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .logo-area p {
+            color: var(--muted);
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+
+        /* 4. FORM STYLING */
+        .form-container {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid rgba(128, 128, 128, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .input-group input, 
+        .input-group textarea {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1.5px solid rgba(128, 128, 128, 0.2);
+            background: var(--bg);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus, 
+        .input-group textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .submit-btn:active { transform: scale(0.98); }
+
+        .form-footer {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .form-footer p {
+            font-size: 0.8rem;
+            color: var(--muted);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 480px) {
+            .logo-area h1 { font-size: 1.8rem; }
+            .form-container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-btn">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        <div class="theme-toggle" id="themeToggle" style="cursor: pointer; font-size: 1.2rem;">🌙</div>
+    </nav>
+
+    <main class="content-wrapper">
+        <header class="logo-area">
+            <div class="subtitle">Community Feedback</div>
+            <h1>Suggest a Feature</h1>
+            <p>Your ideas help shape the future of Project Gita. We read every suggestion.</p>
+        </header>
+
+        <section class="form-container">
+            <form id="featureRequestForm">
+                <div class="input-group">
+                    <label for="featureTitle">Feature Title</label>
+                    <input type="text" id="featureTitle" placeholder="e.g., Sanskrit Shloka Audio" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="featureDetails">How would this work?</label>
+                    <textarea id="featureDetails" rows="5" placeholder="Describe the feature and how it helps you learn..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <span>Draft Email</span>
+                    <span class="icon">📧</span>
+                </button>
+            </form>
+
+            <div class="form-footer">
+                <p>Clicking "Draft Email" will open your default email app. No data is stored on our servers.</p>
+                <a href="features.html" class="back-link">← Back to feature list</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="theme.js"></script>
+    <script>
+        document.getElementById('featureRequestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const title = document.getElementById('featureTitle').value;
+            const details = document.getElementById('featureDetails').value;
+            const yourEmail = "simplyperspicacious@gmail.com"; 
+            
+            const subject = encodeURIComponent(`Feature Request: ${title}`);
+            const body = encodeURIComponent(
+                `Hi Project Gita Team,\n\n` +
+                `I have a feature suggestion:\n` +
+                `---------------------------\n` +
+                `${details}\n` +
+                `---------------------------\n\n` +
+                `Sent from Project Gita Web App`
+            );
+            
+            window.location.href = `mailto:${yourEmail}?subject=${subject}&body=${body}`;
+        });
+    </script>
+</body>
+</html>
