@@ -189,10 +189,18 @@
                 <div class="grid-item"><strong>Inner Arrow</strong>Shlokas</div>
                 <div class="grid-item"><strong>Outer Arrow</strong>Questions</div>
             </div>
-            <a href="index.html" class="cta-btn">Begin</a>
+          <a href="#" onclick="finishGuide()" class="cta-btn">Begin</a>
         </div>
     </div>
 
+   
+
+<script>
+function finishGuide() {
+    localStorage.setItem("gita_guide_seen", "true");
+    window.location.href = "index.html";
+}
+</script>
     <script src="theme.js"></script>
     <script src="menu.js"></script>
 </body>
