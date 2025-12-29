@@ -125,12 +125,25 @@ fetch("verse.json").then(r => r.json()).then(d => {
 
 function startTimer() {
     clearInterval(timerInterval);
-    timerDisplay.textContent = "0.0s"; 
+    timerDisplay.textContent = "0:00.0"; // Initial format
     startTime = Date.now();
+    
     if (timerBox) timerBox.style.color = currentAccentColor;
     if (timerSvg) timerSvg.style.fill = currentAccentColor;
-    timerInterval = setInterval(() => {
-        timerDisplay.textContent = ((Date.now() - startTime) / 1000).toFixed(1) + "s";
+
+   timerInterval = setInterval(() => {
+        const elapsedMs = Date.now() - startTime;
+        const totalSeconds = elapsedMs / 1000;
+
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+
+        if (mins > 0) {
+            const formattedSecs = secs.toFixed(1).padStart(4, '0'); 
+            timerDisplay.textContent = `${mins}:${formattedSecs}`;
+        } else {
+            timerDisplay.textContent = secs.toFixed(1) + "s";
+    }
     }, 100);
 }
 
@@ -185,7 +198,9 @@ function renderShlokaContent(s) {
         : (isEnglish ? `Adhyay ${s.c} · Verse ${s.v}` : `अध्याय ${s.c} · श्लोक ${s.v}`);
     
     center.textContent = shlokaInfo;
-    header.textContent = flipped ? shlokaInfo : "";
+    header.textContent = flipped 
+        ? (isEnglish ? `Adhyay ${s.c} · Verse ${s.v}` : `अध्याय ${s.c} · श्लोक ${s.v}`) 
+        : (isEnglish ? "Identify the Verse" : "श्लोक पहचानिये");
 
     const isOriginalQuestion = (s.c === shlokas[index].c && s.v === shlokas[index].v);
     if (timerBox) {
