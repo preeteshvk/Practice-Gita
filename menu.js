@@ -34,32 +34,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 <a href="about.html" class="sidebar-link">
                     <span>🕉️</span> <span data-cap="about">About Project Gita</span>
                 </a>
+                <a href="features.html" class="sidebar-link">
+                    <span>💡</span> <span data-cap="features">Features</span>
+                </a>
                 <a href="userguide.html" class="sidebar-link">
                     <span>ℹ️</span> <span data-cap="how_to_use">How to use</span>
                 </a>
-                
+                <a href="contact.html" class="sidebar-link">
+                    <span>📧</span> <span data-cap="contact_us">Contact Us</span>
+                </a>
+
                 <hr class="sidebar-divider">
                 
                 <a href="resources.html" class="sidebar-link">
                     <span>📚</span> <span data-cap="resources">Resources</span>
                 </a>
-                <a href="blogs.html" class="sidebar-link">
-                    <span>✍️</span> <span data-cap="blogs">Blogs</span>
-                </a>
-                
+
                 <hr class="sidebar-divider">
-                
-                <a href="features.html" class="sidebar-link">
-                    <span>💡</span> <span data-cap="features">Features</span>
-                </a>
-                <a href="contact.html" class="sidebar-link">
-                    <span>📧</span> <span data-cap="contact_us">Contact Us</span>
-                </a>
-                <a href="support.html" class="sidebar-link" style="color:var(--accent); font-weight: 700;">
+                 <a href="support.html" class="sidebar-link" style="color:var(--accent); font-weight: 700;">
                     <span>🙏</span> <span data-cap="leave_tip">Leave a tip</span>
                 </a>
-                
+                           
                 <hr class="sidebar-divider">
+               
                 <div class="sidebar-link" id="shareBtn" style="cursor:pointer;">
                     <span>📤</span> <span data-cap="share_friends">Share with Friends</span>
                 </div>
