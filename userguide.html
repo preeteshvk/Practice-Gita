@@ -7,72 +7,108 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@100;300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Mapping the guide strictly to your main CSS theme variables */
         :root { 
             --guide-accent: var(--accent); 
         }
 
         html, body {
-            height: 100%; width: 100%; margin: 0;
-            overflow: hidden; background: var(--bg);
-            color: var(--text); font-family: 'Noto Sans Devanagari', sans-serif;
+            height: 100%; 
+            width: 100%; 
+            margin: 0;
+            overflow: hidden; /* Elements scale to fit, so scrolling is disabled */
+            background: var(--bg);
+            color: var(--text); 
+            font-family: 'Noto Sans Devanagari', sans-serif;
             transition: background 0.3s, color 0.3s;
         }
 
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
         .premium-canvas {
-            height: 100vh; display: flex; flex-direction: column;
-            justify-content: space-between; align-items: center;
-            padding: 40px 20px 30px; box-sizing: border-box;
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            /* Evenly distributes the remaining vertical air */
+            justify-content: space-evenly; 
+            /* Accounts for top notch and bottom safe area automatically */
+            padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom); 
+            box-sizing: border-box;
+        }
+
+        .guide-header {
+            /* Pushes down slightly to clear the fixed nav-bar icons */
+            padding-top: 10px; 
+            flex: 0 1 auto;
         }
 
         .guide-header h1 {
-            font-weight: 100; font-size: 1.8rem; letter-spacing: 8px;
-            text-transform: uppercase; margin: 0; opacity: 0.8;
+            font-weight: 100; 
+            /* Scales between 1.2rem and 1.8rem based on height */
+            font-size: clamp(1.2rem, 4vh, 1.8rem); 
+            letter-spacing: 8px;
+            text-transform: uppercase; 
+            margin: 0; 
+            opacity: 0.8;
             color: var(--text);
         }
 
-        /* Hub Area */
+        /* Proportional Hub Area */
         .hub-area {
-            position: relative; width: 100%; max-width: 320px;
-            height: 280px; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; flex-shrink: 0;
+            position: relative; 
+            width: 100%; 
+            max-width: 300px;
+            /* Container takes up roughly 30% of height */
+            height: 30vh; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            flex-shrink: 0;
         }
 
         .card-perspective { perspective: 1000px; z-index: 5; }
         
         .phone-frame {
-            width: 110px; height: 170px;
-            /* Using your theme's border and card-bg variables */
+            /* Phone dimensions scale with screen height */
+            width: 14vh; 
+            height: 22vh;
+            max-width: 110px;
+            max-height: 170px;
             border: 1px solid var(--border);
-            border-radius: 15px; position: relative;
+            border-radius: 15px; 
+            position: relative;
             background: var(--card-bg);
             transform-style: preserve-3d;
             overflow: hidden;
             animation: sequentialFlip 14s infinite ease-in-out;
         }
 
-        /* SVG & Nav Color Logic - Pulling from Home Button style */
         .flip-icon-svg {
             position: absolute; top: 10px; right: 10px;
-            width: 20px; height: 20px; 
+            width: 18px; height: 18px; 
             fill: var(--guide-accent);
             opacity: 0.8;
         }
 
         .inner-nav {
-            position: absolute; bottom: 12px; width: 100%;
-            display: flex; justify-content: center; gap: 35px;
-            font-size: 0.7rem; opacity: 0.6; 
+            position: absolute; bottom: 10px; width: 100%;
+            display: flex; justify-content: center; gap: 30px;
+            font-size: 0.6rem; opacity: 0.6; 
             color: var(--guide-accent);
         }
 
         .outer-nav {
-            margin-top: 20px; display: flex; gap: 90px;
-            font-size: 1.4rem; opacity: 0.2; font-weight: 200;
+            margin-top: 10px; display: flex; gap: 80px;
+            font-size: 1.2rem; opacity: 0.2; font-weight: 200;
             animation: arrowPulse 14s infinite;
         }
 
-        /* Kinetic Dot - Matching Accent exactly */
         .kinetic-dot {
             width: 8px; height: 8px; 
             background: var(--guide-accent);
@@ -82,19 +118,64 @@
             animation: sequentialDot 14s infinite ease-in-out;
         }
 
+        /* Proportional Info Slate */
+        .info-slate {
+            flex: 0 1 auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px; 
+            padding: 2vh 18px;
+            text-align: center; 
+            width: 100%; 
+            max-width: 320px;
+            opacity: 0.9;
+        }
+
+        .guide-grid {
+            display: grid; 
+            grid-template-columns: 1fr 1fr;
+            gap: 1vh; 
+            margin-bottom: 2vh;
+        }
+
+        .grid-item {
+            font-size: clamp(0.55rem, 1.2vh, 0.7rem); 
+            text-transform: uppercase;
+            letter-spacing: 1px; 
+            color: var(--muted);
+            padding: 8px; 
+            border: 1px solid rgba(128, 128, 128, 0.1);
+            border-radius: 10px;
+        }
+        .grid-item strong { color: var(--guide-accent); display: block; }
+
+        .cta-btn {
+            display: inline-block; 
+            text-decoration: none; 
+            color: var(--text);
+            font-size: 0.7rem; 
+            letter-spacing: 4px; 
+            text-transform: uppercase;
+            padding: 12px 40px; 
+            border: 1px solid var(--guide-accent);
+            border-radius: 50px;
+            transition: 0.3s;
+        }
+
+        /* Animations */
         @keyframes sequentialDot {
             0%, 100% { transform: translate(-50%, -50%); opacity: 0; }
             5% { opacity: 1; }
-            12% { transform: translate(-50%, -65px); opacity: 0; }
+            12% { transform: translate(-50%, -7vh); opacity: 0; }
             15% { transform: translate(-50%, -50%); opacity: 0; }
             20% { opacity: 1; }
-            27% { transform: translate(-50%, 55px); opacity: 0; }
+            27% { transform: translate(-50%, 6vh); opacity: 0; }
             30% { transform: translate(-50%, -50%); opacity: 0; }
             35% { opacity: 1; }
-            42% { transform: translate(-45px, -50%); opacity: 0; }
+            42% { transform: translate(-5vh, -50%); opacity: 0; }
             45% { transform: translate(-50%, -50%); opacity: 0; }
             50% { opacity: 1; }
-            57% { transform: translate(35px, -50%); opacity: 0; }
+            57% { transform: translate(4vh, -50%); opacity: 0; }
             60%, 95% { opacity: 0; }
         }
 
@@ -108,43 +189,6 @@
             0%, 88% { opacity: 0.2; transform: scale(1); }
             94% { opacity: 1; transform: scale(1.1); color: var(--guide-accent); }
             100% { opacity: 0.2; }
-        }
-
-        /* Info Slate using card variables */
-        .info-slate {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 20px; padding: 20px;
-            text-align: center; width: 100%; max-width: 320px;
-            opacity: 0.9;
-        }
-
-        .guide-grid {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 10px; margin-bottom: 20px;
-        }
-
-        .grid-item {
-            font-size: 0.6rem; text-transform: uppercase;
-            letter-spacing: 1px; color: var(--muted);
-            padding: 8px; border: 1px solid rgba(128, 128, 128, 0.1);
-            border-radius: 10px;
-        }
-        .grid-item strong { color: var(--guide-accent); display: block; }
-
-        .cta-btn {
-            display: inline-block; text-decoration: none; 
-            color: var(--text);
-            font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
-            padding: 12px 40px; 
-            border: 1px solid var(--guide-accent);
-            border-radius: 50px;
-            transition: 0.3s;
-        }
-
-        .cta-btn:hover {
-            background: var(--guide-accent);
-            color: var(--card-bg); /* Contrast color */
         }
     </style>
 </head>
@@ -164,7 +208,6 @@
     </div>
 
     <div class="premium-canvas">
-        
         <header class="guide-header">
             <h1>Gesture</h1>
         </header>
@@ -189,11 +232,9 @@
                 <div class="grid-item"><strong>Inner Arrow</strong>Shlokas</div>
                 <div class="grid-item"><strong>Outer Arrow</strong>Questions</div>
             </div>
-          <a href="#" onclick="finishGuide()" class="cta-btn">Begin</a>
+            <a href="#" onclick="finishGuide()" class="cta-btn">Begin</a>
         </div>
     </div>
-
-   
 
 <script>
 function finishGuide() {
