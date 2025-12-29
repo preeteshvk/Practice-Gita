@@ -167,13 +167,18 @@
 </head>
 <body>
 
-    <nav class="nav-bar">
-        <a href="index.html" class="nav-btn">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span>Home</span>
-        </a>
-        <div class="theme-toggle" id="themeToggle" style="cursor: pointer; font-size: 1.2rem;">🌙</div>
-    </nav>
+   <div class="nav-bar">
+        <div class="nav-left-group">
+            <div class="hamburger" id="openMenu">
+                <svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+            </div>
+            <a href="index.html" class="nav-btn" id="go-home">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <span data-cap="home">Home</span>
+            </a>
+        </div>
+        <div class="theme-toggle" id="themeToggle">🌙</div>
+    </div>
 
     <main class="content-wrapper">
         <header class="logo-area">
@@ -228,5 +233,6 @@
             window.location.href = `mailto:${yourEmail}?subject=${subject}&body=${body}`;
         });
     </script>
+     <script src="menu.js"></script>
 </body>
 </html>
