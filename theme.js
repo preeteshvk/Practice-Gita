@@ -91,7 +91,7 @@ const uiTranslations = {
         how_to_use: "उपयोग कैसे करें",
         resources: "रिसोर्सेज", 
         blogs: "ब्लॉग",
-        features: "विशेषताएं",
+        features: "फीचर्स (विशेषताएं)",
         contact_us: "संपर्क करें",
         leave_tip: "आपका सहयोग प्रदान करें", 
         share_friends: "शेयर करें", 
@@ -178,8 +178,21 @@ const uiTranslations = {
         contact_desc: "किसी भी प्रश्न या सुझाव के लिए हमसे संपर्क करें।",
         support_init_title: "आपका सहयोग प्रदान करें",
         support_init_desc: "इस प्रोजेक्ट को निःशुल्क और अधिक लोगों तक पहुँचाने में हमारी मदद करें।",
-        feat_list_title: "विशेषताओं की सूची",
-        feat_list_desc: "देखें कि इस ऐप में कौन-कौन सी सुविधाएँ उपलब्ध हैं।"
+        feat_list_title: "फीचर्स (विशेषताओं) की सूची",
+        feat_list_desc: "देखें कि इस ऐप में कौन-कौन सी सुविधाएँ उपलब्ध हैं।",
+
+        suggest_subtitle: "सामुदायिक फीडबैक",
+        suggest_title_h1: "फीचर का सुझाव दें",
+        suggest_desc_p: "आपके विचार प्रोजेक्ट गीता के भविष्य को आकार देने में मदद करते हैं। हम प्रत्येक सुझाव को पढ़ते हैं।",
+        label_feat_title: "फीचर का शीर्षक",
+        ph_feat_title: "जैसे: संस्कृत श्लोक ऑडियो",
+        label_feat_how: "यह कैसे काम करेगा?",
+        ph_feat_how: "फीचर का वर्णन करें और बताएं कि यह आपको सीखने में कैसे मदद करती है...",
+        btn_draft_email: "ईमेल ड्राफ्ट करें",
+        suggest_footer_note: '"ईमेल ड्राफ्ट करें" पर क्लिक करने से आपका ईमेल ऐप खुल जाएगा। हमारे सर्वर पर कोई डेटा स्टोर नहीं किया जाता है।',
+        back_to_list: "← फीचर्स (विशेषताओं) की सूची पर वापस जाएं",
+        email_greeting: "नमस्ते प्रोजेक्ट गीता टीम,\n\nमेरा एक सुझाव है:\n",
+        email_footer: "\n\nप्रोजेक्ट गीता वेब ऐप से भेजा गया"
     },
     en_sanskrit: {
         home: "Home",
@@ -277,7 +290,20 @@ const uiTranslations = {
         support_init_title: "Support the Initiative",
         support_init_desc: "Help us make this project available to more people freely.",
         feat_list_title: "Features List",
-        feat_list_desc: "See what all features the functionality has."
+        feat_list_desc: "See what all features the functionality has.",
+
+        suggest_subtitle: "Community Feedback",
+        suggest_title_h1: "Suggest a Feature",
+        suggest_desc_p: "Your ideas help shape the future of Project Gita. We read every suggestion.",
+        label_feat_title: "Feature Title",
+        ph_feat_title: "e.g., Sanskrit Shloka Audio",
+        label_feat_how: "How would this work?",
+        ph_feat_how: "Describe the feature and how it helps you learn...",
+        btn_draft_email: "Draft Email",
+        suggest_footer_note: 'Clicking "Draft Email" will open your default email app. No data is stored on our servers.',
+        back_to_list: "← Back to feature list",
+        email_greeting: "Hi Project Gita Team,\n\nI have a feature suggestion:\n",
+        email_footer: "\n\nSent from Project Gita Web App"
     },
     en_iast: {
         home: "Home",
@@ -375,7 +401,20 @@ const uiTranslations = {
         support_init_title: "Support the Initiative",
         support_init_desc: "Help us make this project available to more people freely.",
         feat_list_title: "Features List",
-        feat_list_desc: "See what all features the functionality has."
+        feat_list_desc: "See what all features the functionality has.",
+
+        suggest_subtitle: "Community Feedback",
+        suggest_title_h1: "Suggest a Feature",
+        suggest_desc_p: "Your ideas help shape the future of Project Gita. We read every suggestion.",
+        label_feat_title: "Feature Title",
+        ph_feat_title: "e.g., Sanskrit Shloka Audio",
+        label_feat_how: "How would this work?",
+        ph_feat_how: "Describe the feature and how it helps you learn...",
+        btn_draft_email: "Draft Email",
+        suggest_footer_note: 'Clicking "Draft Email" will open your default email app. No data is stored on our servers.',
+        back_to_list: "← Back to feature list",
+        email_greeting: "Hi Project Gita Team,\n\nI have a feature suggestion:\n",
+        email_footer: "\n\nSent from Project Gita Web App"
 
     }
 };
@@ -394,7 +433,7 @@ function applyUILanguage() {
 
         if (translation) {
             // 1. Handle Input Placeholders
-            if (el.tagName === 'INPUT') {
+            if (el.tagName === 'INPUT'|| el.tagName === 'TEXTAREA') {
                 el.placeholder = translation;
             } 
             // 2. Handle Paragraphs/Headers with Formatting (bold/italics)
