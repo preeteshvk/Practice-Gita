@@ -167,7 +167,19 @@ const uiTranslations = {
         tab_blogs: "लेख और ब्लॉग",
         res_gita_advice_title: "गीता का मार्गदर्शन",
         res_gita_advice_desc: "विद्यार्थियों और युवाओं के लिए जीवन की चुनौतियों से निपटने हेतु विशेष मार्गदर्शन।",
-        search_resources: "सर्च..."
+        search_resources: "सर्च...",
+
+        about_story_title: "हमारी कहानी",
+        about_greeting: "नमस्ते",
+        about_p1: "<strong>प्रोजेक्ट गीता</strong> की शुरुआत एक सरल संकल्प के साथ हुई थी: अपनी माताजी को <strong>गीता परिवार</strong> द्वारा आयोजित <em>श्लोकांक</em> परीक्षा की तैयारी में सहायता करना।",
+        about_p2: "एक माँ की मदद के उद्देश्य से शुरू हुआ यह छोटा सा प्रयास आज एक विस्तृत संग्रह बन चुका है। इसमें श्रीमद भगवद गीता के सभी 700 श्लोकों और 18 पुष्पिकाओं के अभ्यास के लिए विभिन्न तरीके उपलब्ध हैं, ताकि कोई भी इन कालजयी श्लोकों में निपुणता प्राप्त कर सके।",
+        about_thanks: "हम गीता परिवार और उन सभी लेखकों का आभार व्यक्त करते हैं जिनके प्रयासों और सामग्री ने इस प्रोजेक्ट को प्रेरित किया।",
+        about_contact_title: "संपर्क और सहयोग",
+        contact_desc: "किसी भी प्रश्न या सुझाव के लिए हमसे संपर्क करें।",
+        support_init_title: "आपका सहयोग प्रदान करें",
+        support_init_desc: "इस प्रोजेक्ट को निःशुल्क और अधिक लोगों तक पहुँचाने में हमारी मदद करें।",
+        feat_list_title: "विशेषताओं की सूची",
+        feat_list_desc: "देखें कि इस ऐप में कौन-कौन सी सुविधाएँ उपलब्ध हैं।"
     },
     en_sanskrit: {
         home: "Home",
@@ -179,7 +191,7 @@ const uiTranslations = {
         blogs: "Blogs",
         features: "Features",
         contact_us: "Contact Us",
-        leave_tip: "Leave a tip",
+        leave_tip: "Support the Initiative",
         share_friends: "Share with Friends",
         close: "Close",
         back: "Back",
@@ -253,7 +265,19 @@ const uiTranslations = {
         tab_blogs: "Blogs and Articles",
         res_gita_advice_title: "Gita Advice",
         res_gita_advice_desc: "Practical advice for students and young people based on Gita.",
-        search_resources: "Search..."
+        search_resources: "Search...",
+
+        about_story_title: "Our Story",
+        about_greeting: "Namaste",
+        about_p1: "<strong>Project Gita</strong> began with a simple desire: to help my mother prepare for her <em>Shlokanka</em> examination conducted by <strong>Gita Parivar</strong>.",
+        about_p2: "What started as a tool for a mother has grown into a comprehensive repository with different practice modes for all 700 Verses and 18 Pushpikas, designed for anyone seeking to master these timeless verses.",
+        about_thanks: "We thank Gita Parivar and the authors for their efforts and the content that inspired this project.",
+        about_contact_title: "Contact & Support",
+        contact_desc: "Reach out for queries or feedback.",
+        support_init_title: "Support the Initiative",
+        support_init_desc: "Help us make this project available to more people freely.",
+        feat_list_title: "Features List",
+        feat_list_desc: "See what all features the functionality has."
     },
     en_iast: {
         home: "Home",
@@ -265,7 +289,7 @@ const uiTranslations = {
         blogs: "Blogs",
         features: "Features",
         contact_us: "Contact Us",
-        leave_tip: "Leave a tip",
+        leave_tip: "Support the Initiative",
         share_friends: "Share with Friends",
         close: "Close",
         back: "Back",
@@ -339,7 +363,19 @@ const uiTranslations = {
         tab_blogs: "Blogs and Articles",
         res_gita_advice_title: "Gita Advice",
         res_gita_advice_desc: "Practical advice for students and young people based on Gita.",
-        search_resources: "Search..."
+        search_resources: "Search...",
+
+        about_story_title: "Our Story",
+        about_greeting: "Namaste",
+        about_p1: "<strong>Project Gita</strong> began with a simple desire: to help my mother prepare for her <em>Shlokanka</em> examination conducted by <strong>Gita Parivar</strong>.",
+        about_p2: "What started as a tool for a mother has grown into a comprehensive repository with different practice modes for all 700 Verses and 18 Pushpikas, designed for anyone seeking to master these timeless verses.",
+        about_thanks: "We thank Gita Parivar and the authors for their efforts and the content that inspired this project.",
+        about_contact_title: "Contact & Support",
+        contact_desc: "Reach out for queries or feedback.",
+        support_init_title: "Support the Initiative",
+        support_init_desc: "Help us make this project available to more people freely.",
+        feat_list_title: "Features List",
+        feat_list_desc: "See what all features the functionality has."
 
     }
 };
@@ -357,11 +393,15 @@ function applyUILanguage() {
         const translation = t[key];
 
         if (translation) {
-            // Check if the element is an input field
+            // 1. Handle Input Placeholders
             if (el.tagName === 'INPUT') {
                 el.placeholder = translation;
             } 
-            // For all other elements (headings, buttons, spans)
+            // 2. Handle Paragraphs/Headers with Formatting (bold/italics)
+            else if (translation.includes('<')) {
+                el.innerHTML = translation;
+            }
+            // 3. Handle Simple Text (Fastest performance)
             else {
                 el.textContent = translation;
             }
