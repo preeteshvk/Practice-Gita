@@ -159,7 +159,15 @@ const uiTranslations = {
         feat_night_desc: "एक सुंदर डार्क थीम जो आपके डिवाइस की सेटिंग्स के साथ अपने आप तालमेल बिठा लेती है।",
         suggest_title: "नया फीचर सुझाएं",
         suggest_desc: "क्या आपके पास प्रोजेक्ट गीता को बेहतर बनाने का कोई विचार है?",
-        btn_request: "फीचर का अनुरोध करें"
+        btn_request: "फीचर का अनुरोध करें",
+        resources_subtitle: "श्रीमद भगवद गीता से संबंधित उपयोगी सामग्री, जो मेरी आध्यात्मिक यात्रा में प्रेरणादायक रही है।",
+        tab_all: "सभी",
+        tab_videos: "वीडियो",
+        tab_prayers: "प्रार्थनाएँ",
+        tab_blogs: "लेख और ब्लॉग",
+        res_gita_advice_title: "गीता का मार्गदर्शन",
+        res_gita_advice_desc: "विद्यार्थियों और युवाओं के लिए जीवन की चुनौतियों से निपटने हेतु विशेष मार्गदर्शन।",
+        search_shloka: "सर्च..."
     },
     en_sanskrit: {
         home: "Home",
@@ -237,7 +245,15 @@ const uiTranslations = {
         feat_night_desc: "Beautiful dark theme that syncs with your device settings.",
         suggest_title: "Suggest a Feature",
         suggest_desc: "Have an idea to make Project Gita better?",
-        btn_request: "Request Feature"
+        btn_request: "Request Feature",
+        resources_subtitle: "Includes all resources related to Bhagavad Gita which I have found meaningful.",
+        tab_all: "All",
+        tab_videos: "Videos",
+        tab_prayers: "Prayers",
+        tab_blogs: "Blogs and Articles",
+        res_gita_advice_title: "Gita Advice",
+        res_gita_advice_desc: "Practical advice for students and young people based on Gita.",
+        search_shloka: "Search..."
     },
     en_iast: {
         home: "Home",
@@ -315,7 +331,16 @@ const uiTranslations = {
         feat_night_desc: "Beautiful dark theme that syncs with your device settings.",
         suggest_title: "Suggest a Feature",
         suggest_desc: "Have an idea to make Project Gita better?",
-        btn_request: "Request Feature"
+        btn_request: "Request Feature",
+        resources_subtitle: "Includes all resources related to Bhagavad Gita which I have found meaningful.",
+        tab_all: "All",
+        tab_videos: "Videos",
+        tab_prayers: "Prayers",
+        tab_blogs: "Blogs and Articles",
+        res_gita_advice_title: "Gita Advice",
+        res_gita_advice_desc: "Practical advice for students and young people based on Gita.",
+        search_shloka: "Search..."
+
     }
 };
 
@@ -329,15 +354,20 @@ function applyUILanguage() {
 
     document.querySelectorAll('[data-cap]').forEach(el => {
         const key = el.getAttribute('data-cap');
-        if (t[key]) {
-            el.textContent = t[key];
+        const translation = t[key];
+
+        if (translation) {
+            // Check if the element is an input field
+            if (el.tagName === 'INPUT') {
+                el.placeholder = translation;
+            } 
+            // For all other elements (headings, buttons, spans)
+            else {
+                el.textContent = translation;
+            }
         }
     });
-
-    const searchInput = document.querySelector('.search-bar input');
-    if (searchInput && t.search_shloka) searchInput.placeholder = t.search_shloka;
 }
-
 // 1. Define Language Constants
 const GITA_LANGS = {
     HINDI: 'hi',          
