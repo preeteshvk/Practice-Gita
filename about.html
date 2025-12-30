@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>About - Project Gita</title>
+    <title>About | Project Gita</title>
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Project Gita">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <link rel="apple-touch-startup-image" href="icon-512.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="child-page">
@@ -22,52 +30,58 @@
 
     <div class="content-wrapper">
         <div class="logo-area">
-            <div class="subtitle">Our Story</div>
-            <h1>नमस्ते</h1>
+            <div class="subtitle" data-cap="about_story_title">Our Story</div>
+            <h1 data-cap="about_greeting">नमस्ते</h1>
         </div>
 
         <div class="card about-card">
             <div class="card-body">
                 <div class="shloka-text" style="font-size: 1.1rem; text-align: left;">
-                    <p><strong>Project Gita</strong> began with a simple desire: to help my mother prepare for her <em>Shlokanka</em> examination conducted by <strong>Gita Parivar</strong>.</p>
-                    <p>What started as a tool for one mother has grown into a comprehensive repository of all 700 verses and 18 pushpikas of the Shrimad Bhagavad Gita, designed for anyone seeking to master these timeless verses.</p>
-                    <p style="font-size: 0.9rem; opacity: 0.8; font-style: italic;">We acknowledge Gita Parivar and the esteemed authors of the translated texts for their inspiration.</p>
+                    <p data-cap="about_p1">
+                        <strong>Project Gita</strong> began with a simple desire: to help my mother prepare for her <em>Shlokanka</em> examination conducted by <strong>Gita Parivar</strong>.
+                    </p>
+                    <p data-cap="about_p2">
+                        What started as a tool for a mother has grown into a comprehensive repository with different practice modes for all 700 Verses and 18 Pushpikas of the Shrimad Bhagavad Gita, designed for anyone seeking to master these timeless verses.
+                    </p>
+                    <p style="font-size: 0.9rem; opacity: 0.8; font-style: italic;" data-cap="about_thanks">
+                        We thank Gita Parivar and the authors for their efforts and the content that inspired this project.
+                    </p>
                 </div>
             </div>
         </div>
 
         <div class="logo-area" style="margin-top: 30px; margin-bottom: 20px;">
-            <div class="subtitle">Contact & Support</div>
+            <div class="subtitle" data-cap="about_contact_title">Contact & Support</div>
         </div>
 
         <div class="menu-stack">
             <a href="mailto:simplyperspicacious@gmail.com" class="menu-item">
                 <div class="icon-box">✉️</div>
                 <div class="text-box">
-                    <h2>Contact Us</h2>
-                    <p>Reach out for queries or feedback.</p>
+                    <h2 data-cap="contact_us">Contact Us</h2>
+                    <p data-cap="contact_desc">Reach out for queries or feedback.</p>
                 </div>
             </a>
 
             <a href="support.html" class="menu-item">
                 <div class="icon-box">🙏</div>
                 <div class="text-box">
-                    <h2>Support the Initiative</h2>
-                    <p>Help us make this project available to more number of people freely.</p>
+                    <h2 data-cap="support_init_title">Support the Initiative</h2>
+                    <p data-cap="support_init_desc">Help us make this project available to more number of people freely.</p>
                 </div>
             </a>
             
             <a href="features.html" class="menu-item">
                 <div class="icon-box">📜</div>
                 <div class="text-box">
-                    <h2>Features list</h2>
-                    <p>See what all features the functionality has.</p>
+                    <h2 data-cap="feat_list_title">Features list</h2>
+                    <p data-cap="feat_list_desc">See what all features the functionality has.</p>
                 </div>
             </a>
         </div>
 
-        <div class="footer">
-               Jai Shri Krishna! Jai Gau Mata! 🙏
+        <div class="footer" data-cap="salutation_footer">
+                Jai Shri Krishna! Jai Gau Mata! 🙏
         </div>
     </div>
 
