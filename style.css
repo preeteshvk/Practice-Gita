@@ -18,7 +18,13 @@
   --accent: #ff8a80;
   --border: #ff8a80;
 }
-
+@font-face {
+    font-family: 'Noto Sans Devanagari';
+    src: url('./fonts/NotoSansDevanagari-VariableFont_wdth,wght.ttf') format('truetype-variations');
+    font-weight: 100 900; /* This tells the browser it supports all weights from 100 to 900 */
+    font-style: normal;
+    font-display: swap; /* Helps with loading performance */
+}
 /* ==========================================================================
    2. CORE LAYOUT (PREVENTS DISTORTION ON SMALL HEIGHT)
    ========================================================================== */
@@ -1050,3 +1056,4 @@ body {
 
 
 /*Feature request section*/
+
