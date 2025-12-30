@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Suggest a Feature | Project Gita</title>
-    
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Project Gita">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <link rel="apple-touch-startup-image" href="icon-512.png">
     <link rel="stylesheet" href="style.css">
     
     <style>
@@ -23,7 +30,7 @@
             align-items: center;
         }
 
-        /* 2. NAVIGATION BAR (Matching your Resources UI) */
+        /* 2. NAVIGATION BAR */
         .nav-bar {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -181,32 +188,32 @@
 
     <main class="content-wrapper">
         <header class="logo-area">
-            <div class="subtitle">Community Feedback</div>
-            <h1>Suggest a Feature</h1>
-            <p>Your ideas help shape the future of Project Gita. We read every suggestion.</p>
+            <div class="subtitle" data-cap="suggest_subtitle">Community Feedback</div>
+            <h1 data-cap="suggest_title_h1">Suggest a Feature</h1>
+            <p data-cap="suggest_desc_p">Your ideas help shape the future of Project Gita. We read every suggestion.</p>
         </header>
 
         <section class="form-container">
             <form id="featureRequestForm">
                 <div class="input-group">
-                    <label for="featureTitle">Feature Title</label>
-                    <input type="text" id="featureTitle" placeholder="e.g., Sanskrit Shloka Audio" required>
+                    <label for="featureTitle" data-cap="label_feat_title">Feature Title</label>
+                    <input type="text" id="featureTitle" data-cap="ph_feat_title" placeholder="e.g., Sanskrit Shloka Audio" required>
                 </div>
 
                 <div class="input-group">
-                    <label for="featureDetails">How would this work?</label>
-                    <textarea id="featureDetails" rows="5" placeholder="Describe the feature and how it helps you learn..." required></textarea>
+                    <label for="featureDetails" data-cap="label_feat_how">How would this work?</label>
+                    <textarea id="featureDetails" data-cap="ph_feat_how" rows="5" placeholder="Describe the feature and how it helps you learn..." required></textarea>
                 </div>
 
                 <button type="submit" class="submit-btn">
-                    <span>Draft Email</span>
+                    <span data-cap="btn_draft_email">Draft Email</span>
                     <span class="icon">📧</span>
                 </button>
             </form>
 
             <div class="form-footer">
-                <p>Clicking "Draft Email" will open your default email app. No data is stored on our servers.</p>
-                <a href="features.html" class="back-link">← Back to feature list</a>
+                <p data-cap="suggest_footer_note">Clicking "Draft Email" will open your default email app. No data is stored on our servers.</p>
+                <a href="features.html" class="back-link" data-cap="back_to_list">← Back to feature list</a>
             </div>
         </section>
     </main>
@@ -215,18 +222,23 @@
     <script>
         document.getElementById('featureRequestForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // Access translations for email content
+            const lang = localStorage.getItem("gita_lang") || 'hi';
+            const t = uiTranslations[lang] || uiTranslations['en_sanskrit'];
+            
             const title = document.getElementById('featureTitle').value;
             const details = document.getElementById('featureDetails').value;
             const yourEmail = "simplyperspicacious@gmail.com"; 
             
             const subject = encodeURIComponent(`Feature Request: ${title}`);
             const body = encodeURIComponent(
-                `Hi Project Gita Team,\n\n` +
+                `${t.email_greeting || 'Hi Project Gita Team,'}\n\n` +
                 `I have a feature suggestion:\n` +
                 `---------------------------\n` +
                 `${details}\n` +
                 `---------------------------\n\n` +
-                `Sent from Project Gita Web App`
+                `${t.email_footer || 'Sent from Project Gita Web App'}`
             );
             
             window.location.href = `mailto:${yourEmail}?subject=${subject}&body=${body}`;
