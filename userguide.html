@@ -4,26 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Interface Guide — Project Gita</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@100;300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        :root { 
-            --guide-accent: var(--accent, #ff9900); 
-            --bg: #000;
-            --text: #fff;
-            --card-bg: #111;
-            --border: #333;
-            --muted: #888;
+        :root {
+        --bg: #fafafa;
+        --card-bg: #ffffff;
+        --text: #111;
+        --muted: #666;
+        --accent: #d32f2f;
+        --guide-accent: #d32f2f;
+        --border: #d32f2f;
+        }
+
+        .dark {
+
+        --bg: #121212;
+        --card-bg: #1e1e1e;
+        --text: #f5f5f5;
+        --muted: #bdbdbd;
+        --accent: #ff8a80;
+        --guide-accent: #ff8a80;
+        --border: #ff8a80;
         }
 
         html, body {
-            /* FIX: min-height allows the page to grow beyond the screen */
-            min-height: 100%; 
+            height: 100%; 
             width: 100%; 
             margin: 0;
-            /* FIX: removed overflow:hidden to restore scrolling */
-            overflow-x: hidden;
-            overflow-y: auto; 
+            overflow: hidden; 
             background: var(--bg);
             color: var(--text); 
             font-family: 'Noto Sans Devanagari', sans-serif;
@@ -33,7 +41,6 @@
         .nav-bar {
             position: fixed;
             top: 0;
-            left: 0;
             width: 100%;
             z-index: 100;
             padding: 10px 20px;
@@ -41,28 +48,27 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
+            background: var(--bg); /* Ensures nav is solid */
         }
 
         .nav-left-group { display: flex; align-items: center; gap: 15px; }
         .nav-btn { color: white; text-decoration: none; display: flex; align-items: center; gap: 5px; font-size: 0.8rem; }
 
         .premium-canvas {
-            /* FIX: min-height ensures it covers the screen but expands if needed */
-            min-height: 100vh; 
+            height: 100svh; 
             display: flex; 
             flex-direction: column;
             align-items: center;
-            /* Distributes items, but adds space if the content is taller than the screen */
-            justify-content: center; 
-            gap: 4vh;
-            padding: calc(60px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom)); 
+            /* Anchors everything to the top to eliminate floating space */
+            justify-content: flex-start; 
+            padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom); 
             box-sizing: border-box;
         }
 
-        .guide-header {
-            flex: 0 0 auto;
+        .guide-header { 
+            flex: 0 0 auto; 
+            /* Calculated: 50px (nav) + 20px (breathing room) */
+            margin-top: 70px; 
             text-align: center;
         }
 
@@ -75,139 +81,77 @@
             opacity: 0.8;
         }
 
-        /* Proportional Hub Area */
         .hub-area {
             position: relative; 
             width: 100%; 
             max-width: 300px;
-            height: auto;
-            min-height: 30vh; 
             display: flex; 
             flex-direction: column;
             justify-content: center; 
             align-items: center; 
-            flex-shrink: 0;
+            /* Controlled gap between Title and Phone */
+            margin-top: 30px; 
         }
 
-        .card-perspective { perspective: 1000px; z-index: 5; }
-        
-        .phone-frame {
-            width: 14vh; 
-            height: 22vh;
-            min-width: 100px;
-            min-height: 160px;
-            max-width: 110px;
-            max-height: 170px;
-            border: 1px solid var(--border);
-            border-radius: 15px; 
-            position: relative;
-            background: var(--card-bg);
-            transform-style: preserve-3d;
-            overflow: hidden;
-            animation: sequentialFlip 14s infinite ease-in-out;
-        }
-
-        .flip-icon-svg {
-            position: absolute; top: 10px; right: 10px;
-            width: 18px; height: 18px; 
-            fill: var(--guide-accent);
-            opacity: 0.8;
-        }
-
-        .inner-nav {
-            position: absolute; bottom: 10px; width: 100%;
-            display: flex; justify-content: center; gap: 30px;
-            font-size: 0.6rem; opacity: 0.6; 
-            color: var(--guide-accent);
-        }
-
-        .outer-nav {
-            margin-top: 15px; display: flex; gap: 80px;
-            font-size: 1.2rem; opacity: 0.2; font-weight: 200;
-            animation: arrowPulse 14s infinite;
-        }
-
-        .kinetic-dot {
-            width: 8px; height: 8px; 
-            background: var(--guide-accent);
-            border-radius: 50%; position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 12px var(--guide-accent);
-            animation: sequentialDot 14s infinite ease-in-out;
-        }
-
-        /* Proportional Info Slate */
         .info-slate {
-            flex: 0 0 auto;
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 20px; 
-            padding: 24px 18px;
+            padding: 2.5vh 18px;
             text-align: center; 
             width: 100%; 
             max-width: 320px;
             opacity: 0.9;
+            /* Pushes this box to the bottom, absorbing extra screen height */
+            margin-top: auto; 
+            margin-bottom: 20px;
         }
 
-        .guide-grid {
-            display: grid; 
-            grid-template-columns: 1fr 1fr;
-            gap: 12px; 
-            margin-bottom: 24px;
+        /* Logic for small screens (iPhone SE, etc) */
+        @media (max-height: 640px) {
+            html, body { overflow-y: auto; height: auto; }
+            .premium-canvas { height: auto; min-height: 100vh; }
+            .info-slate { margin-top: 30px; margin-bottom: 20px; }
         }
 
-        .grid-item {
-            font-size: 0.65rem; 
-            text-transform: uppercase;
-            letter-spacing: 1px; 
-            color: var(--muted);
-            padding: 10px; 
-            border: 1px solid rgba(128, 128, 128, 0.1);
-            border-radius: 10px;
-        }
-        .grid-item strong { color: var(--guide-accent); display: block; margin-bottom: 4px; }
-
-        .cta-btn {
-            display: inline-block; 
-            text-decoration: none; 
-            color: var(--text);
-            font-size: 0.7rem; 
-            letter-spacing: 4px; 
-            text-transform: uppercase;
-            padding: 14px 45px; 
-            border: 1px solid var(--guide-accent);
-            border-radius: 50px;
-            transition: 0.3s;
+        .phone-frame {
+            width: 14vh; height: 22vh; min-width: 100px; min-height: 160px;
+            max-width: 110px; max-height: 170px;
+            border: 1px solid var(--border); border-radius: 15px; 
+            position: relative; background: var(--card-bg);
+            transform-style: preserve-3d; overflow: hidden;
+            animation: sequentialFlip 14s infinite ease-in-out;
         }
 
-        .cta-btn:hover {
-            background: var(--guide-accent);
-            color: #000;
-        }
+        .flip-icon-svg { position: absolute; top: 10px; right: 10px; width: 18px; height: 18px; fill: var(--guide-accent); opacity: 0.8; }
+        .inner-nav { position: absolute; bottom: 10px; width: 100%; display: flex; justify-content: center; gap: 30px; font-size: 0.6rem; opacity: 0.6; color: var(--guide-accent); }
+        .outer-nav { margin-top: 15px; display: flex; gap: 80px; font-size: 1.2rem; opacity: 0.2; font-weight: 200; animation: arrowPulse 14s infinite; }
+        .kinetic-dot { width: 8px; height: 8px; background: var(--guide-accent); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 12px var(--guide-accent); animation: sequentialDot 14s infinite ease-in-out; }
+        .guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5vh; margin-bottom: 2.5vh; }
+        .grid-item { font-size: clamp(0.6rem, 1.2vh, 0.75rem); text-transform: uppercase; letter-spacing: 1px; color: var(--muted); padding: 8px; border: 1px solid rgba(128, 128, 128, 0.1); border-radius: 10px; }
+        .grid-item strong { color: var(--guide-accent); display: block; }
+        .cta-btn { display: inline-block; text-decoration: none; color: var(--text); font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; padding: 12px 40px; border: 1px solid var(--guide-accent); border-radius: 50px; transition: 0.3s; }
 
-        /* Animations */
         @keyframes sequentialDot {
             0%, 100% { transform: translate(-50%, -50%); opacity: 0; }
             5% { opacity: 1; }
-            12% { transform: translate(-50%, -60px); opacity: 0; }
+            12% { transform: translate(-50%, -6vh); opacity: 0; }
             15% { transform: translate(-50%, -50%); opacity: 0; }
             20% { opacity: 1; }
-            27% { transform: translate(-50%, 50px); opacity: 0; }
+            27% { transform: translate(-50%, 5vh); opacity: 0; }
             30% { transform: translate(-50%, -50%); opacity: 0; }
             35% { opacity: 1; }
-            42% { transform: translate(-40px, -50%); opacity: 0; }
+            42% { transform: translate(-4vh, -50%); opacity: 0; }
             45% { transform: translate(-50%, -50%); opacity: 0; }
             50% { opacity: 1; }
-            57% { transform: translate(30px, -50%); opacity: 0; }
+            57% { transform: translate(4vh, -50%); opacity: 0; }
             60%, 95% { opacity: 0; }
         }
-
         @keyframes sequentialFlip {
             0%, 65% { transform: rotateY(0deg); }
             72%, 85% { transform: rotateY(180deg); }
             92%, 100% { transform: rotateY(0deg); }
         }
-
         @keyframes arrowPulse {
             0%, 88% { opacity: 0.2; transform: scale(1); }
             94% { opacity: 1; transform: scale(1.1); color: var(--guide-accent); }
@@ -259,13 +203,14 @@
         </div>
     </div>
 
-<script>
-function finishGuide() {
-    localStorage.setItem("gita_guide_seen", "true");
-    window.location.href = "index.html";
-}
-</script>
+    <script>
+    function finishGuide() {
+        localStorage.setItem("gita_guide_seen", "true");
+        window.location.href = "index.html";
+    }
+    </script>
     <script src="theme.js"></script>
     <script src="menu.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
