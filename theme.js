@@ -167,7 +167,7 @@ const uiTranslations = {
         tab_blogs: "लेख और ब्लॉग",
         res_gita_advice_title: "गीता का मार्गदर्शन",
         res_gita_advice_desc: "विद्यार्थियों और युवाओं के लिए जीवन की चुनौतियों से निपटने हेतु विशेष मार्गदर्शन।",
-        search_shloka: "सर्च..."
+        search_resources: "सर्च..."
     },
     en_sanskrit: {
         home: "Home",
@@ -253,7 +253,7 @@ const uiTranslations = {
         tab_blogs: "Blogs and Articles",
         res_gita_advice_title: "Gita Advice",
         res_gita_advice_desc: "Practical advice for students and young people based on Gita.",
-        search_shloka: "Search..."
+        search_resources: "Search..."
     },
     en_iast: {
         home: "Home",
@@ -339,7 +339,7 @@ const uiTranslations = {
         tab_blogs: "Blogs and Articles",
         res_gita_advice_title: "Gita Advice",
         res_gita_advice_desc: "Practical advice for students and young people based on Gita.",
-        search_shloka: "Search..."
+        search_resources: "Search..."
 
     }
 };
