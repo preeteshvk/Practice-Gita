@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gita-v1';
+const CACHE_NAME = 'gita-v2';
 const ASSETS = [
   './',
   //Html
