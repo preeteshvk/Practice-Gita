@@ -27,14 +27,14 @@
         </div>
         <div class="nav-right-actions" style="display: flex; align-items: center; gap: 18px;">
             <div class="zoom-pill">
-        <button id="btnZoomOut" aria-label="Zoom Out">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        </button>
-        <div class="zoom-divider"></div>
-        <button id="btnZoomIn" aria-label="Zoom In">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        </button>
-    </div>
+                <button id="btnZoomOut" aria-label="Zoom Out">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+                <div class="zoom-divider"></div>
+                <button id="btnZoomIn" aria-label="Zoom In">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+            </div>
             <div class="theme-toggle" id="themeToggle">🌙</div>
         </div>
     </div>
@@ -45,8 +45,8 @@
             <h1 data-cap="about_greeting">नमस्ते</h1>
         </div>
 
-        <div class="card about-card">
-            <div class="card-body">
+        <div class="card about-card" style="height: auto !important; min-height: unset !important;">
+            <div class="card-body" style="padding-bottom: 0;">
                 <div class="shloka-text" style="font-size: 1.1rem; text-align: left;">
                     <p data-cap="about_p1">
                         <strong>Project Gita</strong> began with a simple desire: to help my mother prepare for her <em>Shlokanka</em> examination conducted by <strong>Gita Parivar</strong>.
@@ -54,10 +54,12 @@
                     <p data-cap="about_p2">
                         What started as a tool for a mother has grown into a comprehensive repository with different practice modes for all 700 Verses and 18 Pushpikas of the Shrimad Bhagavad Gita, designed for anyone seeking to master these timeless verses.
                     </p>
-                    <p style="font-size: 0.9rem; opacity: 0.8; font-style: italic;" data-cap="about_thanks">
-                        We thank Gita Parivar and the authors for their efforts and the content that inspired this project.
-                    </p>
                 </div>
+            </div>
+            <div class="card-footer" style="display: block !important; padding: 15px 20px; border-top: 1px solid rgba(128, 128, 128, 0.15); background: rgba(128, 128, 128, 0.05); text-align: left;">
+                <p style="font-size: 0.85rem; opacity: 0.7; font-style: italic; margin: 0; line-height: 1.4;" data-cap="about_thanks">
+                    We thank Gita Parivar and the authors for their efforts and the content that inspired this project.
+                </p>
             </div>
         </div>
 
