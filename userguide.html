@@ -3,211 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Interface Guide — Project Gita</title>
+    <title>How to use | Project Gita</title>
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Project Gita">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <link rel="apple-touch-startup-image" href="icon-512.png">
     <link rel="stylesheet" href="style.css">
     <style>
-        :root {
-        --bg: #fafafa;
-        --card-bg: #ffffff;
-        --text: #111;
-        --muted: #666;
-        --accent: #d32f2f;
-        --guide-accent: #d32f2f;
-        --border: #d32f2f;
-        }
-
-        .dark {
-
-        --bg: #121212;
-        --card-bg: #1e1e1e;
-        --text: #f5f5f5;
-        --muted: #bdbdbd;
-        --accent: #ff8a80;
-        --guide-accent: #ff8a80;
-        --border: #ff8a80;
-        }
-
-        html, body {
-            height: 100%; 
-            width: 100%; 
+        body, html {
+            min-height: 100vh;
             margin: 0;
-            overflow: hidden; 
             background: var(--bg);
-            color: var(--text); 
+            color: var(--text);
             font-family: 'Noto Sans Devanagari', sans-serif;
-            transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
+        /* Nav Bar moved to Absolute to sit exactly at the top */
         .nav-bar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 100;
-            padding: 10px 20px;
-            box-sizing: border-box;
+            position: absolute;
+            top: 0; width: 100%;
+            display: flex; justify-content: space-between;
+            padding: 10px 20px; box-sizing: border-box;
+            background: transparent; z-index: 1000;
+        }
+
+        .guide-container {
+            max-width: 420px;
+            margin: 0 auto;
+            /* Padding-top reduced to 60px to bring header closer to the top */
+            padding: 60px 24px 50px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg); /* Ensures nav is solid */
-        }
-
-        .nav-left-group { display: flex; align-items: center; gap: 15px; }
-        .nav-btn { color: white; text-decoration: none; display: flex; align-items: center; gap: 5px; font-size: 0.8rem; }
-
-        .premium-canvas {
-            height: 100svh; 
-            display: flex; 
             flex-direction: column;
-            align-items: center;
-            /* Anchors everything to the top to eliminate floating space */
-            justify-content: flex-start; 
-            padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom); 
-            box-sizing: border-box;
+            gap: 15px; /* Tighter gap between elements */
         }
 
-        .guide-header { 
-            flex: 0 0 auto; 
-            /* Calculated: 50px (nav) + 20px (breathing room) */
-            margin-top: 70px; 
+        .guide-header-box {
             text-align: center;
+            margin: 0 0 10px 0; /* Minimal bottom margin */
         }
 
-        .guide-header h1 {
-            font-weight: 100; 
-            font-size: clamp(1.2rem, 4vh, 1.8rem); 
-            letter-spacing: 8px;
-            text-transform: uppercase; 
-            margin: 0; 
-            opacity: 0.8;
+        .guide-header-box h1 {
+            font-size: 1.4rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text);
+            margin: 0; /* Remove default browser margin */
+            opacity: 0.9;
         }
 
-        .hub-area {
-            position: relative; 
-            width: 100%; 
-            max-width: 300px;
-            display: flex; 
-            flex-direction: column;
-            justify-content: center; 
-            align-items: center; 
-            /* Controlled gap between Title and Phone */
-            margin-top: 30px; 
+        .guide-header-box p {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin: 4px 0 0 0; /* Small top gap from H1 */
         }
 
-        .info-slate {
+        .mode-toggle {
+            display: flex;
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 20px; 
-            padding: 2.5vh 18px;
-            text-align: center; 
-            width: 100%; 
-            max-width: 320px;
-            opacity: 0.9;
-            /* Pushes this box to the bottom, absorbing extra screen height */
-            margin-top: auto; 
-            margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 4px;
         }
 
-        /* Logic for small screens (iPhone SE, etc) */
-        @media (max-height: 640px) {
-            html, body { overflow-y: auto; height: auto; }
-            .premium-canvas { height: auto; min-height: 100vh; }
-            .info-slate { margin-top: 30px; margin-bottom: 20px; }
+        .mode-btn {
+            flex: 1; padding: 10px; border-radius: 12px; border: none;
+            background: transparent; color: var(--text); font-weight: 700;
+            cursor: pointer; transition: 0.3s; font-size: 0.8rem;
         }
 
-        .phone-frame {
-            width: 14vh; height: 22vh; min-width: 100px; min-height: 160px;
-            max-width: 110px; max-height: 170px;
-            border: 1px solid var(--border); border-radius: 15px; 
-            position: relative; background: var(--card-bg);
-            transform-style: preserve-3d; overflow: hidden;
-            animation: sequentialFlip 14s infinite ease-in-out;
+        .mode-btn.active { background: var(--accent); color: white; }
+
+        .interaction-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
-        .flip-icon-svg { position: absolute; top: 10px; right: 10px; width: 18px; height: 18px; fill: var(--guide-accent); opacity: 0.8; }
-        .inner-nav { position: absolute; bottom: 10px; width: 100%; display: flex; justify-content: center; gap: 30px; font-size: 0.6rem; opacity: 0.6; color: var(--guide-accent); }
-        .outer-nav { margin-top: 15px; display: flex; gap: 80px; font-size: 1.2rem; opacity: 0.2; font-weight: 200; animation: arrowPulse 14s infinite; }
-        .kinetic-dot { width: 8px; height: 8px; background: var(--guide-accent); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 12px var(--guide-accent); animation: sequentialDot 14s infinite ease-in-out; }
-        .guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5vh; margin-bottom: 2.5vh; }
-        .grid-item { font-size: clamp(0.6rem, 1.2vh, 0.75rem); text-transform: uppercase; letter-spacing: 1px; color: var(--muted); padding: 8px; border: 1px solid rgba(128, 128, 128, 0.1); border-radius: 10px; }
-        .grid-item strong { color: var(--guide-accent); display: block; }
-        .cta-btn { display: inline-block; text-decoration: none; color: var(--text); font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; padding: 12px 40px; border: 1px solid var(--guide-accent); border-radius: 50px; transition: 0.3s; }
+        .symbol-box {
+            width: 60px; height: 60px;
+            background: var(--bg);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; color: var(--accent);
+            position: relative;
+            font-size: 1rem;
+        }
 
-        @keyframes sequentialDot {
-            0%, 100% { transform: translate(-50%, -50%); opacity: 0; }
-            5% { opacity: 1; }
-            12% { transform: translate(-50%, -6vh); opacity: 0; }
-            15% { transform: translate(-50%, -50%); opacity: 0; }
-            20% { opacity: 1; }
-            27% { transform: translate(-50%, 5vh); opacity: 0; }
-            30% { transform: translate(-50%, -50%); opacity: 0; }
-            35% { opacity: 1; }
-            42% { transform: translate(-4vh, -50%); opacity: 0; }
-            45% { transform: translate(-50%, -50%); opacity: 0; }
-            50% { opacity: 1; }
-            57% { transform: translate(4vh, -50%); opacity: 0; }
-            60%, 95% { opacity: 0; }
+        .dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; position: absolute; }
+        .anim-v { animation: vMove 2s infinite ease-in-out; }
+        .anim-h { animation: hMove 2s infinite ease-in-out; }
+
+        @keyframes vMove { 0%, 100% { transform: translateY(15px); opacity: 0; } 50% { opacity: 1; transform: translateY(-15px); } }
+        @keyframes hMove { 0%, 100% { transform: translateX(-18px); opacity: 0; } 50% { opacity: 1; transform: translateX(18px); } }
+
+        .text-box { flex-grow: 1; }
+        .feature-name { display: block; font-weight: 800; font-size: 0.9rem; margin-bottom: 2px; color: var(--accent); }
+        .feature-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+
+        .begin-btn {
+            display: block; width: 100%; padding: 18px;
+            background: var(--accent); color: white; border-radius: 20px;
+            text-align: center; text-decoration: none; font-weight: 700;
+            font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;
+            border: none; cursor: pointer; box-sizing: border-box;
+            margin-top: 10px;
         }
-        @keyframes sequentialFlip {
-            0%, 65% { transform: rotateY(0deg); }
-            72%, 85% { transform: rotateY(180deg); }
-            92%, 100% { transform: rotateY(0deg); }
-        }
-        @keyframes arrowPulse {
-            0%, 88% { opacity: 0.2; transform: scale(1); }
-            94% { opacity: 1; transform: scale(1.1); color: var(--guide-accent); }
-            100% { opacity: 0.2; }
-        }
+
+        #practice-content, #reading-content { display: none; }
+        #practice-content.active, #reading-content.active { display: block; }
     </style>
 </head>
 <body>
 
-    <div class="nav-bar">
-         <div class="nav-left-group">
+   <div class="nav-bar">
+        <div class="nav-left-group">
             <div class="hamburger" id="openMenu">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                <svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
             </div>
             <a href="index.html" class="nav-btn" id="go-home">
-                <svg viewBox="0 0 24 24" width="20" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
                 <span data-cap="home">Home</span>
             </a>
         </div>
         <div class="theme-toggle" id="themeToggle">🌙</div>
     </div>
 
-    <div class="premium-canvas">
-        <header class="guide-header">
-            <h1>Gesture</h1>
+    <main class="guide-container">
+        <header class="guide-header-box">
+            <h1 data-cap="guide_header">Interaction</h1>
+            <p data-cap="guide_intro">Simple gestures for your Gita journey.</p>
         </header>
 
-       <div class="hub-area">
-            <div class="card-perspective">
-                <div class="phone-frame">
-                    <div class="kinetic-dot"></div>
-                    <svg class="flip-icon-svg" viewBox="0 0 24 24">
-                        <path d="M12 6V3L8 7l4 4V8c2.76 0 5 2.24 5 5 0 .34-.03.67-.1 1h2.02c.05-.33.08-.66.08-1 0-3.87-3.13-7-7-7zm-5 5c0-.34.03-.67.1-1H5.08c-.05.33-.08.66-.08 1 0 3.87 3.13 7 7 7v3l4-4-4-4v3c-2.76 0-5-2.24-5-5z"/>
-                    </svg>
-                    <div class="inner-nav"><span>❮</span><span>❯</span></div>
+        <div class="mode-toggle">
+            <button class="mode-btn active" id="btn-reading" onclick="switchTab('reading')" data-cap="tab_reading">Reading Path</button>
+            <button class="mode-btn" id="btn-practice" onclick="switchTab('practice')" data-cap="tab_practice">Memorization</button>
+        </div>
+
+        <div id="reading-content" class="active">
+            <div class="interaction-card">
+                <div class="symbol-box"><div class="dot anim-v"></div></div>
+                <div class="text-box">
+                    <span class="feature-name" data-cap="r_flip_title">Toggle View</span>
+                    <p class="feature-desc" data-cap="r_flip_desc">Swipe Up/Down or tap 🔄 to switch between Sanskrit verses and its translation.</p>
                 </div>
             </div>
-            <div class="outer-nav"><span>←</span><span>→</span></div>
+            <div class="interaction-card" style="margin-top:12px">
+                <div class="symbol-box"><div class="dot anim-h"></div></div>
+                <div class="text-box">
+                    <span class="feature-name" data-cap="r_nav_title">Sequential Path</span>
+                    <p class="feature-desc" data-cap="r_nav_desc">Swipe Left/Right or use Outer Arrows (← →) for next Shloka.</p>
+                </div>
+            </div>
         </div>
 
-        <div class="info-slate">
-            <div class="guide-grid">
-                <div class="grid-item"><strong>Swipes</strong>Verse/Next</div>
-                <div class="grid-item"><strong>Flip</strong>Meaning</div>
-                <div class="grid-item"><strong>Inner Arrow</strong>Shlokas</div>
-                <div class="grid-item"><strong>Outer Arrow</strong>Questions</div>
+        <div id="practice-content">
+            <div class="interaction-card">
+                <div class="symbol-box"><div class="dot anim-v"></div></div>
+                <div class="text-box">
+                    <span class="feature-name" data-cap="p_flip_title">Flip Card</span>
+                    <p class="feature-desc" data-cap="p_flip_desc">Swipe Up/Down or tap 🔄 to reveal. Use 💡 Hint on question screen.</p>
+                </div>
             </div>
-            <a href="#" onclick="finishGuide()" class="cta-btn">Begin</a>
+            <div class="interaction-card" style="margin-top:12px">
+                <div class="symbol-box"><div class="dot anim-h"></div></div>
+                <div class="text-box">
+                    <span class="feature-name" data-cap="p_nav_title">Next Question</span>
+                    <p class="feature-desc" data-cap="p_nav_desc">Swipe Left/Right or use Outer Arrows (← →) to change questions.</p>
+                </div>
+            </div>
+            <div class="interaction-card" style="margin-top:12px">
+                <div class="symbol-box">❮ ❯</div>
+                <div class="text-box">
+                    <span class="feature-name" data-cap="p_neighbor_title">Context Shlokas</span>
+                    <p class="feature-desc" data-cap="p_neighbor_desc">Once flipped, use inner arrows to see neighboring verses.</p>
+                </div>
+            </div>
         </div>
-    </div>
+
+        <button class="begin-btn" onclick="finishGuide()" data-cap="guide_begin">Begin Sadhana</button>
+    </main>
 
     <script>
-    function finishGuide() {
-        localStorage.setItem("gita_guide_seen", "true");
-        window.location.href = "index.html";
-    }
+        function switchTab(mode) {
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('practice-content').classList.remove('active');
+            document.getElementById('reading-content').classList.remove('active');
+            if(mode === 'practice') {
+                document.getElementById('btn-practice').classList.add('active');
+                document.getElementById('practice-content').classList.add('active');
+            } else {
+                document.getElementById('btn-reading').classList.add('active');
+                document.getElementById('reading-content').classList.add('active');
+            }
+        }
+        function finishGuide() { 
+            localStorage.setItem("gita_guide_seen", "true"); 
+            window.location.href = "index.html";
+        }
     </script>
     <script src="theme.js"></script>
     <script src="menu.js"></script>
