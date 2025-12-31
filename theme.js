@@ -201,14 +201,14 @@ const uiTranslations = {
         r_flip_title: "दृश्य बदलें",
         r_flip_desc: "श्लोक और अनुवाद के बीच स्विच करने के लिए ऊपर/नीचे स्वाइप करें या 🔄 दबाएं।",
         r_nav_title: "क्रमवार मार्ग",
-        r_nav_desc: "अगले श्लोक पर जाने के लिए दाएं/बाएं स्वाइप करें या बाहरी तीरों (← →) का उपयोग करें।",
+        r_nav_desc: "अगले श्लोक पर जाने के लिए दाएं/बाएं स्वाइप करें या भीतरी तीरों (❮ ❯) का उपयोग करें।",
         p_flip_title: "कार्ड पलटें",
         p_flip_desc: "उत्तर देखने के लिए ऊपर/नीचे स्वाइप करें या 🔄 दबाएं। सहायता के लिए 'Hint' का उपयोग करें।",
         p_nav_title: "अगला प्रश्न",
         p_nav_desc: "प्रश्न बदलने के लिए दाएं/बाएं स्वाइप करें या बाहरी तीरों (← →) का उपयोग करें।",
         p_neighbor_title: "संदर्भ श्लोक",
         p_neighbor_desc: "कार्ड पलटने के बाद, आस-पास के श्लोक देखने के लिए भीतरी तीरों (❮ ❯) का उपयोग करें।",
-        guide_begin: "साधना आरंभ करें",
+        guide_begin: "साधना आरंभ करें →",
 
         support_title: "प्रोजेक्ट गीता को सहयोग दें",
         support_desc: "इस ज्ञान को निःशुल्क रखने में हमारा साथ दें।",
@@ -342,14 +342,14 @@ const uiTranslations = {
         r_flip_title: "Toggle View",
         r_flip_desc: "Swipe Up/Down or tap 🔄 to switch between Sanskrit verses and its translation.",
         r_nav_title: "Sequential Path",
-        r_nav_desc: "Swipe Left/Right or use Outer Arrows (← →) for next Shloka.",
+        r_nav_desc: "Swipe Left/Right or use inner arrows to see neighboring verses (❮ ❯).",
         p_flip_title: "Flip Card",
         p_flip_desc: "Swipe Up/Down or tap 🔄 to reveal. Use 💡 Hint on question screen.",
         p_nav_title: "Next Question",
         p_nav_desc: "Swipe Left/Right or use Outer Arrows (← →) to change questions.",
         p_neighbor_title: "Context Shlokas",
         p_neighbor_desc: "Once flipped, use inner arrows to see neighboring verses (❮ ❯).",
-        guide_begin: "Begin Sadhana",
+        guide_begin: "Begin Sadhana →",
 
         support_title: "Support Project Gita",
         support_desc: "Help us keep this wisdom free for everyone.",
@@ -483,14 +483,14 @@ const uiTranslations = {
         r_flip_title: "Toggle View",
         r_flip_desc: "Swipe Up/Down or tap 🔄 to switch between Sanskrit verses and its translation.",
         r_nav_title: "Sequential Path",
-        r_nav_desc: "Swipe Left/Right or use Outer Arrows (← →) for next Shloka.",
+        r_nav_desc: "Swipe Left/Right or use inner arrows to see neighboring verses (❮ ❯).",
         p_flip_title: "Flip Card",
         p_flip_desc: "Swipe Up/Down or tap 🔄 to reveal. Use 💡 Hint on question screen.",
         p_nav_title: "Next Question",
         p_nav_desc: "Swipe Left/Right or use Outer Arrows (← →) to change questions.",
         p_neighbor_title: "Context Shlokas",
         p_neighbor_desc: "Once flipped, use inner arrows to see neighboring verses (❮ ❯).",
-        guide_begin: "Begin Sadhana",
+        guide_begin: "Begin Sadhana →",
 
         support_title: "Support Project Gita",
         support_desc: "Help us keep this wisdom free for everyone.",
@@ -574,7 +574,6 @@ function getLanguage() {
 
 // Initial UI Translation on load
 document.addEventListener("DOMContentLoaded", applyUILanguage);
-
 document.addEventListener("DOMContentLoaded", () => {
     const btnIn = document.getElementById('btnZoomIn');
     const btnOut = document.getElementById('btnZoomOut');
@@ -616,3 +615,4 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 });
+
