@@ -552,36 +552,22 @@ function setLanguage(lang) {
     // Refresh static text labels
     applyUILanguage();
     
-    // Refresh the content if we are on a shloka page
-    if (typeof loadShloka === 'function') {
-        loadShloka(); 
-    }
+    // Refresh content if on a shloka page
+    if (typeof loadShloka === 'function') loadShloka();
     
-    // Refresh sidebar state (if menu.js is loaded)
-    if (typeof updateLangUI === 'function') {
-        updateLangUI();
-    }
+    // Refresh sidebar/menu UI
+    if (typeof updateLangUI === 'function') updateLangUI();
     
-    const guideSeen = localStorage.getItem("gita_guide_seen");
-    if (!guideSeen) {
-        setTimeout(() => {
-            window.location.href = "userguide.html";
-        }, 500);
-        return;
-    }
-
-    // Close modal if it's open
+    // Close modal if it exists (for settings-based changes)
     const modal = document.getElementById('lang-modal');
     if(modal) {
-        setTimeout(() => {
-            modal.style.display = 'none';
-        }, 400);
+        modal.style.display = 'none';
     }
 
+    // Notify other scripts
     window.dispatchEvent(new CustomEvent('langChanged', { detail: lang }));
 }
 
-// 3. Helper to get saved language
 function getLanguage() {
     return localStorage.getItem("gita_lang") || 'hi';
 }
