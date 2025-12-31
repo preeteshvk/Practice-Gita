@@ -1052,8 +1052,53 @@ body {
     color: var(--accent) !important;
 }
 
+
+/* Premium Zoom Pill */
+.zoom-pill {
+    display: flex;
+    align-items: center;
+    background: rgba(128, 128, 128, 0.08);
+    border: 1px solid rgba(128, 128, 128, 0.15);
+    border-radius: 12px;
+    padding: 2px;
+    backdrop-filter: blur(8px); /* Premium frosted glass effect */
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.zoom-pill button {
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    width: 36px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 10px;
+    padding: 0;
+}
+
+.zoom-pill button:active {
+    background: rgba(128, 128, 128, 0.1);
+    transform: scale(0.9);
+}
+
+.zoom-divider {
+    width: 1px;
+    height: 16px;
+    background: rgba(128, 128, 128, 0.2);
+}
+
+/* Dark mode adjustment for the pill */
+.dark .zoom-pill {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
 /*Features section*/
 
 
 /*Feature request section*/
+
 
