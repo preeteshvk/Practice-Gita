@@ -506,4 +506,3 @@ card.addEventListener("mouseup", e => {
     if (Math.abs(dy) > 60) toggleFlip();
     else if (Math.abs(dx) > 100) { if (dx < -100) goNext(); else goPrev(); }
 });
-
