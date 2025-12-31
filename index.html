@@ -118,14 +118,20 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem("gita_lang");
+            const guideSeen = localStorage.getItem("gita_guide_seen");
             const modal = document.getElementById('lang-modal');
             
-            if (!savedLang && modal) {
+           if (!savedLang && modal) {
                 modal.style.display = 'flex';
-            } else if (savedLang) {
+            } 
+            // 2. If lang exists but guide was never finished, force userguide
+            else if (savedLang && !guideSeen) {
+                window.location.href = "userguide.html";
+            } 
+            // 3. Regular load
+            else if (savedLang) {
                 document.documentElement.setAttribute('data-lang', savedLang);
             }
-
             // --- Starred Menu Item Logic ---
             const starredBtn = document.getElementById("starred-menu-item");
             if (starredBtn) {
