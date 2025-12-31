@@ -574,3 +574,45 @@ function getLanguage() {
 
 // Initial UI Translation on load
 document.addEventListener("DOMContentLoaded", applyUILanguage);
+
+document.addEventListener("DOMContentLoaded", () => {
+    const btnIn = document.getElementById('btnZoomIn');
+    const btnOut = document.getElementById('btnZoomOut');
+
+    // 1. Load saved zoom level or default to 1 (100%)
+    let currentZoom = parseFloat(localStorage.getItem('gita_app_zoom')) || 1.0;
+    
+    // Apply immediately on load
+    document.body.style.zoom = currentZoom;
+
+    if (btnIn) {
+        btnIn.onclick = (e) => {
+            e.preventDefault();
+            if (currentZoom < 1.5) { // Max 150%
+                currentZoom += 0.1;
+                applyAndSaveZoom(currentZoom);
+            }
+        };
+    }
+
+    if (btnOut) {
+        btnOut.onclick = (e) => {
+            e.preventDefault();
+            if (currentZoom > 0.8) { // Min 80%
+                currentZoom -= 0.1;
+                applyAndSaveZoom(currentZoom);
+            }
+        };
+    }
+
+    function applyAndSaveZoom(level) {
+        localStorage.setItem('gita_app_zoom', level);
+        document.body.style.zoom = level;
+        
+        // Firefox fallback (Firefox doesn't support 'zoom')
+        if (navigator.userAgent.indexOf("Firefox") != -1) {
+            document.body.style.transform = `scale(${level})`;
+            document.body.style.transformOrigin = "top center";
+        }
+    }
+});
