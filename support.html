@@ -10,6 +10,7 @@
         :root {
             --glass-bg: rgba(0, 0, 0, 0.04);
             --glass-border: rgba(0, 0, 0, 0.08);
+            --warning: #ff9800;
         }
 
         [data-theme="dark"] {
@@ -17,19 +18,25 @@
             --glass-border: rgba(255, 255, 255, 0.12);
         }
 
-        /* Prevent scrolling by setting a fixed height and hiding overflow */
         body, html {
             height: 100%;
             overflow: hidden; 
             margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+
+        /* Ensure Nav Bar is always visible even over the success screen */
+        .nav-bar {
+            z-index: 10000 !important;
         }
 
         .support-container {
             max-width: 400px;
             margin: 0 auto;
-            padding: 0 20px;
-            /* Fills remaining space after nav-bar without causing scroll */
-            height: calc(100vh - 70px); 
+            padding: 0 24px;
+            height: calc(100vh - 80px); 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -49,19 +56,19 @@
             grid-template-columns: 1fr 1fr;
             gap: 12px;
             width: 100%;
-            margin: 20px 0 12px 0;
+            margin: 24px 0 16px 0;
         }
 
         .amt-btn {
             background: var(--card-bg);
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: 16px;
-            padding: 18px 0;
+            padding: 16px 0;
             cursor: pointer;
             transition: all 0.2s ease;
             color: var(--text);
-            font-size: 1.2rem;
-            font-weight: 600;
+            font-size: 1.1rem;
+            font-weight: 700;
         }
 
         .amt-btn.active {
@@ -73,112 +80,88 @@
         .input-group {
             position: relative;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .input-group input {
             width: 100%;
             padding: 16px 16px 16px 45px;
             border-radius: 16px;
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             background: var(--card-bg);
             color: var(--text);
             font-size: 1.2rem;
+            font-weight: 600;
             outline: none;
             box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input.invalid {
+            border-color: var(--warning);
+            box-shadow: 0 0 8px rgba(255, 152, 0, 0.2);
         }
 
         .input-group::before {
             content: "₹";
-            position: absolute;
-            left: 20px;
-            top: 50%;
+            position: absolute; left: 20px; top: 50%;
             transform: translateY(-50%);
-            font-size: 1.2rem;
-            color: var(--muted);
-        }
-
-        .qr-card {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 24px;
-            border: 1px solid var(--border);
-            width: 100%;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        #qrcode {
-            background: white;
-            padding: 10px;
-            border-radius: 12px;
-            border: 1px solid rgba(0,0,0,0.1);
-            line-height: 0;
-        }
-
-        .upi-container {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            padding: 10px 16px;
-            border-radius: 12px;
-            gap: 10px;
-            cursor: pointer;
-            margin-top: 15px;
+            font-size: 1.2rem; font-weight: 600; color: var(--accent);
         }
 
         .start-btn {
-            width: 100%;
-            padding: 18px;
-            border-radius: 16px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            background: var(--accent);
-            color: #fff;
+            width: 100%; padding: 18px; border-radius: 18px;
+            font-weight: 700; font-size: 1rem; border: none;
+            cursor: pointer; background: var(--accent); color: #fff;
+            transition: all 0.3s;
         }
 
-        /* Success Banner Style */
+        .start-btn.soft-disabled {
+            background: #999; opacity: 0.7; cursor: not-allowed;
+        }
+
+        /* ENHANCED SUCCESS SCREEN */
         #success-banner {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg);
-            z-index: 1000;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 30px;
-            box-sizing: border-box;
+            background: radial-gradient(circle at center, var(--card-bg), var(--bg));
+            z-index: 9000;
+            flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 30px; box-sizing: border-box; overflow: hidden;
         }
 
-        /* Simple Confetti CSS */
-        .confetti {
-            position: absolute;
-            width: 10px; height: 10px;
-            background: var(--accent);
-            top: -10px;
-            border-radius: 2px;
-            animation: fall 3s linear infinite;
+        .success-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: 40px 30px;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            z-index: 9002;
+            max-width: 340px; width: 100%;
+            animation: slideUp 0.6s cubic-bezier(0.17, 0.67, 0.83, 0.67);
         }
 
-        @keyframes fall {
-            to { transform: translateY(100vh) rotate(360deg); }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
-        .secondary-btn {
-            background: transparent;
-            color: var(--muted);
-            border: none;
-            margin-top: 15px;
-            cursor: pointer;
-            text-decoration: underline;
+        .heart-icon { font-size: 50px; margin-bottom: 20px; display: inline-block; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+
+        .success-actions { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+        .confetti { position: absolute; top: -20px; z-index: 9001; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+
+        .qr-card {
+            background: var(--card-bg); padding: 30px; border-radius: 28px;
+            border: 1px solid var(--border); width: 100%;
+            display: flex; flex-direction: column; align-items: center;
         }
+        #qrcode { background: white; padding: 12px; border-radius: 16px; }
+        .secondary-btn { background: transparent; color: var(--muted); border: none; margin-top: 20px; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -197,89 +180,138 @@
     </div>
 
     <div id="success-banner">
-        <h1 style="font-size: 2.5rem; color: var(--accent);">Dhanyawad!</h1>
-        <p id="gratitude-text" style="font-size: 1.2rem; color: var(--text); max-width: 300px; margin-top: 10px;"></p>
-        <button class="start-btn" onclick="window.location.href='index.html'" style="margin-top: 40px; width: 200px;">Back Home</button>
+        <div class="success-card">
+            <div class="heart-icon">🧡</div>
+            <h1 data-cap="dhanyawad">Dhanyawad!</h1>
+            <p id="gratitude-text"></p>
+            <div class="success-actions">
+                <button class="start-btn" onclick="window.location.href='index.html'" data-cap="back_home">Back Home</button>
+                <button class="secondary-btn" onclick="shareProject()" style="text-decoration: none; color: var(--accent); font-weight: 700;">
+                    <span data-cap="share_app">Share with others</span> ↗
+                </button>
+            </div>
+        </div>
     </div>
 
-    <div class="support-container">
+    <main class="support-container">
         <div id="setup-view">
-            <h1 data-cap="support_title" style="margin: 0; font-size: 1.8rem;">Support Project Gita</h1>
-            <p data-cap="support_desc" style="margin: 8px 0 0 0; color: var(--muted); font-size: 0.95rem; text-align: center;">Keep the wisdom free and ad-free.</p>
+            <h1 data-cap="support_title" style="margin: 0; font-size: 2rem; text-align: center;">Support Project Gita</h1>
+            <p data-cap="support_desc" style="margin: 12px 0 0 0; color: var(--muted); font-size: 1rem; text-align: center;">Keep the wisdom free and ad-free.</p>
             
             <div class="amount-grid">
-                <button class="amt-btn" data-amt="101">₹101</button>
+                <button class="amt-btn active" data-amt="101">₹101</button>
                 <button class="amt-btn" data-amt="501">₹501</button>
                 <button class="amt-btn" data-amt="1001">₹1001</button>
                 <button class="amt-btn" data-amt="5001">₹5001</button>
             </div>
 
             <div class="input-group">
-                <input type="number" id="custom-amt" placeholder="Enter Amount" min="100">
+                <input type="number" id="custom-amt" data-cap="ph_enter_amt" value="101" min="100">
             </div>
-
             <button class="start-btn" id="gen-btn" data-cap="generate_qr">Generate Payment QR</button>
         </div>
 
         <div id="payment-view" style="display: none;">
             <div class="qr-card">
                 <div id="qrcode"></div>
-                <div class="upi-container" id="copy-upi">
+                <div class="upi-container" id="copy-upi" style="margin-top:20px; background: var(--glass-bg); padding:12px; border-radius:14px; cursor:pointer; font-family: monospace; border: 1px solid var(--glass-border);">
                     <span id="upi-id-text">priteshkabra1@okhdfcbank</span>
-                    <svg style="width:16px;height:16px;color:var(--accent)" viewBox="0 0 24 24"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z" /></svg>
                 </div>
             </div>
-            <button class="start-btn" id="paid-btn" data-cap="mark_paid" style="margin-top:25px;">Mark as Paid</button>
+            <button class="start-btn" id="paid-btn" data-cap="mark_paid" style="margin-top:30px;">Mark as Paid</button>
             <button class="secondary-btn" id="back-btn" data-cap="change_amount">Change Amount</button>
         </div>
-    </div>
+    </main>
 
     <script src="theme.js"></script>
     <script>
-        const MY_UPI_ID = "priteshkabra1@okhdfcbank"; 
+        const MY_UPI_ID = "priteshkabra1@okhdfcbank"; // Replace with your actual UPI ID
         const amtButtons = document.querySelectorAll('.amt-btn');
         const customInput = document.getElementById('custom-amt');
+        const genBtn = document.getElementById('gen-btn');
         const setupView = document.getElementById('setup-view');
         const paymentView = document.getElementById('payment-view');
-        const qrContainer = document.getElementById('qrcode');
 
-        // Confetti Generator
-        function startConfetti() {
-            for(let i=0; i<50; i++) {
-                const c = document.createElement('div');
-                c.className = 'confetti';
-                c.style.left = Math.random() * 100 + 'vw';
-                c.style.background = ["#FFD700", "#FF4500", "#32CD32", "#1E90FF"][Math.floor(Math.random()*4)];
-                c.style.animationDelay = Math.random() * 3 + 's';
-                document.getElementById('success-banner').appendChild(c);
+        function updateUI() {
+            const val = parseInt(customInput.value);
+            const lang = localStorage.getItem("gita_lang") || 'hi';
+            if (val < 100 || isNaN(val)) {
+                customInput.classList.add('invalid');
+                genBtn.classList.add('soft-disabled');
+                genBtn.innerText = uiTranslations[lang]?.min_amount_error || "Min ₹100 required";
+            } else {
+                customInput.classList.remove('invalid');
+                genBtn.classList.remove('soft-disabled');
+                genBtn.innerText = uiTranslations[lang]?.generate_qr || "Generate Payment QR";
             }
         }
+
+        customInput.oninput = () => {
+            amtButtons.forEach(b => b.classList.remove('active'));
+            updateUI();
+        };
 
         amtButtons.forEach(btn => {
             btn.onclick = () => {
                 customInput.value = btn.dataset.amt;
                 amtButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
+                updateUI();
             };
         });
 
-        document.getElementById('gen-btn').onclick = () => {
-            if (parseInt(customInput.value) < 100) return;
-            qrContainer.innerHTML = ""; 
-            new QRCode(qrContainer, {
+        genBtn.onclick = () => {
+            if (genBtn.classList.contains('soft-disabled')) return;
+            document.getElementById('qrcode').innerHTML = "";
+            new QRCode(document.getElementById('qrcode'), {
                 text: `upi://pay?pa=${MY_UPI_ID}&pn=ProjectGita&am=${customInput.value}&cu=INR`,
-                width: 180, height: 180
+                width: 200, height: 200
             });
             setupView.style.display = "none";
             paymentView.style.display = "flex";
         };
 
+        function createConfetti() {
+            const banner = document.getElementById('success-banner');
+            if (banner.style.display !== "flex") return;
+            const colors = ["#FFD700", "#FF4500", "#32CD32", "#1E90FF", "#FF69B4", "#8A2BE2"];
+            const c = document.createElement('div');
+            c.className = 'confetti';
+            c.style.left = Math.random() * 100 + 'vw';
+            c.style.background = colors[Math.floor(Math.random() * colors.length)];
+            c.style.width = (Math.random() * 10 + 6) + 'px';
+            c.style.height = (Math.random() * 15 + 8) + 'px';
+            c.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            banner.appendChild(c);
+            setTimeout(() => { c.remove(); }, 5000);
+        }
+
+        document.getElementById('paid-btn').onclick = () => {
+            const lang = localStorage.getItem("gita_lang") || 'hi';
+            document.getElementById('gratitude-text').innerText = uiTranslations[lang]?.gratitude_msg || "Thank you!";
+            document.getElementById('success-banner').style.display = "flex";
+            setInterval(createConfetti, 80); 
+        };
+
+        function shareProject() {
+            const shareData = {
+                title: 'Project Gita',
+                text: 'I just supported Project Gita - an ad-free platform for Bhagavad Gita wisdom. Join the initiative!',
+                url: window.location.origin
+            };
+            if (navigator.share) {
+                navigator.share(shareData);
+            } else {
+                const waUrl = `https://wa.me/?text=${encodeURIComponent(shareData.text + " " + shareData.url)}`;
+                window.open(waUrl, '_blank');
+            }
+        }
+
         document.getElementById('copy-upi').onclick = () => {
             navigator.clipboard.writeText(MY_UPI_ID);
             const idText = document.getElementById('upi-id-text');
-            const original = idText.innerText;
             idText.innerText = "Copied!";
-            setTimeout(() => idText.innerText = original, 1500);
+            setTimeout(() => idText.innerText = MY_UPI_ID, 1500);
         };
 
         document.getElementById('back-btn').onclick = () => {
@@ -287,14 +319,9 @@
             setupView.style.display = "flex";
         };
 
-        document.getElementById('paid-btn').onclick = () => {
-            const lang = localStorage.getItem("gita_lang") || 'hi';
-            document.getElementById('gratitude-text').innerText = uiTranslations[lang]?.gratitude_msg || "Thank you for your support!";
-            document.getElementById('success-banner').style.display = "flex";
-            startConfetti();
-        };
+        updateUI();
     </script>
     <script src="menu.js"></script>
-    <script src="app.js"></script>  
+    <script src="app.js"></script>
 </body>
 </html>
