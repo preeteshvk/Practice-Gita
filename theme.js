@@ -562,6 +562,14 @@ function setLanguage(lang) {
         updateLangUI();
     }
     
+    const guideSeen = localStorage.getItem("gita_guide_seen");
+    if (!guideSeen) {
+        setTimeout(() => {
+            window.location.href = "userguide.html";
+        }, 500);
+        return;
+    }
+
     // Close modal if it's open
     const modal = document.getElementById('lang-modal');
     if(modal) {
