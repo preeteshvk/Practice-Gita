@@ -129,7 +129,7 @@ function loadShloka() {
     textContainer.style.display = "block";
 
     // Header logic
-    headerText.textContent = (s.type === "pushpika") ? (isEnglish ? "Pushpika" : "पुष्पिका") : ` ${s.chapter} · ${s.verse}`;
+    headerText.textContent = (s.type === "pushpika") ? (isEnglish ? "Pushpika" : "पुष्पिका")   : (isEnglish ? `Adhyay ${s.chapter} · Verse  ${s.verse}` : `अध्याय ${s.chapter} · श्लोक  ${s.verse}`);
 
     // Counter logic
     if (isStarredMode) {
@@ -506,3 +506,5 @@ card.addEventListener("mouseup", e => {
     if (Math.abs(dy) > 60) toggleFlip();
     else if (Math.abs(dx) > 100) { if (dx < -100) goNext(); else goPrev(); }
 });
+
+
