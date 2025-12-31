@@ -13,6 +13,13 @@
 
     <link rel="apple-touch-startup-image" href="icon-512.png">
     <link rel="stylesheet" href="style.css">
+
+    <script>
+    // If the URL has ?first=1, hide the nav bar before the page even draws
+    if (window.location.search.includes('first=1')) {
+        document.write('<style>.nav-bar { display: none !important; }</style>');
+    }
+    </script>
     <style>
         body, html {
             min-height: 100vh;
@@ -203,6 +210,7 @@
             localStorage.setItem("gita_guide_seen", "true"); 
             window.location.href = "index.html";
         }
+
     </script>
     <script src="theme.js"></script>
     <script src="menu.js"></script>
