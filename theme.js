@@ -192,7 +192,21 @@ const uiTranslations = {
         suggest_footer_note: '"ईमेल ड्राफ्ट करें" पर क्लिक करने से आपका ईमेल ऐप खुल जाएगा। हमारे सर्वर पर कोई डेटा स्टोर नहीं किया जाता है।',
         back_to_list: "← फीचर्स (विशेषताओं) की सूची पर वापस जाएं",
         email_greeting: "नमस्ते प्रोजेक्ट गीता टीम,\n\nमेरा एक सुझाव है:\n",
-        email_footer: "\n\nप्रोजेक्ट गीता वेब ऐप से भेजा गया"
+        email_footer: "\n\nप्रोजेक्ट गीता वेब ऐप से भेजा गया",
+
+        support_title: "प्रोजेक्ट गीता को सहयोग दें",
+        support_desc: "इस ज्ञान को निःशुल्क रखने में हमारा साथ दें।",
+        ph_enter_amt: "राशि दर्ज करें",
+        generate_qr: "सहयोग QR प्राप्त करें",
+        min_amount_error: "न्यूनतम ₹100 का सहयोग अपेक्षित है",
+        mark_paid: "मैंने सहयोग कर दिया है",
+        change_amount: "राशि बदलें",
+        dhanyawad: "धन्यवाद!",
+        gratitude_msg: "आपका यह निस्वार्थ सहयोग श्रीमद्भगवद्गीता के अमृत को जन-जन तक पहुँचाने में सहायक होगा।",
+        back_home: "होम पेज पर वापस जाएं",
+        share_app: "दूसरों को प्रेरित करें",
+        share_title: "🪔 प्रोजेक्ट गीता",
+        share_text: "मैंने अभी प्रोजेक्ट गीता को अपना सहयोग दिया है - विज्ञापन-मुक्त गीता ज्ञान के लिए एक उत्तम मंच। आप भी इस पहल का हिस्सा बनें!"
     },
     en_sanskrit: {
         home: "Home",
@@ -303,7 +317,21 @@ const uiTranslations = {
         suggest_footer_note: 'Clicking "Draft Email" will open your default email app. No data is stored on our servers.',
         back_to_list: "← Back to feature list",
         email_greeting: "Hi Project Gita Team,\n\nI have a feature suggestion:\n",
-        email_footer: "\n\nSent from Project Gita Web App"
+        email_footer: "\n\nSent from Project Gita Web App",
+
+        support_title: "Support Project Gita",
+        support_desc: "Help us keep this wisdom free for everyone.",
+        ph_enter_amt: "Enter amount",
+        generate_qr: "Generate Payment QR",
+        min_amount_error: "Minimum ₹100 is helpful",
+        mark_paid: "Mark as Paid",
+        change_amount: "Change Amount",
+        dhanyawad: "Dhanyawad!",
+        gratitude_msg: "Your kindness helps keep the Bhagavad Gita ad-free and accessible to seekers across the world.",
+        back_home: "Back Home",
+        share_app: "Spread the Word",
+        share_title: "🪔 Project Gita",
+        share_text: "I just supported Project Gita! It's a beautiful, ad-free way to read the Bhagavad Gita. Check it out:"
     },
     en_iast: {
         home: "Home",
@@ -414,7 +442,21 @@ const uiTranslations = {
         suggest_footer_note: 'Clicking "Draft Email" will open your default email app. No data is stored on our servers.',
         back_to_list: "← Back to feature list",
         email_greeting: "Hi Project Gita Team,\n\nI have a feature suggestion:\n",
-        email_footer: "\n\nSent from Project Gita Web App"
+        email_footer: "\n\nSent from Project Gita Web App",
+
+        support_title: "Support Project Gita",
+        support_desc: "Help us keep this wisdom free for everyone.",
+        ph_enter_amt: "Enter amount",
+        generate_qr: "Generate Payment QR",
+        min_amount_error: "Minimum ₹100 is helpful",
+        mark_paid: "Mark as Paid",
+        change_amount: "Change Amount",
+        dhanyawad: "Dhanyawad!",
+        gratitude_msg: "Your kindness helps keep the Bhagavad Gita ad-free and accessible to seekers across the world.",
+        back_home: "Back Home",
+        share_app: "Spread the Word",
+        share_title: "🪔 Project Gita",
+        share_text: "I just supported Project Gita! It's a beautiful, ad-free way to read the Bhagavad Gita. Check it out:"
 
     }
 };
