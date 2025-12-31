@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Support Project Gita</title>
+    <title>Support us | Project Gita</title>
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Project Gita">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <link rel="apple-touch-startup-image" href="icon-512.png">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
@@ -297,12 +305,13 @@
             const shareData = {
                 title: 'Project Gita',
                 text: 'I just supported Project Gita - an ad-free platform for Bhagavad Gita wisdom. Join the initiative!',
-                url: window.location.origin
+                url: 'https://preeteshvk.github.io/Practice-Gita/'
             };
             if (navigator.share) {
                 navigator.share(shareData);
             } else {
-                const waUrl = `https://wa.me/?text=${encodeURIComponent(shareData.text + " " + shareData.url)}`;
+                const combinedMessage = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
+                const waUrl = `https://wa.me/?text=${encodeURIComponent(combinedMessage)}`;
                 window.open(waUrl, '_blank');
             }
         }
