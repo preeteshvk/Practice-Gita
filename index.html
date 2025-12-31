@@ -96,17 +96,17 @@
             <h3 data-cap="language">Select Language</h3>
             <p>Choose how you'd like to read the Shlokas.</p>
             <div class="lang-options">
-                <button onclick="setLanguage('hi')">
+                <button onclick="handleLanguageSelect('hi')">
                     <div class="check-mark">✓</div>
                     <strong>हिन्दी (Sanskrit)</strong>
                     <span data-cap="lang_hi_desc">Sanskrit shlokas + Hindi translation</span>
                 </button>
-                <button onclick="setLanguage('en_sanskrit')">
+                <button onclick="handleLanguageSelect('en_sanskrit')">
                     <div class="check-mark">✓</div>
                     <strong>English (Sanskrit)</strong>
                     <span data-cap="lang_en_s_desc">Sanskrit shlokas + English translation</span>
                 </button>
-                <button onclick="setLanguage('en_iast')">
+                <button onclick="handleLanguageSelect('en_iast')">
                     <div class="check-mark">✓</div>
                     <strong>English (IAST)</strong>
                     <span data-cap="lang_en_i_desc">Sanskrit transliteration + English translation</span>
@@ -115,37 +115,52 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedLang = localStorage.getItem("gita_lang");
-            const guideSeen = localStorage.getItem("gita_guide_seen");
+   <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const savedLang = localStorage.getItem("gita_lang");
+        const guideSeen = localStorage.getItem("gita_guide_seen");
+        const modal = document.getElementById('lang-modal');
+        
+        // 1. Initial State Check: If no lang, show modal. If lang but no guide, go to guide.
+        if (!savedLang && modal) {
+            modal.style.display = 'flex';
+        } else if (savedLang && !guideSeen) {
+            window.location.href = "userguide.html";
+        } else if (savedLang) {
+            document.documentElement.setAttribute('data-lang', savedLang);
+        }
+
+        // 2. Starred Menu Item Logic (keep this as is)
+        const starredBtn = document.getElementById("starred-menu-item");
+        if (starredBtn) {
+            const stars = JSON.parse(localStorage.getItem("gita_stars") || "[]");
+            if (stars.length === 0) {
+                starredBtn.style.opacity = "0.6";
+                starredBtn.style.pointerEvents = "none";
+                const p = starredBtn.querySelector('p');
+                if (p) p.setAttribute('data-cap', 'no_stars');
+            }
+        }
+    }); 
+    function handleLanguageSelect(lang) {
+        // Save selection
+        localStorage.setItem("gita_lang", lang);
+        document.documentElement.setAttribute('data-lang', lang);
+        
+        // Force the theme.js translation engine to run once for labels
+        if (typeof applyUILanguage === 'function') applyUILanguage();
+
+        const guideSeen = localStorage.getItem("gita_guide_seen");
+        
+        if (!guideSeen) {
+            // REDIRECT INSTANTLY
+            window.location.href = "userguide.html";
+        } else {
+            // If they've seen it, just close the modal
             const modal = document.getElementById('lang-modal');
-            
-           if (!savedLang && modal) {
-                modal.style.display = 'flex';
-            } 
-            // 2. If lang exists but guide was never finished, force userguide
-            else if (savedLang && !guideSeen) {
-                window.location.href = "userguide.html";
-            } 
-            // 3. Regular load
-            else if (savedLang) {
-                document.documentElement.setAttribute('data-lang', savedLang);
-            }
-            // --- Starred Menu Item Logic ---
-            const starredBtn = document.getElementById("starred-menu-item");
-            if (starredBtn) {
-                const stars = JSON.parse(localStorage.getItem("gita_stars") || "[]");
-                if (stars.length === 0) {
-                    starredBtn.style.opacity = "0.6";
-                    starredBtn.style.filter = "grayscale(1)";
-                    starredBtn.style.pointerEvents = "none";
-                    // Tagged for translation even in disabled state
-                    const p = starredBtn.querySelector('p');
-                    if (p) p.setAttribute('data-cap', 'no_stars');
-                }
-            }
-        });
+            if(modal) modal.style.display = 'none';
+        }
+    }
     </script>
     <script src="theme.js"></script>
     <script src="menu.js"></script>
